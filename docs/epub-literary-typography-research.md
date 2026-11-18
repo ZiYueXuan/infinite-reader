@@ -9,7 +9,7 @@
 ## 截图对应源文件证据
 
 检查本地文件：
-/path/to/Library/Mobile Documents/com~apple~CloudDocs/eBook/2026/波斯之剑-纳迪尔沙与现代伊朗的崛起/波斯之剑纳迪尔沙与现代伊朗的崛起 ([英] 迈克尔·阿克斯沃西(Michael Axworthy)) (z-library.sk, 1lib.sk, z-lib.sk).epub
+/path/to/sample.epub
 
 成员 index-1_split_010.html 中，h1 标题“1 萨法维王朝的衰落”后：
 - 十二个 p.calibre2 对应截图中的诗行；
