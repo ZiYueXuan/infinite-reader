@@ -1,0 +1,16 @@
+# Vite content-hashed assets only. HTML, authentication, and private book files
+# must retain their own cache policy.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Reader/account routes are useful application URLs, not public search results.
+/shelf
+  X-Robots-Tag: noindex, follow
+/shelf/
+  X-Robots-Tag: noindex, follow
+/book/*
+  X-Robots-Tag: noindex, follow
+/index.html
+  X-Robots-Tag: noindex, follow
+/404.html
+  X-Robots-Tag: noindex, follow

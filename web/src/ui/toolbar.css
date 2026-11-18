@@ -1,0 +1,64 @@
+/* A quiet edge handle with a larger, transparent touch target. */
+.reader-dock { position: fixed; inset: 0; z-index: 20; pointer-events: none; }
+.reader-dock[data-menu] { z-index: 45; }
+.dock-indicator {
+  position: absolute; bottom: env(safe-area-inset-bottom, 0px); left: 50%; transform: translateX(-50%);
+  width: 104px; height: 44px; pointer-events: auto; touch-action: manipulation; border-radius: 18px;
+  -webkit-tap-highlight-color: transparent;
+}
+.dock-indicator-pill {
+  position: absolute; bottom: 4px; left: 4px; right: 4px; height: 16px; border-radius: 999px;
+  display: grid; place-items: center; background: var(--panel); border: 1px solid var(--hair);
+  backdrop-filter: blur(18px) saturate(1.3); -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: 0 2px 10px #0003, inset 0 1px 0 #ffffff06;
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.dock-indicator-pill > span {
+  width: 34px; height: 3px; border-radius: 999px; background: var(--ink); opacity: .48;
+  transition: width 180ms var(--ease), opacity 180ms ease;
+}
+@media (hover: hover) {
+  .dock-indicator:hover .dock-indicator-pill { border-color: var(--muted); box-shadow: 0 2px 14px #0004; }
+  .dock-indicator:hover .dock-indicator-pill > span { width: 42px; opacity: .85; }
+}
+.dock-indicator:focus-visible { outline: none; }
+.dock-indicator:focus-visible .dock-indicator-pill { outline: 2px solid var(--accent); outline-offset: 3px; }
+.reader-dock[data-expanded="true"] .dock-indicator-pill > span { width: 26px; opacity: .65; }
+.reader-dock .dock {
+  position: absolute; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  width: max-content; max-width: calc(100vw - 24px); flex-wrap: wrap; justify-content: center;
+  pointer-events: none; opacity: 0; visibility: hidden;
+  transform: translate(-50%, calc(100% + 28px + env(safe-area-inset-bottom, 0px))) scale(.97);
+  transition: transform 240ms var(--ease), opacity 160ms ease, visibility 0s 240ms;
+}
+.reader-dock[data-expanded="true"] .dock {
+  opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, 0) scale(1);
+  transition: transform 280ms var(--ease), opacity 180ms ease, visibility 0s;
+}
+.reader-dock .dock button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.reader-dock .appearance-menu { position: static; }
+.reader-dock .appearance-pop {
+  top: auto; left: auto; right: 0; bottom: calc(100% + 12px);
+  width: 360px; max-width: 100%; max-height: calc(100dvh - 140px - env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--panel-solid) 96%, transparent); color: var(--ink); overscroll-behavior: contain;
+}
+.reader-dock .appearance-heading {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 0 5px 10px; margin-bottom: 12px; border-bottom: 1px solid var(--hair);
+  font-size: 13px; font-weight: 500;
+}
+.reader-dock .appearance-section h2, .reader-dock .appearance-options button { color: var(--muted); }
+.reader-dock .appearance-options button:hover, .reader-dock .appearance-options button.on { color: var(--ink); background: color-mix(in srgb, var(--ink) 10%, transparent); }
+.reader-dock .appearance-options button.on i { outline-color: var(--accent); }
+@media (max-width: 540px) {
+  .reader-dock .dock { gap: 0; padding: 6px; }
+  .reader-dock .dock > .ib, .reader-dock .tilt-wrap > .ib, .reader-dock .appearance-menu > .ib { width: 28px; height: 36px; }
+  .reader-dock .dock .zoom { width: 34px; }
+  .reader-dock .dock > .sep { margin: 0 2px; }
+  .reader-dock .tilt-wrap { position: static; }
+  .reader-dock .tilt-pop { right: 0; max-width: 100%; bottom: calc(100% + 12px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reader-dock[data-expanded] .dock, .dock-indicator-pill, .dock-indicator-pill > span { transition: none; }
+  .reader-dock .tilt-pop { animation: none; }
+}

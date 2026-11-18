@@ -1,0 +1,11 @@
+.footnote-hit { padding: 0; margin: 0; border: 0; background: transparent; cursor: pointer; user-select: none; }
+.footnote-hit:focus-visible { outline: 2px solid #ba7039; outline-offset: 2px; border-radius: 8px; }
+.footnote-hit:hover { background: #ba703916; border-radius: 8px; }
+.footnote-popover { position: fixed; z-index: 95; width: 360px; box-sizing: border-box; display: flex; flex-direction: column; padding: 14px 20px 20px; border: 1px solid #ffffff15; border-radius: 18px; background: #37393a; color: #f6f3ed; box-shadow: 0 10px 36px #0004; font-family: Inter, system-ui, sans-serif; outline: none; }
+.footnote-popover::before { content: ''; position: absolute; left: var(--arrow-x); width: 12px; height: 12px; background: #37393a; transform: translateX(-50%) rotate(45deg); }
+.footnote-popover[data-side='below']::before { top: -6px; }
+.footnote-popover[data-side='above']::before { bottom: -6px; }
+.footnote-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-shrink: 0; margin-bottom: 7px; color: #c5c3be; font-size: 12px; }
+.footnote-heading button { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: inherit; font: 23px/1 sans-serif; cursor: pointer; }
+.footnote-heading button:hover, .footnote-heading button:focus-visible { background: #ffffff18; }
+.footnote-content { overflow: auto; overscroll-behavior: contain; min-height: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 16px; line-height: 1.75; user-select: text; }

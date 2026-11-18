@@ -1,0 +1,34 @@
+.note-markdown { white-space: normal; color: inherit; font: inherit; line-height: 1.65; overflow-wrap: anywhere; }
+.note-markdown > :first-child { margin-top: 0; }
+.note-markdown > :last-child { margin-bottom: 0; }
+.note-markdown p { margin: 0 0 .25em; white-space: pre-line; }
+.note-markdown h1, .note-markdown h2, .note-markdown h3, .note-markdown h4, .note-markdown h5, .note-markdown h6 { font-family: inherit; font-weight: 700; line-height: 1.65; margin: 0 0 .25em; letter-spacing: normal; }
+.note-markdown h1 { font-size: 1.45em; }
+.note-markdown h2 { font-size: 1.3em; }
+.note-markdown h3 { font-size: 1.15em; }
+.note-markdown h4 { font-size: 1.05em; }
+.note-markdown h5, .note-markdown h6 { font-size: 1em; }
+.note-markdown ul, .note-markdown ol { margin: 0 0 .25em; padding-left: 1.6em; }
+.note-markdown ul { list-style: disc; }
+.note-markdown ol { list-style: decimal; }
+.note-markdown li { margin: 0 0 .25em; }
+.note-markdown li > p { margin: 0; }
+.note-markdown blockquote { margin: 0 0 .25em; padding-left: 1em; border-left: 2px solid currentColor; }
+.note-markdown a { color: inherit; text-decoration: underline; text-underline-offset: .15em; }
+.note-markdown code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: .86em; border-radius: 3px; background: color-mix(in srgb, currentColor 8%, transparent); padding: .05em .15em; }
+.note-markdown pre { white-space: pre-wrap; margin: 0 0 .25em; padding: .35em; background: color-mix(in srgb, currentColor 7%, transparent); }
+.note-markdown pre code { background: none; padding: 0; }
+.note-markdown hr { margin: .8em 0; border: 0; border-top: 1px solid currentColor; opacity: .35; }
+.note-markdown-table { overflow-x: auto; margin: 0 0 .5em; }
+.note-markdown table { width: 100%; border-collapse: collapse; font: inherit; }
+.note-markdown th, .note-markdown td { border: 1px solid color-mix(in srgb, currentColor 25%, transparent); padding: .2em .4em; min-width: 3em; }
+.note-markdown th { background: color-mix(in srgb, currentColor 7%, transparent); }
+.note-markdown .contains-task-list { list-style: none; }
+.note-markdown input[type='checkbox'] { accent-color: currentColor; margin-right: .4em; }
+.note-markdown-switch { display: flex; flex: none; align-items: center; gap: 4px; margin-bottom: 8px; font: 11px 'Inter Variable', system-ui, sans-serif; }
+.note-markdown-switch span { margin-left: auto; opacity: .6; font-size: 10px; }
+.note-markdown-switch button { padding: 4px 9px; border-radius: 5px; color: inherit; }
+.note-markdown-switch button[aria-pressed='true'] { background: #62584b16; }
+.note-markdown-switch button:focus-visible { outline: 2px solid currentColor; }
+.note-markdown-preview { flex: 1; min-height: 0; overflow: auto; scrollbar-width: thin; color: var(--note-text); font-size: var(--note-font, 17px); }
+.note-markdown-preview:focus-visible { outline: 1px solid var(--note-ink); outline-offset: 2px; }

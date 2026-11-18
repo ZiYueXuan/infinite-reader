@@ -1,0 +1,37 @@
+.cost-debug { position: fixed; right: max(16px, env(safe-area-inset-right)); top: 62px; z-index: 35; width: 326px; max-width: calc(100vw - 24px); color: #e5e8e2; background: rgba(27, 33, 30, .97); border: 1px solid #515c54; border-radius: 12px; box-shadow: 0 4px 22px #0003; font: 12px/1.5 system-ui, sans-serif; text-align: left; overflow: hidden; }
+.cost-debug button, .cost-debug select { font: inherit; color: inherit; background: #343e37; border: 1px solid #536057; border-radius: 5px; padding: 4px 6px; cursor: pointer; }
+.cost-debug button:hover { background: #465349; }
+.cost-debug :focus-visible { outline: 2px solid #b4d9be; outline-offset: 2px; }
+.cost-debug .cost-heading { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 12px; background: transparent; border: 0; border-radius: 0; }
+.cost-heading b { letter-spacing: .06em; font-size: 11px; }
+.cost-heading span:nth-last-child(2) { margin-left: auto; font-variant-numeric: tabular-nums; }
+.cost-dot { width: 6px; height: 6px; border-radius: 50%; background: #a4cbb0; flex-shrink: 0; }
+.cost-content { border-top: 1px solid #465149; max-height: min(440px, 62dvh); overflow: auto; overscroll-behavior: contain; padding: 12px; scrollbar-width: thin; }
+.cost-debug p { margin: 7px 0; }
+.cost-debug small { display: block; color: #bac4bd; font-size: 10px; overflow-wrap: anywhere; }
+.cost-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+.cost-total { margin-top: 14px; }
+.cost-total strong { display: block; font-size: 19px; font-weight: 550; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.cost-muted { font-size: 10px; color: #bac4bd; }
+.cost-warning { color: #efce92; font-size: 11px; }
+.cost-line { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 5px 0; }
+.cost-line > :last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cost-groups, .cost-storage, .cost-coverage { border-top: 1px solid #465149; margin-top: 10px; padding-top: 8px; }
+.cost-list-heading { display: flex; align-items: center; justify-content: space-between; margin: 12px 0 6px; }
+.cost-item { border-top: 1px solid #465149; padding: 7px 0; overflow-wrap: anywhere; }
+.cost-item summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; list-style: none; }
+.cost-item summary::-webkit-details-marker { display: none; }
+.cost-item summary b { font-weight: 500; }
+.cost-item summary b::before { content: '+ '; color: #b4d9be; }
+.cost-item[open] summary b::before { content: '− '; }
+.cost-item summary strong { font-size: 11px; text-align: right; max-width: 155px; font-variant-numeric: tabular-nums; }
+.cost-item p, .cost-coverage p { font-size: 10px; color: #cbd3ce; }
+.cost-coverage summary { cursor: pointer; }
+.cost-coverage a { display: inline-block; color: #b4d9be; margin-right: 10px; }
+/* Both shelf and reading panels open below their account capsule. */
+.cost-debug .cost-content { max-height: min(60dvh, calc(100dvh - 130px)); }
+.cost-debug.cost-shelf { top: 80px; }
+
+.cost-groups > summary { cursor: pointer; color: #bac4bd; padding: 3px 0; }
+.cost-debug time { font-variant-numeric: tabular-nums; }
+.cost-debug .cost-order { margin-top: 0; }

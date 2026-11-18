@@ -1,0 +1,10 @@
+<!doctype html><html><meta charset="utf-8"><title>目录层级本地检查</title><style>body{background:#40302b;color:#fff}#status{position:fixed;right:20px;top:20px;color:white}</style><div id="root"></div><output id="status">Loading</output><script type="module">
+import React from 'react'; import {createRoot} from 'react-dom/client'; import {parseEpub} from '/src/book/epub.ts'; import {TocDrawer} from '/src/ui/Drawers.tsx'; import {useReader} from '/src/store/useReader.ts'; import '/src/index.css';
+const out=document.querySelector('#status');
+try {
+ const book=await parseEpub(await (await fetch('http://127.0.0.1:4181/book.epub')).blob());
+ useReader.setState({current:{meta:{title:book.meta.title},parsed:book},annotations:[],goToToc:(chapter,block)=>{out.textContent=`Jump: ${chapter}:${block??''}`},setPanel:()=>{}});
+ createRoot(document.querySelector('#root')).render(React.createElement(TocDrawer));
+ out.textContent=`目录 ${book.toc.length} 项`;
+} catch(e) {out.textContent='Error: '+e.message; throw e}
+</script></html>

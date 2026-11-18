@@ -1,0 +1,66 @@
+<!doctype html><html lang="zh-CN"><meta charset="UTF-8"><title>Literary typography checks</title>
+<style>body{margin:0;background:#e6e1d7;color:#302a23;font:14px system-ui}header{padding:16px 24px;position:sticky;top:0;background:#ede9df;z-index:2}#pages{display:flex;flex-wrap:wrap;gap:24px;padding:24px;align-items:start}figure{margin:0}canvas{width:480px;max-width:90vw;box-shadow:0 8px 28px #28221826}figcaption{padding:12px}pre{white-space:pre-wrap;margin:12px 24px}</style>
+<header>文学排版 · 真实 Canvas 分页验收 <button id="compact">切换紧凑页面</button></header><pre id="status">Running…</pre><main id="pages"></main>
+<script type="module">
+import JSZip from 'jszip'
+import { parseEpub } from '/src/book/epub.ts'
+import { paginate, DEFAULT_LAYOUT } from '/src/book/layout.ts'
+import { renderPage, rangeRects } from '/src/book/pageRender.ts'
+import { ensureFonts } from '/src/book/loader.ts'
+const poem = ['愁苦的波斯，在过去的岁月里','一直是各路强者的舞台。','他们有勇有谋，','征服非洲，踏足欧洲。','那里的太阳极少升起，','只剩冰冷的群星和刺骨的严寒。','很快将出现一个人征服并统治这里，','他出生之时月亮与土星会合，','木星、太阳与水星则拒绝','将影响注进他浮躁的脑海。','如今，突厥人和鞑靼人向他挥舞宝剑，','誓将搅乱你们所有的领土。','——马洛']
+const prose = '未来的德里征服者出生在波斯东北边境一处蛮荒地带：呼罗珊省的北部，这里远离王室宫廷的繁华。读到这里，我们继续回到正文，从文字中理解历史人物及其所处的时代。'
+const chapters = [
+ `<h1 id="chapter-one">1 萨法维王朝的衰落</h1>${poem.map(t=>`<p class="calibre2">${t}</p>`).join('')}<p>${prose.repeat(3)}</p>`,
+ `<h2>引用与诗行</h2><blockquote><p>读书不是为了找到一句可以替代思考的话，而是为了让我们把问题看得更清楚。</p><p>一段引文，应当保留原来的段落，也给阅读留一点呼吸的空间。</p><footer>——排版样例</footer></blockquote><p>${prose}</p><section epub:type="epigraph"><p>山川与河流<br/>在书页之间<br/><br/>让目光停留</p><footer>——样例</footer></section><div class="poem"><p>Quiet pages<br/>Open windows<br/>Light across the desk</p></div>`,
+ `<h2>连续短句并不一定是题辞</h2><p>“你读到哪里了？”</p><p>“还在第一章。”</p><p>“那我们继续。”</p><p>——这是对白，不是作者署名。</p><p>${prose.repeat(2)}</p>`,
+ `<h2>Long quotation</h2><blockquote><p>${'A long quotation may continue across a page while its author remains beside the closing lines. '.repeat(30)}</p><footer>— Typography fixture</footer></blockquote>`,
+ `<h2>换行定位</h2><p id="breaks">  中文<br/>换行 <em>Latin<br/>words</em>末尾<br/>  </p><pre>first\nsecond\n\nlast</pre>`
+]
+async function epub(chapters) {
+ const zip=new JSZip();zip.file('META-INF/container.xml','<container><rootfiles><rootfile full-path="book.opf"/></rootfiles></container>')
+ zip.file('book.opf',`<package><metadata><title>文学排版样书</title><creator>Infinite Reader</creator><language>zh</language></metadata><manifest>${chapters.map((_,i)=>`<item id="c${i}" href="c${i}.xhtml" media-type="application/xhtml+xml"/>`).join('')}</manifest><spine>${chapters.map((_,i)=>`<itemref idref="c${i}"/>`).join('')}</spine></package>`)
+ chapters.forEach((s,i)=>zip.file(`c${i}.xhtml`,`<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"><head><title>样例</title></head><body>${s}</body></html>`))
+ return zip.generateAsync({type:'arraybuffer'})
+}
+let compact=false
+const status=document.querySelector('#status'); const checks=[]
+const check=(ok,label)=>{checks.push(`${ok?'PASS':'FAIL'} ${label}`);if(!ok)throw new Error(label)}
+try {
+ await ensureFonts();
+ if(new URLSearchParams(location.search).has('original')) {
+  const {parseEpub: oldParse}=await import('http://127.0.0.1:4179/baseline.js')
+  const data=await (await fetch('http://127.0.0.1:4179/book.epub')).arrayBuffer()
+  const [oldBook,newBook]=await Promise.all([oldParse(data),parseEpub(data)])
+  const source=(book)=>book.chapters.map(ch=>({...ch,blocks:ch.blocks.map(({literary,...b})=>({...b,runs:b.runs.map(({breaks,...r})=>r)}))}))
+  check(JSON.stringify(source(oldBook))===JSON.stringify(source(newBook)),'整本波斯之剑与旧版逐字段一致：章节、原文、run、偏移和锚点')
+  status.dataset.original=`${newBook.chapters.length} chapters verified`
+ }
+ const book=await parseEpub(await epub(chapters))
+ const b=book.chapters[0].blocks
+ check(b.filter(v=>v.literary?.role==='epigraph').length===12,'章首诗歌识别 12 行')
+ check(b[13].literary?.role==='attribution','马洛署名独立排版')
+ check(book.chapters[2].blocks.every(v=>!v.literary),'对白保持正文')
+ check(b[0].ids.includes('chapter-one'),'目录锚点保留')
+ for(const ch of book.chapters){let off=0;for(const block of ch.blocks){check(block.start===off&&block.text===block.runs.map(r=>r.text).join(''),`原文定位 ${ch.index}:${off}`);off+=block.text.length+1}}
+ const hard=book.chapters[4].blocks[1]
+ check(hard.text==='中文换行 Latin words末尾','换行保留旧版归一化文本')
+ async function layout(cfg) {
+  const pag=await paginate(book,cfg)
+  for(const page of pag.pages)for(const line of page.lines){check(line.y+line.h<=cfg.pageH-cfg.marginTop-cfg.marginBottom+0.6,'行盒不溢出');for(const w of line.words){if(w.s<0)continue;const text=book.chapters[page.chapter].blocks.map(b=>b.text).join('\n');check(text.slice(w.s,w.s+w.text.length)===w.text,'渲染文字映射原始偏移');check(w.x>=0&&w.x+w.w<=cfg.pageW-cfg.marginInner-cfg.marginOuter+cfg.fontSize,'文字不横向溢出')}}
+  const authorPage=pag.pageForOffset(0,b[13].start);check(authorPage===pag.pageForOffset(0,b[12].start),'署名与末行同页')
+  check(pag.pages[authorPage].lines.some(l=>l.tone==='attribution'),'署名墨色及字号')
+  const markPage=pag.pages[pag.pageForOffset(0,b[1].start)];check(rangeRects(markPage,b[1].start,b[1].start+b[1].text.length).length>0,'旧偏移划线矩形可定位')
+  const hardLines=pag.pages.filter(p=>!p.special&&p.chapter===4).flatMap(p=>p.lines).filter(l=>l.words.some(w=>w.s>=hard.start&&w.s<hard.start+hard.text.length))
+  check(hardLines.length===3,'br 显式换行三行')
+  return pag
+ }
+ const normal=await layout(DEFAULT_LAYOUT)
+ const smallCfg={...DEFAULT_LAYOUT,pageW:430,pageH:540,marginInner:48,marginOuter:38,marginTop:40,marginBottom:45}
+ const small=await layout(smallCfg)
+ const relevant=normal.pages.filter(p=>!p.special&&[0,1].includes(p.chapter))
+ function draw(pag,cfg){document.querySelector('#pages').replaceChildren();for(const page of pag){const fig=document.createElement('figure');const canvas=renderPage(page,{cfg,scale:2,bookTitle:'波斯之剑',author:'排版样例',marks:[],images:new Map()});fig.append(canvas);const cap=document.createElement('figcaption');cap.textContent=`第 ${page.label} 页 · ${cfg.pageW} × ${cfg.pageH}`;fig.append(cap);document.querySelector('#pages').append(fig)}}
+ draw(relevant,DEFAULT_LAYOUT)
+ document.querySelector('#compact').onclick=()=>{compact=!compact;draw(compact?small.pages.filter(p=>!p.special&&p.chapter===0):relevant,compact?smallCfg:DEFAULT_LAYOUT)}
+ status.textContent=`PASS · ${status.dataset.original??""} · ${checks.length} assertions · 标准 ${normal.pages.length} 页 / 紧凑 ${small.pages.length} 页\n文字偏移、锚点、显式换行、划线矩形、跨页署名及边界检查通过。无 API 或模型调用。`
+} catch(error){status.textContent=`FAIL ${error.message}\n${checks.filter(x=>x.startsWith('FAIL')).join('\n')}`;console.error(error)}
+</script></html>

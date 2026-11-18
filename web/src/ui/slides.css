@@ -1,0 +1,48 @@
+.slides-dialog { --text: #253d33; --muted: #69766c; --hair: #d7dacd; position: fixed; inset: 0; margin: 0; width: 100vw; max-width: none; height: 100dvh; max-height: none; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); border: 0; border-radius: 0; background: #e8e9e1; color: var(--text); overflow: hidden; font-family: 'Inter Variable', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+.slides-dialog[open] { display: flex; flex-direction: column; }
+.slides-dialog::backdrop { background: #10251dc9; }
+.slides-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 30px; border-bottom: 1px solid var(--hair); background: #f5f4ed; flex-shrink: 0; }
+.slides-header > div:first-child { min-width: 0; }
+.slides-brand { font-size: 10px; letter-spacing: .18em; color: var(--muted); }
+.slides-header h2 { font-size: 16px; font-weight: 500; margin: 8px 0 0; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+.slides-tools { display: flex; gap: 8px; }
+.slides-dialog .ib, .slides-dialog .btn { color: var(--text); background: transparent; box-shadow: none; flex-shrink: 0; }
+.slides-dialog .btn { border: 1px solid var(--hair); background: #f5f4ed; }
+.slides-dialog button:disabled { opacity: .3; }
+.slides-dialog :is(button,article):focus-visible { outline: 2px solid #8b7140; outline-offset: 3px; }
+.slides-workspace { display: flex; flex: 1; min-height: 0; }
+.slides-outline { flex: 0 0 210px; overflow: auto; padding: 22px 12px; border-right: 1px solid var(--hair); }
+.slides-outline button { width: 100%; display: flex; gap: 12px; padding: 16px 12px; margin-bottom: 6px; text-align: left; background: transparent; color: #68776e; border: 1px solid transparent; border-radius: 6px; }
+.slides-outline button span { font-size: 10px; padding-top: 3px; }
+.slides-outline button b { font-size: 12px; line-height: 1.65; font-weight: 400; overflow-wrap: anywhere; }
+.slides-outline button.active { color: #253d33; background: #f9f7f0; border-color: #d4d5c7; }
+.slides-stage { flex: 1; min-width: 0; min-height: 0; padding: clamp(12px, 3vw, 42px); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.chapter-slide { container-type: inline-size; box-sizing: border-box; width: 100%; max-width: 1400px; max-height: 100%; aspect-ratio: 16 / 9; overflow: auto; overscroll-behavior: contain; padding: clamp(20px, 3.3vw, 54px); background: #fbf9f1; box-shadow: 0 12px 40px #26382d13; border: 1px solid #deded1; position: relative; display: flex; flex-direction: column; }
+.slide-topline { display: flex; justify-content: space-between; color: #7b826e; font-size: clamp(10px, 1.1cqw, 14px); letter-spacing: .14em; margin-bottom: 3cqw; }
+.chapter-slide h3 { font-family: 'Songti SC', 'Noto Serif SC', Georgia, serif; font-size: clamp(24px, 3.4cqw, 48px); font-weight: 500; line-height: 1.4; margin: 0 0 1.5cqw; overflow-wrap: anywhere; }
+.slide-takeaway { font-size: clamp(14px, 1.7cqw, 23px); line-height: 1.7; color: #647263; margin: 0 0 3cqw; overflow-wrap: anywhere; }
+.slide-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2cqw 3cqw; }
+.slide-item { display: flex; gap: 1.3cqw; border-top: 1px solid #d9dece; padding: 1.8cqw 0; min-width: 0; }
+.slide-item-number { color: #a18b55; font-size: clamp(10px, 1.2cqw, 16px); padding-top: 4px; }
+.slide-item h4 { font-size: clamp(15px, 1.8cqw, 24px); font-weight: 500; margin: 0 0 .6cqw; line-height: 1.5; }
+.slide-item p { font-size: clamp(13px, 1.4cqw, 19px); line-height: 1.8; margin: 0; color: #627063; }
+.slide-item :is(h4,p) { overflow-wrap: anywhere; }
+.slide-imprint { color: #909680; font-size: 9px; letter-spacing: .2em; padding-top: 3cqw; margin-top: auto; }
+.layout-overview { background: #213e32; color: #f4efd9; border-color: #213e32; }
+.layout-overview :is(.slide-takeaway,.slide-item p) { color: #c2ceb9; }
+.layout-overview .slide-item { border-color: #ffffff24; }
+.layout-overview :is(.slide-topline,.slide-imprint) { color: #b7bf99; }
+.layout-timeline .slide-items { grid-template-columns: 1fr; gap: 0; }
+.layout-timeline .slide-item { border-top: 0; border-left: 1px solid #b6bea6; padding: 0 0 2cqw 2cqw; position: relative; }
+.layout-timeline .slide-item::before { content: ''; position: absolute; left: -4px; top: 6px; width: 7px; height: 7px; border-radius: 50%; background: #8b956f; }
+.layout-comparison .slide-item { background: #eff0e5; padding: 2cqw; border: 0; }
+.slides-footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 30px; border-top: 1px solid var(--hair); background: #f5f4ed; flex-shrink: 0; color: var(--muted); font-size: 11px; }
+.slides-paging { display: flex; gap: 20px; align-items: center; font-variant-numeric: tabular-nums; font-size: 13px; white-space: nowrap; }
+.slides-status { margin: auto; padding: 32px; text-align: center; max-width: 520px; line-height: 1.8; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.slides-status h3, .slides-status p { margin: 0; }
+.slides-status p { color: var(--muted); font-size: 14px; }
+.slides-status progress { width: 220px; height: 5px; accent-color: #446450; }
+.slides-alert { margin: 0; padding: 8px; text-align: center; }
+@media (max-width: 850px) { .slides-outline { flex-basis: 155px; } .slides-disclaimer { display: none; } }
+@media (max-width: 600px) { .slides-header { padding: 16px; } .slides-outline { display: none; } .chapter-slide { aspect-ratio: auto; height: 100%; padding: 24px; } .slide-items { grid-template-columns: 1fr; } .slide-item { padding: 16px 0; gap: 12px; } .slide-topline { margin-bottom: 24px; } .chapter-slide h3 { margin-bottom: 16px; } .slide-takeaway { margin-bottom: 24px; } .slides-footer { padding: 10px 16px; } .slides-saved { max-width: 145px; line-height: 1.5; } .slides-paging { gap: 8px; } }
+@media (max-height: 500px) { .slides-header { padding: 8px 20px; } .slides-brand { display: none; } .slides-header h2 { margin: 0; } .slides-stage { padding: 12px; } .slides-footer { padding: 4px 20px; } }

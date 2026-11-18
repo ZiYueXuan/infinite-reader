@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reading typeface regression fixture</title></head>
+<body><div id="root"></div><output id="fixture-status" data-ui style="position:fixed;left:10px;top:10px;z-index:50;padding:8px 12px;background:#fffef2;color:#26382f;border-radius:8px;font:12px monospace;pointer-events:none">Preparing local fixture…</output>
+<script type="module">
+// Local-only synthetic book. No requests to a real API are allowed by this fixture.
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import JSZip from 'jszip'
+import { DeskView } from '/src/ui/DeskView.tsx'
+import { useReader } from '/src/store/useReader.ts'
+import { prepareBook } from '/src/book/loader.ts'
+import { setStorageMode } from '/src/storage/mode.ts'
+import { ShelfUp } from '/src/ui/Shelf.tsx'
+import { Loading } from '/src/ui/Overlays.tsx'
+import { FontOptions } from '/src/ui/FontOptions.tsx'
+import { BOOK_MAPS } from '/src/atlas/catalog.ts'
+import '/src/index.css'
+
+const previewWidth = Number(new URLSearchParams(location.search).get('width'))
+if (previewWidth > 0) {
+  document.getElementById('fixture-status').remove()
+  const frame = document.createElement('iframe')
+  const scale = Math.min(1, innerHeight / 780, innerWidth / previewWidth)
+  frame.src = location.pathname
+  frame.title = `${previewWidth}px responsive preview`
+  frame.style.cssText = `width:${previewWidth}px;height:780px;border:0;position:absolute;left:50%;top:0;transform-origin:top center;transform:translateX(-50%) scale(${scale})`
+  document.getElementById('root').append(frame)
+} else {
+const status = document.getElementById('fixture-status')
+let recognitionRequests = 0, blockedApiRequests = 0, ready = false, savedAnchor = null
+const originalFontLoad = FontFace.prototype.load
+let failNextFont = false
+FontFace.prototype.load = function () { return failNextFont && this.family.includes('XiaoWei') ? Promise.reject(new Error('模拟字体下载失败')) : originalFontLoad.call(this) }
+const realFetch = window.fetch.bind(window)
+window.fetch = async (input, init) => {
+  const url = new URL(input instanceof Request ? input.url : String(input), location.href)
+  if (url.pathname.startsWith('/api/')) {
+    if (url.pathname.endsWith('/atlas') && (init?.method ?? 'GET') === 'POST') {
+      recognitionRequests++
+      updateStatus()
+      return Response.json({ status: 'not_map', map: null, message: 'Local fixture: explicit globe activation recorded.', model: 'fixture', recognizedAt: Date.now(), cached: false })
+    }
+    blockedApiRequests++
+    updateStatus()
+    return new Response(null, { status: 204 })
+  }
+  if (url.origin !== location.origin && !['blob:', 'data:'].includes(url.protocol)) throw new Error('Fixture blocked external fetch: ' + url.origin)
+  return realFetch(input, init)
+}
+function updateStatus() {
+  const scene = useReader.getState().scene
+  const anchorVisible = !savedAnchor || Object.values(scene.visiblePages).some(i => { const p=scene.pagination.pages[i]; return p && p.chapter === savedAnchor.chapter && p.start <= savedAnchor.start && p.end >= savedAnchor.start })
+  status.textContent = `anchor retained: ${anchorVisible} · font: ${useReader.getState().readerFont} · anchor: ${JSON.stringify(scene?.pagination?.pages[scene?.visiblePages?.right]?.start ?? null)} · ${ready ? 'READY' : 'LOADING'} · Atlas POST: ${recognitionRequests} · blocked API: ${blockedApiRequests} · spread: ${scene?.turnedLeaves ?? '-'} · visible: ${scene ? Object.values(scene.visiblePages).join(',') : '-'} · zoom: ${Math.round(useReader.getState().zoom * 100)}% · ${useReader.getState().toast ?? ''}`
+}
+
+setStorageMode('api')
+useReader.setState({ session: { status: 'user', user: { id: 'fixture', email: 'fixture@example.invalid', name: 'Fixture reader', avatar_url: null } }, showLogin: false, loading: null, tilt: 0.2, desk: 'stone' })
+createRoot(document.getElementById('root')).render(React.createElement(React.StrictMode, null, React.createElement('div', { className: 'app' }, React.createElement(DeskView), React.createElement(ShelfUp), React.createElement(Loading), React.createElement('div',{style:{position:'fixed',right:20,top:70,width:250,padding:15,background:'#242d25',color:'#eee',zIndex:80},'data-ui':true},React.createElement(FontOptions)))))
+useReader.subscribe(updateStatus)
+
+function png(width, height, title, color) {
+  const canvas = document.createElement('canvas')
+  canvas.width = width; canvas.height = height
+  const context = canvas.getContext('2d')
+  context.fillStyle = color; context.fillRect(0, 0, width, height)
+  context.strokeStyle = '#fff9e8'; context.lineWidth = Math.max(2, width / 120)
+  for (let x = 0; x < width; x += width / 12) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, height); context.stroke() }
+  for (let y = 0; y < height; y += height / 12) { context.beginPath(); context.moveTo(0, y); context.lineTo(width, y); context.stroke() }
+  context.fillStyle = '#fff9e8'; context.textAlign = 'center'; context.font = `600 ${Math.max(9, width / 14)}px serif`
+  context.fillText(title, width / 2, height * 0.45)
+  context.font = `${Math.max(7, width / 22)}px sans-serif`
+  context.fillText(`${width} × ${height}`, width / 2, height * 0.55)
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
+}
+
+try {
+  const zip = new JSZip()
+  zip.file('mimetype', 'application/epub+zip')
+  zip.file('META-INF/container.xml', '<container xmlns="urn:oasis:names:tc:opendocument:xmlns:container" version="1.0"><rootfiles><rootfile full-path="OPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>')
+  const images = [['portrait', 700, 1000, 'PORTRAIT', '#777e6c'], ['landscape', 1200, 500, 'LANDSCAPE', '#526f7a'], ['small', 48, 48, '48', '#b56d52']]
+  for (const [name, w, h, title, color] of images) zip.file(`OPS/${name}.png`, await (await png(w, h, title, color)).arrayBuffer())
+  const poem=['愁苦的波斯，在过去的岁月里','一直是各路强者的舞台。','他们有勇有谋，','征服非洲，踏足欧洲。','那里的太阳极少升起，','只剩冰冷的群星和刺骨的严寒。','很快将出现一个人征服并统治这里，','他出生之时月亮与土星会合，','木星、太阳与水星则拒绝','将影响注进他浮躁的脑海。','如今，突厥人和鞑靼人向他挥舞宝剑，','誓将搅乱你们所有的领土。','——马洛']
+  const chapters = [
+    '<h1>1 萨法维王朝的衰落</h1>'+poem.map(t=>'<p>'+t+'</p>').join('')+'<p>'+('未来的德里征服者出生在波斯东北边境一处蛮荒地带：呼罗珊省的北部，这里远离王室宫廷的繁华。'.repeat(7))+'</p>',
+    '<h1>阅读字体与定位</h1><p>'+('书页上的文字，承载着关于世界的记忆。 A quiet page, a clear thought. '.repeat(18))+'</p>',
+  ]
+  chapters.forEach((body, i) => zip.file(`OPS/ch${i}.xhtml`, `<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Fixture ${i}</title></head><body>${body}</body></html>`))
+  zip.file('OPS/content.opf', `<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="uid"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="uid">local-image-fixture</dc:identifier><dc:title>波斯之剑 · 排版样例</dc:title><dc:creator>Local test</dc:creator><dc:language>en</dc:language></metadata><manifest>${chapters.map((_, i) => `<item id="ch${i}" href="ch${i}.xhtml" media-type="application/xhtml+xml"/>`).join('')}${images.map(([name]) => `<item id="${name}" href="${name}.png" media-type="image/png"/>`).join('')}</manifest><spine>${chapters.map((_, i) => `<itemref idref="ch${i}"/>`).join('')}</spine></package>`)
+  const prepared = await prepareBook(await zip.generateAsync({ type: 'blob' }))
+  // Exercise the existing-map handoff without paying for recognition of a synthetic image.
+  if (new URLSearchParams(location.search).has('catalog')) prepared.loaded.maps.set('OPS/landscape.png', BOOK_MAPS[0])
+  while (!useReader.getState().scene) await new Promise(resolve => requestAnimationFrame(resolve))
+  const scene = useReader.getState().scene
+  const meta = { ...prepared.parsed.meta, id: 'bk_image_fixture', addedAt: Date.now() }
+  useReader.setState({ current: { meta, parsed: prepared.parsed }, turned: 1, open: true, annotations: [], loading: null })
+  scene.loadBook({ ...prepared.loaded, id: meta.id, turned: 1 }, true)
+  ready = true
+  const controls = document.createElement('div')
+  controls.setAttribute('data-ui','true')
+  controls.style.cssText = 'position:fixed;bottom:10px;left:10px;z-index:90;background:white;color:black;padding:10px'
+  for (const [label, action] of [
+    ['定位正文并放大', () => { useReader.getState().goToToc(1,1); scene.zoomBy(1.2) }],
+    ['记录阅读位置', () => { savedAnchor = Object.values(scene.visiblePages).map(i=>scene.pagination.pages[i]).find(p=>p&&!p.blank&&!p.special); updateStatus() }],
+    ['模拟小薇下载失败', () => { failNextFont = true }],
+  ]) { const b=document.createElement('button'); b.textContent=label; b.onclick=action; controls.append(b) }
+  document.body.append(controls)
+  updateStatus()
+} catch (error) { status.textContent = String(error?.stack ?? error) }
+}
+</script></body></html>

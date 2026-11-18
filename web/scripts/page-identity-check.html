@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Page identity regression</title></head><body style="margin:0"><button id="run">Run turn regression</button><pre id="result">Ready</pre><div id="view"></div><script type="module">
+import * as THREE from 'three'
+import { BookModel } from '/src/engine/book.ts'
+const renderer = new THREE.WebGLRenderer({antialias:true}); renderer.setSize(760,540); document.querySelector('#view').append(renderer.domElement)
+const scene=new THREE.Scene();scene.background=new THREE.Color('#333');scene.add(new THREE.AmbientLight(0xffffff,2));const light=new THREE.DirectionalLight(0xffffff,3);light.position.set(-5,7,20);scene.add(light)
+const camera=new THREE.PerspectiveCamera(40,760/540,.1,100);camera.position.set(0,-6,20);camera.lookAt(0,0,0)
+const textures=Array.from({length:12},(_,i)=>{const c=document.createElement('canvas');c.width=256;c.height=384;const g=c.getContext('2d');g.fillStyle=['#ffeebb','#eee','#66aabb','#ddaa66'][i%4];g.fillRect(0,0,256,384);g.fillStyle='#111';g.font='32px serif';g.fillText('PAGE '+i,35,170);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.userData.page=i;return t})
+const book=new BookModel({leafCount:250,turned:0,open:true,getTexture:p=>textures[p%12],cover:{outer:textures[0],inner:textures[1],cloth:new THREE.Color('#593e32'),glossy:false}});scene.add(book.group);book.update(0)
+function draw(){renderer.render(scene,camera)}draw()
+import { checkPageIdentity } from './check-page-identity.mjs'
+document.querySelector('#run').onclick=async()=>{
+ const output=document.querySelector('#result');output.textContent='Running…'
+ const result=await checkPageIdentity({outer:textures[0],inner:textures[1],cloth:new THREE.Color('#593e32'),glossy:false},r=>output.textContent=JSON.stringify(r))
+ output.textContent=JSON.stringify(result,null,2);book.update(0);draw()
+}
+</script></body></html>

@@ -1,0 +1,3982 @@
+{
+  "图片地图": ["图片地图", "Image maps"],
+  "文字地点": ["文字地点", "Text places"],
+  "暂无已识别的图片地图": ["暂无已识别的图片地图", "No recognized image maps yet"],
+  "暂无已识别的文字地点": ["暂无已识别的文字地点", "No recognized text places yet"],
+  "地点识别结果": ["地点识别结果", "Place recognition results"],
+  "已定位 {0} 个地点": ["已定位 {0} 个地点", "Located {0} places"],
+  "请核对本次匹配结果，再前往地图查看。": ["请核对本次匹配结果，再前往地图查看。", "Review these matches before viewing them on the map."],
+  "匹配名称：{0}": ["匹配名称：{0}", "Matched name: {0}"],
+  "坐标：{0}": ["坐标：{0}", "Coordinates: {0}"],
+  "这些地点不会标注在地图上。": ["这些地点不会标注在地图上。", "These places will not be pinned on the map."],
+  "识别结果已保存。查看地图不会再次调用 AI，也不额外消耗 token。": ["识别结果已保存。查看地图不会再次调用 AI，也不额外消耗 token。", "Results are saved. Viewing the map makes no additional AI call and uses no extra tokens."],
+  "在地图中查看": ["在地图中查看", "View on map"],
+  "地图暂不可用，请返回书页后重试。": ["地图暂不可用，请返回书页后重试。", "The map is unavailable. Return to the book and try again."],
+  "详细水系暂不可用，已保留主要河流。": ["详细水系暂不可用，已保留主要河流。", "Detailed waterways are unavailable; major rivers remain visible."],
+  "本段地点": ["本段地点", "Passage places"],
+  "地图地点范围": ["地图地点范围", "Map scope"],
+  "正在读取已保存的地点…": ["正在读取已保存的地点…", "Loading saved places…"],
+  "切换仅查看已保存地点，不消耗 AI token。": ["切换仅查看已保存地点，不消耗 AI token。", "Switch views using saved places, with no AI tokens."],
+  "汇总加载失败，点击“文字地点汇总”重试。": ["汇总加载失败，点击“文字地点汇总”重试。", "Could not load saved places. Select Places from this book to retry."],
+  "文字地点汇总": ["文字地点汇总", "Places from this book"],
+  "本书文字识别的 {0} 个地点": ["本书文字识别的 {0} 个地点", "{0} places identified from this book"],
+  "Text size": ["字号", "Text size"],
+  "Smaller text": ["缩小字号", "Smaller text"],
+  "Larger text": ["放大字号", "Larger text"],
+  "Reading progress": ["阅读进度", "Reading progress"],
+  "Copy code": [
+    "复制代码",
+    "Copy code"
+  ],
+  "Copied": [
+    "已复制",
+    "Copied"
+  ],
+  "Copy": [
+    "复制",
+    "Copy"
+  ],
+  "Section {0}": [
+    "第 {0} 节",
+    "Section {0}"
+  ],
+  "Reference {0}: {1}. Go to passage": [
+    "引用 {0}：{1}。跳转到原文",
+    "Reference {0}: {1}. Go to passage"
+  ],
+  "Table (scroll horizontally)": [
+    "表格（可横向滚动）",
+    "Table (scroll horizontally)"
+  ],
+  "Notes": [
+    "注释",
+    "Notes"
+  ],
+  "Explain this passage": [
+    "解释这段文字",
+    "Explain this passage"
+  ],
+  "What does it mean here?": [
+    "这里是什么意思？",
+    "What does it mean here?"
+  ],
+  "Summarize in one line": [
+    "用一句话总结",
+    "Summarize in one line"
+  ],
+  "What is this book about?": [
+    "这本书讲什么？",
+    "What is this book about?"
+  ],
+  "What are the key ideas?": [
+    "有哪些核心观点？",
+    "What are the key ideas?"
+  ],
+  "Introduce the main people and places": [
+    "介绍主要人物和地点",
+    "Introduce the main people and places"
+  ],
+  "Searching this book…": [
+    "正在检索本书…",
+    "Searching this book…"
+  ],
+  "Searching external sources…": ["正在搜索外部资料…", "Searching external sources…"],
+  "External source {0}: {1}": ["外部来源 {0}：{1}", "External source {0}: {1}"],
+  "Web": ["外部网页", "Web"],
+  "Web search is off by default. Explicitly ask “search the web” when needed.": ["默认不联网搜索。需要时请明确说“联网搜索……”。", "Web search is off by default. Explicitly ask “search the web” when needed."],
+  "Checking the contents…": [
+    "正在查看目录…",
+    "Checking the contents…"
+  ],
+  "Reading the passage…": [
+    "正在阅读原文…",
+    "Reading the passage…"
+  ],
+  "Something went wrong.": [
+    "发生了错误，请重试。",
+    "Something went wrong."
+  ],
+  "Response stopped.": [
+    "回答已停止。",
+    "Response stopped."
+  ],
+  "No response received. Please try again.": [
+    "未收到回答，请重试。",
+    "No response received. Please try again."
+  ],
+  "Reconnecting…": [
+    "正在重新连接…",
+    "Reconnecting…"
+  ],
+  "Thinking…": [
+    "正在思考…",
+    "Thinking…"
+  ],
+  "Could not stop the response. Please try Stop again.": [
+    "未能停止回答，请再次点击停止。",
+    "Could not stop the response. Please try Stop again."
+  ],
+  "Close Infinite": [
+    "关闭 Infinite",
+    "Close Infinite"
+  ],
+  "Open Infinite": [
+    "打开 Infinite",
+    "Open Infinite"
+  ],
+  "Ask Infinite about this book": [
+    "向 Infinite 询问这本书",
+    "Ask Infinite about this book"
+  ],
+  "Infinite is replying": [
+    "Infinite 正在回答",
+    "Infinite is replying"
+  ],
+  "Restore original size": [
+    "恢复原始大小",
+    "Restore original size"
+  ],
+  "Expand window": [
+    "放大窗口",
+    "Expand window"
+  ],
+  "Restore Infinite size": [
+    "恢复 Infinite 窗口大小",
+    "Restore Infinite size"
+  ],
+  "Expand Infinite": [
+    "放大 Infinite",
+    "Expand Infinite"
+  ],
+  "Close · Esc": [
+    "关闭 · Esc",
+    "Close · Esc"
+  ],
+  "Close Infinite window": [
+    "关闭 Infinite 窗口",
+    "Close Infinite window"
+  ],
+  "Ask about the whole book": [
+    "询问整本书",
+    "Ask about the whole book"
+  ],
+  "Clear selected passage": [
+    "清除所选原文",
+    "Clear selected passage"
+  ],
+  "Conversation": [
+    "对话",
+    "Conversation"
+  ],
+  "Loading your conversation…": [
+    "正在加载对话记录…",
+    "Loading your conversation…"
+  ],
+  "Could not load your conversation.": [
+    "无法加载对话记录。",
+    "Could not load your conversation."
+  ],
+  "Try again": [
+    "重试",
+    "Try again"
+  ],
+  "A closer look at the words.": [
+    "细读字里行间。",
+    "A closer look at the words."
+  ],
+  "There’s more between the lines.": [
+    "探索文字背后的世界。",
+    "There’s more between the lines."
+  ],
+  "Ask a question, connect ideas, or explore a little further.": [
+    "提出问题、联系观点，或深入探索。",
+    "Ask a question, connect ideas, or explore a little further."
+  ],
+  "Sign in to explore this book with AI and keep your conversations.": [
+    "登录后即可用 AI 探索本书，并保存对话记录。",
+    "Sign in to explore this book with AI and keep your conversations."
+  ],
+  "Sign in to chat": [
+    "登录以开始对话",
+    "Sign in to chat"
+  ],
+  "Formatting response…": [
+    "正在排版回答…",
+    "Formatting response…"
+  ],
+  "Your question": [
+    "你的问题",
+    "Your question"
+  ],
+  "Ask about this passage…": [
+    "询问这段文字…",
+    "Ask about this passage…"
+  ],
+  "Ask about this book…": [
+    "询问这本书…",
+    "Ask about this book…"
+  ],
+  "Stop response": [
+    "停止回答",
+    "Stop response"
+  ],
+  "Send": [
+    "发送",
+    "Send"
+  ],
+  "Send question": [
+    "发送问题",
+    "Send question"
+  ],
+  "识别书中地图": [
+    "识别书中地图",
+    "Recognize book map"
+  ],
+  "识别次数较多，请在 {0} 秒后重试。": [
+    "识别次数较多，请在 {0} 秒后重试。",
+    "Too many recognition requests. Try again in {0} seconds."
+  ],
+  "请从书架打开已上传的云端书籍后再识别。": [
+    "请从书架打开已上传的云端书籍后再识别。",
+    "Open an uploaded book from your cloud shelf to recognize maps."
+  ],
+  "识别服务暂时无法连接，请稍后重试。": [
+    "识别服务暂时无法连接，请稍后重试。",
+    "Recognition is temporarily unavailable. Please try again later."
+  ],
+  "识别等待超时，请稍后重试。": [
+    "识别等待超时，请稍后重试。",
+    "Recognition timed out. Please try again later."
+  ],
+  "地图 {0}": [
+    "地图 {0}",
+    "Map {0}"
+  ],
+  "从纸上探索世界": [
+    "从纸上探索世界",
+    "Explore the world beyond the page"
+  ],
+  "关闭地图，返回阅读": [
+    "关闭地图，返回阅读",
+    "Close map and return to reading"
+  ],
+  "返回书页": [
+    "返回书页",
+    "Return to book"
+  ],
+  "书中原图与地点": [
+    "书中原图与地点",
+    "Original map and places"
+  ],
+  "书中原图": [
+    "书中原图",
+    "Original map"
+  ],
+  "还原": [
+    "还原",
+    "Reset"
+  ],
+  "放大原图": [
+    "放大原图",
+    "Enlarge original"
+  ],
+  "待识别的书中原图": [
+    "待识别的书中原图",
+    "Original map to recognize"
+  ],
+  "暂时无法读取原图。关闭后可重新打开。": [
+    "暂时无法读取原图。关闭后可重新打开。",
+    "The original image could not be loaded. Close and reopen to try again."
+  ],
+  "正在读取原图…": [
+    "正在读取原图…",
+    "Loading original image…"
+  ],
+  "AI 估计区域与图中标记；城市坐标来自地名库。历史边界请对照原图。": [
+    "AI 估计区域与图中标记；城市坐标来自地名库。历史边界请对照原图。",
+    "AI estimates the region and map labels; city coordinates come from a gazetteer. Check historical boundaries against the original."
+  ],
+  "自然地形提供空间参照，历史边界请对照原图。": [
+    "自然地形提供空间参照，历史边界请对照原图。",
+    "Terrain provides spatial context. Check historical boundaries against the original."
+  ],
+  "已匹配的地名": [
+    "已匹配的地名",
+    "Matched place names"
+  ],
+  "沿着地名阅读": [
+    "沿着地名阅读",
+    "Read through places"
+  ],
+  "图中地点": [
+    "图中地点",
+    "Places on the map"
+  ],
+  "正在读图并匹配地名…": [
+    "正在读图并匹配地名…",
+    "Reading the map and matching places…"
+  ],
+  "识别成功后，这里会显示可探索的地点。": [
+    "识别成功后，这里会显示可探索的地点。",
+    "Explore matched places here once recognition succeeds."
+  ],
+  "暂未匹配：": [
+    "暂未匹配：",
+    "Unmatched: "
+  ],
+  "。这些地点尚未标到地球上。": [
+    "。这些地点尚未标到地球上。",
+    ". These places have not been placed on the globe."
+  ],
+  "{0}的交互地球": [
+    "{0}的交互地球",
+    "Interactive globe for {0}"
+  ],
+  "登录后，让地图走出书页": [
+    "登录后，让地图走出书页",
+    "Sign in to bring maps beyond the page"
+  ],
+  "正在读懂这张地图": [
+    "正在读懂这张地图",
+    "Understanding this map"
+  ],
+  "未识别为地图": [
+    "未识别为地图",
+    "Not recognized as a map"
+  ],
+  "暂时无法定位": [
+    "暂时无法定位",
+    "Location unavailable"
+  ],
+  "自动识别适用于你已上传的云端书籍。": [
+    "自动识别适用于你已上传的云端书籍。",
+    "Automatic recognition works with books uploaded to your cloud shelf."
+  ],
+  "识别区域、读取地名，并匹配城市坐标。": [
+    "识别区域、读取地名，并匹配城市坐标。",
+    "Identifying the region, reading place names and matching city coordinates."
+  ],
+  "仅识别这张原图和书名。DeepSeek 无法可靠定位时，会自动尝试 Cloudflare 上的 GLM，可能需要稍久一些。": [
+    "仅识别这张原图和书名。DeepSeek 无法可靠定位时，会自动尝试 Cloudflare 上的 GLM，可能需要稍久一些。",
+    "Only this image and the book title are analyzed. If DeepSeek cannot locate it reliably, GLM on Cloudflare is tried automatically. This may take a little longer."
+  ],
+  "登录": [
+    "登录",
+    "Sign in"
+  ],
+  "重新识别": [
+    "重新识别",
+    "Recognize again"
+  ],
+  "地球组件加载失败。请刷新页面后重新打开地图，已保存的识别结果会保留。": [
+    "地球组件加载失败。请刷新页面后重新打开地图，已保存的识别结果会保留。",
+    "The globe component could not be loaded. Refresh the page and reopen the map. Saved recognition results will be kept."
+  ],
+  "刷新页面": [
+    "刷新页面",
+    "Refresh page"
+  ],
+  "地球暂时未能加载": [
+    "地球暂时未能加载",
+    "The globe could not be loaded"
+  ],
+  "正在展开地球…": [
+    "正在展开地球…",
+    "Unfolding the globe…"
+  ],
+  "重新加载": [
+    "重新加载",
+    "Reload"
+  ],
+  "AI 自动识别 · 请结合原图核对": [
+    "AI 自动识别 · 请结合原图核对",
+    "AI recognition · Check against the original"
+  ],
+  "从纸上的地名，到世界中的位置。": [
+    "从纸上的地名，到世界中的位置。",
+    "From names on a page to places in the world."
+  ],
+  "地形与城市位置参照": [
+    "地形与城市位置参照",
+    "Terrain and city location reference"
+  ],
+  "定位{0}": [
+    "定位{0}",
+    "Locate {0}"
+  ],
+  "3D 地形视图": [
+    "3D 地形视图",
+    "3D terrain view"
+  ],
+  "地球视图": [
+    "地球视图",
+    "Globe view"
+  ],
+  "地球暂时未能加载，原图仍可查看。": [
+    "地球暂时未能加载，原图仍可查看。",
+    "The globe could not be loaded. The original image is still available."
+  ],
+  "部分地形细节暂不可用，已保留基础地图。": [
+    "部分地形细节暂不可用，已保留基础地图。",
+    "Some terrain details are unavailable. The base map is still shown."
+  ],
+  "地图视角": [
+    "地图视角",
+    "Map view"
+  ],
+  "↗ 区域全览": [
+    "↗ 区域全览",
+    "↗ Region overview"
+  ],
+  "◎ 全球": [
+    "◎ 全球",
+    "◎ World"
+  ],
+  "△ 3D 地形": [
+    "△ 3D 地形",
+    "△ 3D terrain"
+  ],
+  "正在加载三维地形…": [
+    "正在加载三维地形…",
+    "Loading 3D terrain…"
+  ],
+  "拖动探索 · 滚动缩放 · 右键拖动旋转": [
+    "拖动探索 · 滚动缩放 · 右键拖动旋转",
+    "Drag to explore · Scroll to zoom · Right-drag to rotate"
+  ],
+  "拖动探索 · 滚动缩放": [
+    "拖动探索 · 滚动缩放",
+    "Drag to explore · Scroll to zoom"
+  ],
+  "出版日期": [
+    "出版日期",
+    "Publication date"
+  ],
+  "创建日期": [
+    "创建日期",
+    "Creation date"
+  ],
+  "文件修改日期": [
+    "文件修改日期",
+    "File modification date"
+  ],
+  "日期（类型未注明）": [
+    "日期（类型未注明）",
+    "Date (type unspecified)"
+  ],
+  "发行日期": [
+    "发行日期",
+    "Issue date"
+  ],
+  "版权页": [
+    "版权页",
+    "Copyright page"
+  ],
+  "文件元数据": [
+    "文件元数据",
+    "File metadata"
+  ],
+  "未提供": [
+    "未提供",
+    "Not provided"
+  ],
+  "登录已失效，请重新登录后查看。": [
+    "登录已失效，请重新登录后查看。",
+    "Your session expired. Sign in again to view this information."
+  ],
+  "这本书已不存在，或当前账号无法访问。": [
+    "这本书已不存在，或当前账号无法访问。",
+    "This book no longer exists or is not accessible to this account."
+  ],
+  "书籍正在解析，请完成后再提取。": [
+    "书籍正在解析，请完成后再提取。",
+    "This book is still being parsed. Wait before extracting metadata."
+  ],
+  "请求较频繁，请稍后再试。": [
+    "请求较频繁，请稍后再试。",
+    "Too many requests. Please try again later."
+  ],
+  "暂时无法读取书籍信息，请检查网络后重试。": [
+    "暂时无法读取书籍信息，请检查网络后重试。",
+    "Book information could not be loaded. Check your connection and try again."
+  ],
+  "上次提取尚在重试间隔内，请在 {0} 后重试。": [
+    "上次提取尚在重试间隔内，请在 {0} 后重试。",
+    "Please wait until {0} before retrying extraction."
+  ],
+  "正在读取书籍信息…": [
+    "正在读取书籍信息…",
+    "Loading book information…"
+  ],
+  "出版信息已保存 · 提取于 {0}": [
+    "出版信息已保存 · 提取于 {0}",
+    "Publication information saved · Extracted on {0}"
+  ],
+  "本地书籍目前仅显示基础信息。云端书籍可提取出版信息。": [
+    "本地书籍目前仅显示基础信息。云端书籍可提取出版信息。",
+    "Only basic information is available for local books. Upload to extract publication information."
+  ],
+  "仍在后台提取，可稍后检查状态。": [
+    "仍在后台提取，可稍后检查状态。",
+    "Extraction is still running in the background. Check again later."
+  ],
+  "正在后台提取出版信息…": [
+    "正在后台提取出版信息…",
+    "Extracting publication information in the background…"
+  ],
+  "上次提取未完成，书籍仍可正常阅读。": [
+    "上次提取未完成，书籍仍可正常阅读。",
+    "The last extraction did not finish. You can still read the book."
+  ],
+  "尚未提取出版信息。": [
+    "尚未提取出版信息。",
+    "Publication information has not been extracted yet."
+  ],
+  "书籍尚未就绪，请解析完成后再提取。": [
+    "书籍尚未就绪，请解析完成后再提取。",
+    "This book is not ready. Wait for parsing to finish before extracting metadata."
+  ],
+  "书籍信息": [
+    "书籍信息",
+    "Book information"
+  ],
+  "Untitled": [
+    "未命名",
+    "Untitled"
+  ],
+  "关闭书籍信息": [
+    "关闭书籍信息",
+    "Close book information"
+  ],
+  "重试提取": [
+    "重试提取",
+    "Retry extraction"
+  ],
+  "提取出版信息": [
+    "提取出版信息",
+    "Extract publication information"
+  ],
+  "重新读取": [
+    "重新读取",
+    "Reload"
+  ],
+  "检查状态": [
+    "检查状态",
+    "Check status"
+  ],
+  "书名": [
+    "书名",
+    "Title"
+  ],
+  "作者": [
+    "作者",
+    "Author"
+  ],
+  "译者": [
+    "译者",
+    "Translator"
+  ],
+  "其他贡献者": [
+    "其他贡献者",
+    "Other contributors"
+  ],
+  "出版社": [
+    "出版社",
+    "Publisher"
+  ],
+  "版次": [
+    "版次",
+    "Edition"
+  ],
+  "语言": [
+    "语言",
+    "Language"
+  ],
+  "日期": [
+    "日期",
+    "Date"
+  ],
+  "ISBN 与其他标识": [
+    "ISBN 与其他标识",
+    "ISBN and other identifiers"
+  ],
+  "其他标识": [
+    "其他标识",
+    "Other identifiers"
+  ],
+  "本出版物": [
+    "本出版物",
+    "This publication"
+  ],
+  "来源出版物": [
+    "来源出版物",
+    "Source publication"
+  ],
+  "版本关系未确定": [
+    "版本关系未确定",
+    "Edition relationship unknown"
+  ],
+  "原值：": [
+    "原值：",
+    "Original value: "
+  ],
+  "ISBN 校验通过": [
+    "ISBN 校验通过",
+    "Valid ISBN checksum"
+  ],
+  "ISBN 校验未通过": [
+    "ISBN 校验未通过",
+    "Invalid ISBN checksum"
+  ],
+  "未找到 ISBN 或其他标识。": [
+    "未找到 ISBN 或其他标识。",
+    "No ISBN or other identifier found."
+  ],
+  "简介": [
+    "简介",
+    "Description"
+  ],
+  "主题": [
+    "主题",
+    "Subjects"
+  ],
+  "权利声明": [
+    "权利声明",
+    "Rights statement"
+  ],
+  "部分 ISBN 未通过校验，已保留原值。": [
+    "部分 ISBN 未通过校验，已保留原值。",
+    "Some ISBNs failed validation. Their original values have been retained."
+  ],
+  "部分信息过长，提取结果已截短。": [
+    "部分信息过长，提取结果已截短。",
+    "Some lengthy information was truncated during extraction."
+  ],
+  "以上信息来自电子书文件，尚未通过外部书目核验；ISBN 校验通过不代表版本已确认。": [
+    "以上信息来自电子书文件，尚未通过外部书目核验；ISBN 校验通过不代表版本已确认。",
+    "This information comes from the ebook file and has not been checked against external catalogs. A valid ISBN checksum does not confirm the edition."
+  ],
+  "查看提取来源与原始记录": [
+    "查看提取来源与原始记录",
+    "View extraction sources and raw records"
+  ],
+  "书架作者": [
+    "书架作者",
+    "Shelf author"
+  ],
+  "文件名": [
+    "文件名",
+    "Filename"
+  ],
+  "文件大小": [
+    "文件大小",
+    "File size"
+  ],
+  "进行中／待回报": [
+    "进行中／待回报",
+    "In progress / awaiting usage"
+  ],
+  "完成": [
+    "完成",
+    "Completed"
+  ],
+  "失败": [
+    "失败",
+    "Failed"
+  ],
+  "中断": [
+    "中断",
+    "Interrupted"
+  ],
+  "待计量": [
+    "待计量",
+    "Usage pending"
+  ],
+  "调用": [
+    "调用",
+    "Operation"
+  ],
+  "费用暂不可用": [
+    "费用暂不可用",
+    "Costs are temporarily unavailable"
+  ],
+  "费用调试窗口": [
+    "费用调试窗口",
+    "Cost debug window"
+  ],
+  "关闭并暂停刷新": [
+    "关闭并暂停刷新",
+    "Close and pause refresh"
+  ],
+  "费用 · DEBUG": [
+    "费用 · DEBUG",
+    "Costs · DEBUG"
+  ],
+  "费用范围": [
+    "费用范围",
+    "Cost scope"
+  ],
+  "当前账户": [
+    "当前账户",
+    "Current account"
+  ],
+  "当前书籍": [
+    "当前书籍",
+    "Current book"
+  ],
+  "刷新": [
+    "刷新",
+    "Refresh"
+  ],
+  "今天": [
+    "今天",
+    "Today"
+  ],
+  "重置观察": [
+    "重置观察",
+    "Reset observation"
+  ],
+  "已知费用估算 · USD": [
+    "已知费用估算 · USD",
+    "Estimated known costs · USD"
+  ],
+  "读取中…": [
+    "读取中…",
+    "Loading…"
+  ],
+  "观察起点": [
+    "观察起点",
+    "Observation starts"
+  ],
+  "公开单价，未扣免费额度；不是实际账单。": [
+    "公开单价，未扣免费额度；不是实际账单。",
+    "Public rates before free allowances; not an actual bill."
+  ],
+  "刷新失败：": [
+    "刷新失败：",
+    "Refresh failed: "
+  ],
+  "（保留上次结果）": [
+    "（保留上次结果）",
+    " (previous result retained)"
+  ],
+  "项待计量／不完整 ·": [
+    "项待计量／不完整 ·",
+    " pending / incomplete ·"
+  ],
+  "项粗估／区间": [
+    "项粗估／区间",
+    " estimated / ranges"
+  ],
+  "已截断：最多回看 31 天，每类最多 2,000 条。小计不代表完整历史。": [
+    "已截断：最多回看 31 天，每类最多 2,000 条。小计不代表完整历史。",
+    "Truncated: up to 31 days and 2,000 entries per category. Subtotals do not represent complete history."
+  ],
+  "项": [
+    "项",
+    " items"
+  ],
+  "· {0} 待计量": [
+    "· {0} 待计量",
+    "· {0} pending"
+  ],
+  "操作明细 ·": [
+    "操作明细 ·",
+    "Operation details ·"
+  ],
+  "导出快照": [
+    "导出快照",
+    "Export snapshot"
+  ],
+  "下列及导出明细仅含最近": [
+    "下列及导出明细仅含最近",
+    "The list and export include only the latest"
+  ],
+  "项；小计包含上方统计的全部项目。": [
+    "项；小计包含上方统计的全部项目。",
+    " items; subtotals include all items counted above."
+  ],
+  "此观察时段暂无已记录操作。上传、问答或保存笔记后，费用会在下次刷新时显示。": [
+    "此观察时段暂无已记录操作。上传、问答或保存笔记后，费用会在下次刷新时显示。",
+    "No operations recorded in this period. Costs appear on the next refresh after an upload, question or note save."
+  ],
+  "原书存储 ≈": [
+    "原书存储 ≈",
+    "Book storage ≈"
+  ],
+  "本 ·": [
+    "本 ·",
+    " books ·"
+  ],
+  "MB；单列，不计入操作小计。": [
+    "MB；单列，不计入操作小计。",
+    " MB; shown separately, excluded from operation subtotals."
+  ],
+  "计量范围与价格依据": [
+    "计量范围与价格依据",
+    "Coverage and pricing sources"
+  ],
+  "价格核对：": [
+    "价格核对：",
+    "Prices checked: "
+  ],
+  "更新于": [
+    "更新于",
+    "Updated"
+  ],
+  "· 每 15 秒刷新": [
+    "· 每 15 秒刷新",
+    "· Refreshes every 15 seconds"
+  ],
+  "收起或切换到后台时暂停刷新": [
+    "收起或切换到后台时暂停刷新",
+    "Refresh pauses when collapsed or in the background"
+  ],
+  "Close": [
+    "关闭",
+    "Close"
+  ],
+  "Library": [
+    "书库",
+    "Library"
+  ],
+  "Add EPUB": [
+    "添加 EPUB",
+    "Add EPUB"
+  ],
+  "Sample: Alice": [
+    "示例：爱丽丝梦游仙境",
+    "Sample: Alice"
+  ],
+  "Drop an .epub file anywhere on the desk to add it.": [
+    "将 .epub 文件拖到桌面任意位置即可添加。",
+    "Drop an .epub file anywhere on the desk to add it."
+  ],
+  "Sign in to add a book.": [
+    "登录后即可添加书籍。",
+    "Sign in to add a book."
+  ],
+  "Indexing failed": [
+    "索引失败",
+    "Indexing failed"
+  ],
+  "Indexing for AI{0}": [
+    "正在为 AI 建立索引{0}",
+    "Indexing for AI{0}"
+  ],
+  "Remove from library": [
+    "从书库移除",
+    "Remove from library"
+  ],
+  "Delete “{0}” and its EPUB, highlights, notes, AI conversations and search data permanently?": [
+    "永久删除《{0}》及其 EPUB、划线、笔记、AI 对话和搜索数据？",
+    "Delete “{0}” and its EPUB, highlights, notes, AI conversations and search data permanently?"
+  ],
+  "Could not delete this book. Please try again.": [
+    "无法删除本书，请重试。",
+    "Could not delete this book. Please try again."
+  ],
+  "Nothing here yet.": [
+    "这里还没有内容。",
+    "Nothing here yet."
+  ],
+  "Contents": [
+    "目录",
+    "Contents"
+  ],
+  "查看已生成的思维导图": [
+    "查看已生成的思维导图",
+    "View saved mind map"
+  ],
+  "生成思维导图": [
+    "生成思维导图",
+    "Generate mind map"
+  ],
+  "生成／查看思维导图": [
+    "生成／查看思维导图",
+    "Generate / view mind map"
+  ],
+  "Marks & notes": [
+    "划线与笔记",
+    "Marks & notes"
+  ],
+  "请登录并从书架打开已上传的书籍，再生成思维导图。": [
+    "请登录并从书架打开已上传的书籍，再生成思维导图。",
+    "Sign in and open an uploaded book from your shelf to generate a mind map."
+  ],
+  "请重新打开书籍以加载完整目录。": [
+    "请重新打开书籍以加载完整目录。",
+    "Reopen the book to load the complete contents."
+  ],
+  "Select text to highlight, underline or attach an inline note.": [
+    "选中文字即可划线、添加下划线或行内笔记。",
+    "Select text to highlight, underline or attach an inline note."
+  ],
+  "阅读字体": [
+    "阅读字体",
+    "Reading font"
+  ],
+  "开源字体与许可 ↗": [
+    "开源字体与许可 ↗",
+    "Open-source fonts and licenses ↗"
+  ],
+  "书中注释": [
+    "书中注释",
+    "Book footnote"
+  ],
+  "关闭脚注": [
+    "关闭脚注",
+    "Close footnote"
+  ],
+  "关闭图片，返回阅读": [
+    "关闭图片，返回阅读",
+    "Close image and return to reading"
+  ],
+  "关闭图片 · Esc": [
+    "关闭图片 · Esc",
+    "Close image · Esc"
+  ],
+  "书中图片原图": [
+    "书中图片原图",
+    "Original book image"
+  ],
+  "暂时无法读取这张图片，请关闭后重试。": [
+    "暂时无法读取这张图片，请关闭后重试。",
+    "This image could not be loaded. Close and try again."
+  ],
+  "图片预览工具": [
+    "图片预览工具",
+    "Image preview tools"
+  ],
+  "缩小": [
+    "缩小",
+    "Zoom out"
+  ],
+  "缩小图片": [
+    "缩小图片",
+    "Zoom out image"
+  ],
+  "图片缩放比例": [
+    "图片缩放比例",
+    "Image zoom level"
+  ],
+  "放大": [
+    "放大",
+    "Zoom in"
+  ],
+  "放大图片": [
+    "放大图片",
+    "Zoom in image"
+  ],
+  "适应窗口": [
+    "适应窗口",
+    "Fit to window"
+  ],
+  "图片适应窗口": [
+    "图片适应窗口",
+    "Fit image to window"
+  ],
+  "顺时针旋转 90°": [
+    "顺时针旋转 90°",
+    "Rotate 90° clockwise"
+  ],
+  "顺时针旋转图片": [
+    "顺时针旋转图片",
+    "Rotate image clockwise"
+  ],
+  "保存图片原图": [
+    "保存图片原图",
+    "Save original image"
+  ],
+  "保存原图": [
+    "保存原图",
+    "Save original"
+  ],
+  "保存": [
+    "保存",
+    "Save"
+  ],
+  "识别地图并在地球中查看": [
+    "识别地图并在地球中查看",
+    "Recognize map and view on globe"
+  ],
+  "滚动缩放 · 放大后拖动查看": [
+    "滚动缩放 · 放大后拖动查看",
+    "Scroll to zoom · Drag to explore when enlarged"
+  ],
+  "Please sign in again and accept the Terms of Use to continue using your account.": [
+    "请重新登录并接受使用条款，以继续使用账号。",
+    "Please sign in again and accept the Terms of Use to continue using your account."
+  ],
+  "The Terms of Use have changed. Please read and accept the current version.": [
+    "使用条款已更新，请阅读并接受当前版本。",
+    "The Terms of Use have changed. Please read and accept the current version."
+  ],
+  "Google sign-in was cancelled.": [
+    "已取消 Google 登录。",
+    "Google sign-in was cancelled."
+  ],
+  "Sign-in expired, please try again.": [
+    "登录已过期，请重试。",
+    "Sign-in expired, please try again."
+  ],
+  "Google sign-in failed, please try again.": [
+    "Google 登录失败，请重试。",
+    "Google sign-in failed, please try again."
+  ],
+  "Could not retrieve your Google profile. Please try signing in again.": [
+    "无法获取 Google 个人资料，请重新登录。",
+    "Could not retrieve your Google profile. Please try signing in again."
+  ],
+  "Account storage is temporarily unavailable. Please wait a moment, then start Google sign-in again.": [
+    "账号存储暂不可用，请稍候重新发起 Google 登录。",
+    "Account storage is temporarily unavailable. Please wait a moment, then start Google sign-in again."
+  ],
+  "Could not finish signing in. Please start Google sign-in again.": [
+    "无法完成登录，请重新发起 Google 登录。",
+    "Could not finish signing in. Please start Google sign-in again."
+  ],
+  "That Google account has no verified email.": [
+    "该 Google 账号没有经过验证的邮箱。",
+    "That Google account has no verified email."
+  ],
+  "That email is not allowed on this deployment.": [
+    "本站暂不允许使用该邮箱。",
+    "That email is not allowed on this deployment."
+  ],
+  "That code is wrong or expired.": [
+    "验证码错误或已过期。",
+    "That code is wrong or expired."
+  ],
+  "Please wait {0}s before requesting another code.": [
+    "请等待 {0} 秒再获取验证码。",
+    "Please wait {0}s before requesting another code."
+  ],
+  "Something went wrong": [
+    "发生了错误",
+    "Something went wrong"
+  ],
+  "Sign in": [
+    "登录",
+    "Sign in"
+  ],
+  "Your library, marks and inline notes follow you across devices. Or keep reading offline - everything stays in this browser.": [
+    "登录后，书籍、划线和行内笔记可在设备间同步。也可离线阅读，所有内容仅保存在当前浏览器中。",
+    "Your library, marks and inline notes follow you across devices. Or keep reading offline - everything stays in this browser."
+  ],
+  "Sign-in failed.": [
+    "登录失败。",
+    "Sign-in failed."
+  ],
+  "I have read and accept the": [
+    "我已阅读并接受",
+    "I have read and accept the"
+  ],
+  "Terms of Use": [
+    "使用条款",
+    "Terms of Use"
+  ],
+  ", including the copyright and upload responsibilities.": [
+    "，包括版权与上传责任条款。",
+    ", including the copyright and upload responsibilities."
+  ],
+  "Only upload books you own the rights to or are authorised to upload and process. Buying or subscribing to a book does not automatically grant these rights.": [
+    "请仅上传你拥有相应权利、或已获授权可上传及处理的书籍。购买书籍或订阅服务并不自动授予这些权利。",
+    "Only upload books you own the rights to or are authorised to upload and process. Buying or subscribing to a book does not automatically grant these rights."
+  ],
+  "Privacy Policy": [
+    "隐私政策",
+    "Privacy Policy"
+  ],
+  "Continue with Google": [
+    "使用 Google 登录",
+    "Continue with Google"
+  ],
+  "Sending…": [
+    "发送中…",
+    "Sending…"
+  ],
+  "Email me a code": [
+    "通过邮件获取验证码",
+    "Email me a code"
+  ],
+  "We sent a 6-digit code to": [
+    "六位验证码已发送至",
+    "We sent a 6-digit code to"
+  ],
+  "Checking…": [
+    "验证中…",
+    "Checking…"
+  ],
+  "Resend in {0}s": [
+    "{0} 秒后重新发送",
+    "Resend in {0}s"
+  ],
+  "Resend code": [
+    "重新发送验证码",
+    "Resend code"
+  ],
+  "Use a different email": [
+    "使用其他邮箱",
+    "Use a different email"
+  ],
+  "Sign-in is not available on this deployment.": [
+    "本站暂不支持登录。",
+    "Sign-in is not available on this deployment."
+  ],
+  "Continue offline": [
+    "继续离线阅读",
+    "Continue offline"
+  ],
+  "Cancel": [
+    "取消",
+    "Cancel"
+  ],
+  "Offline · Sign in": [
+    "离线 · 登录",
+    "Offline · Sign in"
+  ],
+  "Sign in to sync across devices": [
+    "登录以跨设备同步",
+    "Sign in to sync across devices"
+  ],
+  "Account: {0}": [
+    "账号：{0}",
+    "Account: {0}"
+  ],
+  "Sign out": [
+    "退出登录",
+    "Sign out"
+  ],
+  "Mermaid diagram": [
+    "Mermaid 图表",
+    "Mermaid diagram"
+  ],
+  "Diagram could not be rendered. Source is shown below.": [
+    "图表无法渲染，下方显示源代码。",
+    "Diagram could not be rendered. Source is shown below."
+  ],
+  "Rendering diagram…": [
+    "正在渲染图表…",
+    "Rendering diagram…"
+  ],
+  "Mermaid source": [
+    "Mermaid 源代码",
+    "Mermaid source"
+  ],
+  "{0}，{1} 个子节点，点击{2}": [
+    "{0}，{1} 个子节点，点击{2}",
+    "{0}, {1} child nodes, click to {2}"
+  ],
+  "展开": [
+    "展开",
+    "expand"
+  ],
+  "折叠": [
+    "折叠",
+    "collapse"
+  ],
+  "暂时无法连接，请稍后查看。": [
+    "暂时无法连接，请稍后查看。",
+    "Unable to connect. Please check again later."
+  ],
+  "Infinite · 思维导图": [
+    "Infinite · 思维导图",
+    "Infinite · Mind map"
+  ],
+  "关闭思维导图": [
+    "关闭思维导图",
+    "Close mind map"
+  ],
+  "已读取保存的导图 · 无新增 AI 调用": [
+    "已读取保存的导图 · 无新增 AI 调用",
+    "Loaded saved mind map · No new AI call"
+  ],
+  "已生成并自动保存": [
+    "已生成并自动保存",
+    "Generated and saved automatically"
+  ],
+  "首次生成后自动保存，下次直接打开": [
+    "首次生成后自动保存，下次直接打开",
+    "Saved after first generation; open it directly next time"
+  ],
+  "展开与折叠所有节点": [
+    "展开与折叠所有节点",
+    "Expand and collapse all nodes"
+  ],
+  "展开所有层级的节点": [
+    "展开所有层级的节点",
+    "Expand nodes at every level"
+  ],
+  "全展开": [
+    "全展开",
+    "Expand all"
+  ],
+  "折叠所有层级的节点": [
+    "折叠所有层级的节点",
+    "Collapse nodes at every level"
+  ],
+  "全折叠": [
+    "全折叠",
+    "Collapse all"
+  ],
+  "缩小导图": [
+    "缩小导图",
+    "Zoom out mind map"
+  ],
+  "重置位置与缩放": [
+    "重置位置与缩放",
+    "Reset position and zoom"
+  ],
+  "放大导图": [
+    "放大导图",
+    "Zoom in mind map"
+  ],
+  "调整导图位置与缩放以适应画布": [
+    "调整导图位置与缩放以适应画布",
+    "Fit mind map position and zoom to canvas"
+  ],
+  "适应": [
+    "适应",
+    "Fit"
+  ],
+  "思维导图：拖拽或触控板双指扫动平移，捏合或 Ctrl/⌘ + 滚轮缩放；方向键平移，加减键缩放，0 重置": [
+    "思维导图：拖拽或触控板双指扫动平移，捏合或 Ctrl/⌘ + 滚轮缩放；方向键平移，加减键缩放，0 重置",
+    "Mind map: drag or swipe with two fingers to pan; pinch or Ctrl/⌘ + scroll to zoom. Arrow keys pan, plus/minus zoom, 0 resets."
+  ],
+  "正在梳理章节脉络…": [
+    "正在梳理章节脉络…",
+    "Organizing the chapter…"
+  ],
+  "再次点击不会重复生成。你可以关闭窗口，稍后回来查看。": [
+    "再次点击不会重复生成。你可以关闭窗口，稍后回来查看。",
+    "Clicking again will not generate another map. You can close this window and check back later."
+  ],
+  "检查保存状态": [
+    "检查保存状态",
+    "Check save status"
+  ],
+  "重新生成（可能产生费用）": [
+    "重新生成（可能产生费用）",
+    "Generate again (may incur costs)"
+  ],
+  "拖拽／双指扫动平移 · 捏合／Ctrl + 滚轮缩放 · 点击节点展开／折叠。AI 整理，请结合原文阅读。": [
+    "拖拽／双指扫动平移 · 捏合／Ctrl + 滚轮缩放 · 点击节点展开／折叠。AI 整理，请结合原文阅读。",
+    "Drag / two-finger swipe to pan · Pinch / Ctrl + scroll to zoom · Click nodes to expand / collapse. AI summary; read alongside the original."
+  ],
+  "生成所用 token 及费用会计入费用窗口。": [
+    "生成所用 token 及费用会计入费用窗口。",
+    "Generation tokens and costs are recorded in the cost window."
+  ],
+  "Drag the corner or press": [
+    "拖动页角或按",
+    "Drag the corner or press"
+  ],
+  "Right-drag to tilt the view": [
+    "按住鼠标右键拖动以调整视角",
+    "Right-drag to tilt the view"
+  ],
+  "⌥ drag on a trackpad": [
+    "触控板按住 ⌥ 拖动",
+    "⌥ drag on a trackpad"
+  ],
+  "Alt-drag on a trackpad": [
+    "触控板按住 Alt 拖动",
+    "Alt-drag on a trackpad"
+  ],
+  "That is not an EPUB file": [
+    "这不是 EPUB 文件",
+    "That is not an EPUB file"
+  ],
+  "Drop your EPUB on the desk": [
+    "将 EPUB 拖到桌面上",
+    "Drop your EPUB on the desk"
+  ],
+  "Highlighter": [
+    "高亮",
+    "Highlighter"
+  ],
+  "Underline": [
+    "下划线",
+    "Underline"
+  ],
+  "Add inline note": [
+    "添加行内笔记",
+    "Add inline note"
+  ],
+  "Ask AI about this": [
+    "向 AI 询问这段文字",
+    "Ask AI about this"
+  ],
+  "Ask AI": [
+    "询问 AI",
+    "Ask AI"
+  ],
+  "Edit inline note": [
+    "编辑行内笔记",
+    "Edit inline note"
+  ],
+  "Remove mark": [
+    "移除标注",
+    "Remove mark"
+  ],
+  "Tags, {0} of {1}": [
+    "标签，{0} / {1}",
+    "Tags, {0} of {1}"
+  ],
+  "Tags": [
+    "标签",
+    "Tags"
+  ],
+  "Edit tag {0}": [
+    "编辑标签 {0}",
+    "Edit tag {0}"
+  ],
+  "Remove tag {0}": [
+    "移除标签 {0}",
+    "Remove tag {0}"
+  ],
+  "Add a tag": [
+    "添加标签",
+    "Add a tag"
+  ],
+  "Delete this note?": [
+    "删除这条笔记？",
+    "Delete this note?"
+  ],
+  "This note will be deleted. The highlighted text will remain.": [
+    "笔记将被删除，划线原文将保留。",
+    "This note will be deleted. The highlighted text will remain."
+  ],
+  "Delete note": [
+    "删除笔记",
+    "Delete note"
+  ],
+  "笔记字体加载失败，请检查网络后重试。": [
+    "笔记字体加载失败，请检查网络后重试。",
+    "The note font could not be loaded. Check your connection and try again."
+  ],
+  "Note font": [
+    "笔记字体",
+    "Note font"
+  ],
+  "Note font, {0}": [
+    "笔记字体，{0}",
+    "Note font, {0}"
+  ],
+  "字体许可 · SIL OFL 1.1": [
+    "字体许可 · SIL OFL 1.1",
+    "Font licenses · SIL OFL 1.1"
+  ],
+  "Note text color": [
+    "笔记文字颜色",
+    "Note text color"
+  ],
+  "Note text color, {0}": [
+    "笔记文字颜色，{0}",
+    "Note text color, {0}"
+  ],
+  "Done": [
+    "完成",
+    "Done"
+  ],
+  "Note actions": [
+    "笔记操作",
+    "Note actions"
+  ],
+  "Note text": [
+    "笔记内容",
+    "Note text"
+  ],
+  "Write a note…": [
+    "写下笔记…",
+    "Write a note…"
+  ],
+  "Back": [
+    "返回",
+    "Back"
+  ],
+  "Appearance": [
+    "外观",
+    "Appearance"
+  ],
+  "Appearance · desk, endpaper & typeface": [
+    "外观 · 桌面、衬纸和字体",
+    "Appearance · desk, endpaper & typeface"
+  ],
+  "Desk": [
+    "桌面",
+    "Desk"
+  ],
+  "Endpaper": [
+    "衬纸",
+    "Endpaper"
+  ],
+  "More actions for {0}": [
+    "《{0}》的更多操作",
+    "More actions for {0}"
+  ],
+  "Book actions": [
+    "书籍操作",
+    "Book actions"
+  ],
+  "Actions for {0}": [
+    "《{0}》的操作",
+    "Actions for {0}"
+  ],
+  "Delete book": [
+    "删除书籍",
+    "Delete book"
+  ],
+  "Delete book?": [
+    "删除书籍？",
+    "Delete book?"
+  ],
+  "The EPUB, highlights, inline notes, AI conversations and search data for this book will be permanently deleted. This cannot be undone.": [
+    "本书的 EPUB、划线、行内笔记、AI 对话和搜索数据将被永久删除，此操作无法撤销。",
+    "The EPUB, highlights, inline notes, AI conversations and search data for this book will be permanently deleted. This cannot be undone."
+  ],
+  "Deleting…": [
+    "删除中…",
+    "Deleting…"
+  ],
+  "Could not delete this book. Please check your connection and try again.": [
+    "无法删除本书，请检查网络后重试。",
+    "Could not delete this book. Please check your connection and try again."
+  ],
+  "Shelf": [
+    "书架",
+    "Shelf"
+  ],
+  "Search books by title or author": [
+    "按书名或作者搜索书籍",
+    "Search books by title or author"
+  ],
+  "Search title or author": [
+    "搜索书名或作者",
+    "Search title or author"
+  ],
+  "Clear search": [
+    "清除搜索",
+    "Clear search"
+  ],
+  "Book layout": [
+    "书架布局",
+    "Book layout"
+  ],
+  "Compact": [
+    "紧凑",
+    "Compact"
+  ],
+  "Spacious": [
+    "宽松",
+    "Spacious"
+  ],
+  "Books": [
+    "书籍",
+    "Books"
+  ],
+  "No matching books.": [
+    "没有匹配的书籍。",
+    "No matching books."
+  ],
+  "Nothing on the shelf yet.": [
+    "书架上还没有书。",
+    "Nothing on the shelf yet."
+  ],
+  "Showing": [
+    "已显示",
+    "Showing"
+  ],
+  "Show more books": [
+    "显示更多书籍",
+    "Show more books"
+  ],
+  "Shelf actions": [
+    "书架操作",
+    "Shelf actions"
+  ],
+  "Desk theme: {0}": [
+    "桌面主题：{0}",
+    "Desk theme: {0}"
+  ],
+  "Desk theme": [
+    "桌面主题",
+    "Desk theme"
+  ],
+  "· 标签笔记": [
+    "· 标签笔记",
+    "· Tagged notes"
+  ],
+  "条笔记 · 仅当前书籍 · 按原文顺序": [
+    "条笔记 · 仅当前书籍 · 按原文顺序",
+    " notes · Current book only · In reading order"
+  ],
+  "关闭标签笔记": [
+    "关闭标签笔记",
+    "Close tagged notes"
+  ],
+  "本书中 #{0} 的原文和笔记": [
+    "本书中 #{0} 的原文和笔记",
+    "Passages and notes tagged #{0} in this book"
+  ],
+  "第 {0} 节": [
+    "第 {0} 节",
+    "Section {0}"
+  ],
+  "回到原文": [
+    "回到原文",
+    "Return to passage"
+  ],
+  "原文": [
+    "原文",
+    "Original passage"
+  ],
+  "此标注未保存原文摘录。": [
+    "此标注未保存原文摘录。",
+    "No excerpt was saved for this annotation."
+  ],
+  "笔记": [
+    "笔记",
+    "Note"
+  ],
+  "本书暂无带此标签的笔记。": [
+    "本书暂无带此标签的笔记。",
+    "No notes with this tag in this book."
+  ],
+  "Viewing angle: right-drag or Alt/Option-drag the desk, press T to cycle presets": [
+    "视角：按住鼠标右键或 Alt/Option 拖动桌面，按 T 切换预设",
+    "Viewing angle: right-drag or Alt/Option-drag the desk, press T to cycle presets"
+  ],
+  "Viewing angle": [
+    "视角",
+    "Viewing angle"
+  ],
+  "Reset the viewing angle (T cycles presets)": [
+    "重置视角（按 T 切换预设）",
+    "Reset the viewing angle (T cycles presets)"
+  ],
+  "Tilt": [
+    "倾斜角度",
+    "Tilt"
+  ],
+  "Flat": [
+    "平视",
+    "Flat"
+  ],
+  "Oblique": [
+    "斜视",
+    "Oblique"
+  ],
+  "Right-drag or Alt/Option-drag the desk. Press": [
+    "按住鼠标右键或 Alt/Option 拖动桌面。按",
+    "Right-drag or Alt/Option-drag the desk. Press"
+  ],
+  "to cycle presets.": [
+    "切换预设。",
+    "to cycle presets."
+  ],
+  "Contents & marks": [
+    "目录与标注",
+    "Contents & marks"
+  ],
+  "Previous page ←": [
+    "上一页 ←",
+    "Previous page ←"
+  ],
+  "Next page →": [
+    "下一页 →",
+    "Next page →"
+  ],
+  "Close the book": [
+    "合上书籍",
+    "Close the book"
+  ],
+  "Open the book": [
+    "打开书籍",
+    "Open the book"
+  ],
+  "Zoom out −": [
+    "缩小 −",
+    "Zoom out −"
+  ],
+  "Zoom in +": [
+    "放大 +",
+    "Zoom in +"
+  ],
+  "Frame the book 0": [
+    "书籍适应窗口 0",
+    "Frame the book 0"
+  ],
+  "Opening": [
+    "正在打开",
+    "Opening"
+  ],
+  "Offline - changes will not sync": [
+    "离线状态，修改不会同步",
+    "Offline - changes will not sync"
+  ],
+  "Cloud sync is temporarily unavailable. Changes have not reached the server.": [
+    "云端同步暂不可用，修改尚未保存到服务器。",
+    "Cloud sync is temporarily unavailable. Changes have not reached the server."
+  ],
+  "Could not sync a change": [
+    "无法同步此修改",
+    "Could not sync a change"
+  ],
+  "Could not open the book": [
+    "无法打开书籍",
+    "Could not open the book"
+  ],
+  "正在加载阅读字体…": [
+    "正在加载阅读字体…",
+    "Loading reading font…"
+  ],
+  "正在重新排版…": [
+    "正在重新排版…",
+    "Reformatting pages…"
+  ],
+  "字体加载失败，请重试。": [
+    "字体加载失败，请重试。",
+    "The font could not be loaded. Please try again."
+  ],
+  "Saving": [
+    "正在保存",
+    "Saving"
+  ],
+  "Your session expired. Please sign in again.": [
+    "登录已过期，请重新登录。",
+    "Your session expired. Please sign in again."
+  ],
+  "Loading book": [
+    "正在加载书籍",
+    "Loading book"
+  ],
+  "Book file not found": [
+    "未找到书籍文件",
+    "Book file not found"
+  ],
+  "笔记字体加载失败，请重试。": [
+    "笔记字体加载失败，请重试。",
+    "The note font could not be loaded. Please try again."
+  ],
+  "Could not lay out notes. Please retry.": [
+    "无法排版笔记，请重试。",
+    "Could not lay out notes. Please retry."
+  ],
+  "已到章节末尾，请松开鼠标完成选文": [
+    "已到章节末尾，请松开鼠标完成选文",
+    "End of chapter. Release the mouse to finish selecting."
+  ],
+  "保持按住，即将翻页…": [
+    "保持按住，即将翻页…",
+    "Keep holding to turn the page…"
+  ],
+  "已到章节末尾，请抬手完成选文": [
+    "已到章节末尾，请抬手完成选文",
+    "End of chapter. Lift your finger to finish selecting."
+  ],
+  "翻页中，请保持按住": [
+    "翻页中，请保持按住",
+    "Turning the page. Keep holding."
+  ],
+  "移入新页正文继续选择 · 抬手完成": [
+    "移入新页正文继续选择 · 抬手完成",
+    "Move into the new page to keep selecting · Lift to finish"
+  ],
+  "翻页中，请保持按住鼠标": [
+    "翻页中，请保持按住鼠标",
+    "Turning the page. Keep the mouse held down."
+  ],
+  "移入新页正文继续选择 · 松开完成 · Esc 取消": [
+    "移入新页正文继续选择 · 松开完成 · Esc 取消",
+    "Move into the new page to continue selecting · Release to finish · Esc to cancel"
+  ],
+  "预览图片": [
+    "预览图片",
+    "Preview image"
+  ],
+  "预览图片：{0}": [
+    "预览图片：{0}",
+    "Preview image: {0}"
+  ],
+  "预览书中图片": [
+    "预览书中图片",
+    "Preview book image"
+  ],
+  "Note": [
+    "笔记",
+    "Note"
+  ],
+  "拖动便笺": [
+    "拖动便笺",
+    "Drag note"
+  ],
+  "阅读脚注": [
+    "阅读脚注",
+    "Read footnote"
+  ],
+  "编辑笔记{0}": [
+    "编辑笔记{0}",
+    "Edit note{0}"
+  ],
+  "编辑笔记": [
+    "编辑笔记",
+    "Edit note"
+  ],
+  "查看本书中 #{0} 的全部笔记": [
+    "查看本书中 #{0} 的全部笔记",
+    "View all notes tagged #{0} in this book"
+  ],
+  "查看 #{0}": [
+    "查看 #{0}",
+    "View #{0}"
+  ],
+  "Default": [
+    "默认",
+    "Default"
+  ],
+  "Ochre": [
+    "赭黄",
+    "Ochre"
+  ],
+  "Rose": [
+    "玫瑰红",
+    "Rose"
+  ],
+  "Green": [
+    "绿色",
+    "Green"
+  ],
+  "Blue": [
+    "蓝色",
+    "Blue"
+  ],
+  "Rust": [
+    "铁锈红",
+    "Rust"
+  ],
+  "Violet": [
+    "紫色",
+    "Violet"
+  ],
+  "Yellow": [
+    "黄色",
+    "Yellow"
+  ],
+  "Pink": [
+    "粉色",
+    "Pink"
+  ],
+  "Orange": [
+    "橙色",
+    "Orange"
+  ],
+  "Not a valid EPUB: missing container.xml": [
+    "EPUB 无效：缺少 container.xml",
+    "Not a valid EPUB: missing container.xml"
+  ],
+  "Not a valid EPUB: no rootfile": [
+    "EPUB 无效：未指定根文件",
+    "Not a valid EPUB: no rootfile"
+  ],
+  "Not a valid EPUB: OPF missing": [
+    "EPUB 无效：缺少 OPF 文件",
+    "Not a valid EPUB: OPF missing"
+  ],
+  "This EPUB has no readable text": [
+    "此 EPUB 没有可阅读的文字",
+    "This EPUB has no readable text"
+  ],
+  "经典书刊": [
+    "经典书刊",
+    "Classic book type"
+  ],
+  "EB Garamond · 中文跟随系统宋体": [
+    "EB Garamond · 中文跟随系统宋体",
+    "EB Garamond · System serif for Chinese"
+  ],
+  "思源宋体": [
+    "思源宋体",
+    "Noto Serif SC"
+  ],
+  "Noto Serif SC · 端正、适合长文": [
+    "Noto Serif SC · 端正、适合长文",
+    "Noto Serif SC · Formal and suited to long reads"
+  ],
+  "思源黑体": [
+    "思源黑体",
+    "Noto Sans SC"
+  ],
+  "Noto Sans SC · 清晰、简洁": [
+    "Noto Sans SC · 清晰、简洁",
+    "Noto Sans SC · Clear and simple"
+  ],
+  "霞鹜文楷": [
+    "霞鹜文楷",
+    "LXGW WenKai"
+  ],
+  "LXGW WenKai · 温润、手写韵味": [
+    "LXGW WenKai · 温润、手写韵味",
+    "LXGW WenKai · Warm, handwritten character"
+  ],
+  "站酷小薇体": [
+    "站酷小薇体",
+    "ZCOOL XiaoWei"
+  ],
+  "ZCOOL XiaoWei · 轻盈、书卷气": [
+    "ZCOOL XiaoWei · 轻盈、书卷气",
+    "ZCOOL XiaoWei · Light, literary character"
+  ],
+  "字体加载超时，请检查网络后重试。": [
+    "字体加载超时，请检查网络后重试。",
+    "Font loading timed out. Check your connection and try again."
+  ],
+  "字体资源不可用，请重试。": [
+    "字体资源不可用，请重试。",
+    "Font resources are unavailable. Please try again."
+  ],
+  "写下你的想法…": [
+    "写下你的想法…",
+    "Write your thoughts…"
+  ],
+  "The page is too short to display a reading note.": [
+    "页面高度不足以显示阅读笔记。",
+    "The page is too short to display a reading note."
+  ],
+  "Opening EPUB": [
+    "正在打开 EPUB",
+    "Opening EPUB"
+  ],
+  "Loading typeface": [
+    "正在加载字体",
+    "Loading typeface"
+  ],
+  "Typesetting": [
+    "正在排版",
+    "Typesetting"
+  ],
+  "Binding": [
+    "正在装订",
+    "Binding"
+  ],
+  "Ready": [
+    "已就绪",
+    "Ready"
+  ],
+  "跟随正文": [
+    "跟随正文",
+    "Follow reading font"
+  ],
+  "沿用当前阅读字体": [
+    "沿用当前阅读字体",
+    "Use the current reading font"
+  ],
+  "温润清晰 · 中英文手写": [
+    "温润清晰 · 中英文手写",
+    "Clear and warm · Chinese and English handwriting"
+  ],
+  "马善政楷体": [
+    "马善政楷体",
+    "Ma Shan Zheng"
+  ],
+  "毛笔楷书 · 中文": [
+    "毛笔楷书 · 中文",
+    "Brush calligraphy · Chinese"
+  ],
+  "龙藏手写": [
+    "龙藏手写",
+    "Long Cang"
+  ],
+  "舒展行楷 · 中文": [
+    "舒展行楷 · 中文",
+    "Flowing calligraphy · Chinese"
+  ],
+  "志莽行书": [
+    "志莽行书",
+    "Zhi Mang Xing"
+  ],
+  "随性行书 · 中文": [
+    "随性行书 · 中文",
+    "Casual cursive · Chinese"
+  ],
+  "英文手写 · 中文搭配文楷": [
+    "英文手写 · 中文搭配文楷",
+    "English handwriting · WenKai for Chinese"
+  ],
+  "端正书刊 · 中英文": [
+    "端正书刊 · 中英文",
+    "Formal book type · Chinese and English"
+  ],
+  "简洁清晰 · 中英文": [
+    "简洁清晰 · 中英文",
+    "Clear and simple · Chinese and English"
+  ],
+  "Read on the desk": [
+    "在桌面上阅读",
+    "Read on the desk"
+  ],
+  "注": [
+    "注",
+    "n"
+  ],
+  "笔记 · 续": [
+    "笔记 · 续",
+    "Note · continued"
+  ],
+  "Stream interrupted": [
+    "连接已中断",
+    "Stream interrupted"
+  ],
+  "Connection interrupted. Reopen this book to reconnect to the response.": [
+    "连接已中断。重新打开本书即可重新连接回答。",
+    "Connection interrupted. Reopen this book to reconnect to the response."
+  ],
+  "Try again in": [
+    "请稍后重试，等待",
+    "Try again in"
+  ],
+  "Connection failed": [
+    "连接失败",
+    "Connection failed"
+  ],
+  "Explain this passage.": [
+    "解释这段文字。",
+    "Explain this passage."
+  ],
+  "Here is a reading of the passage “{0}”.": [
+    "下面是对「{0}」这段文字的解读。",
+    "Here is a reading of the passage “{0}”."
+  ],
+  "**In context.** The sentence sits inside a larger scene, and the surrounding text ({0} characters of context were provided) suggests the author is using it to set tone rather than advance the plot.": [
+    "**结合上下文。** 这句话处于一个更大的场景中，周围的文字（提供了 {0} 个字符的上下文）表明作者在营造氛围，而不是推动情节。",
+    "**In context.** The sentence sits inside a larger scene, and the surrounding text ({0} characters of context were provided) suggests the author is using it to set tone rather than advance the plot."
+  ],
+  "**On your question** — “{0}” — the key idea is how the wording signals the narrator's attitude: note the rhythm, the word choice, and what is left unsaid.": [
+    "**关于你的问题**——「{0}」——关键在于措辞如何传达叙述者的态度：注意节奏、用词以及未说出口的内容。",
+    "**On your question** — “{0}” — the key idea is how the wording signals the narrator's attitude: note the rhythm, the word choice, and what is left unsaid."
+  ],
+  "_This is a mock answer (offline mode). Sign in to get real, retrieval-grounded replies from the backend._": [
+    "_这是离线模式的模拟回答。登录后即可获得基于书籍检索的真实回答。_",
+    "_This is a mock answer (offline mode). Sign in to get real, retrieval-grounded replies from the backend._"
+  ],
+  "Request failed ({0})": [
+    "请求失败（{0}）",
+    "Request failed ({0})"
+  ],
+  "Network error": [
+    "网络错误",
+    "Network error"
+  ],
+  "Backend not reachable": [
+    "无法连接服务器",
+    "Backend not reachable"
+  ],
+  "章节思维导图": [
+    "章节思维导图",
+    "Chapter mind map"
+  ],
+  "AI 问答": [
+    "AI 问答",
+    "AI conversation"
+  ],
+  "书籍索引向量化": [
+    "书籍索引向量化",
+    "Book index embeddings"
+  ],
+  "检索向量化": [
+    "检索向量化",
+    "Retrieval embeddings"
+  ],
+  "地图识别": [
+    "地图识别",
+    "Map recognition"
+  ],
+  "地图识别 · 备用模型": [
+    "地图识别 · 备用模型",
+    "Map recognition · Fallback model"
+  ],
+  "用量或模型单价不可用；不按零计费": [
+    "用量或模型单价不可用；不按零计费",
+    "Usage or model pricing unavailable; not treated as zero cost"
+  ],
+  "调用进行中或用量尚未落库": [
+    "调用进行中或用量尚未落库",
+    "Call in progress or usage not yet saved"
+  ],
+  "neurons × $0.011 / 千": [
+    "neurons × $0.011 / 千",
+    "neurons × $0.011 / thousand"
+  ],
+  "供应商返回 neurons × 公开单价（不再叠加 token 费用）": [
+    "供应商返回 neurons × 公开单价（不再叠加 token 费用）",
+    "Provider-reported neurons × public rate (token costs are not added again)"
+  ],
+  "供应商返回输入 token × 单价": [
+    "供应商返回输入 token × 单价",
+    "Provider-reported input tokens × rate"
+  ],
+  "供应商未返回 token；暂按字符数 ÷ 2 粗估，非 tokenizer 计数": [
+    "供应商未返回 token；暂按字符数 ÷ 2 粗估，非 tokenizer 计数",
+    "Provider did not report tokens; estimated as characters ÷ 2, not a tokenizer count"
+  ],
+  "输入": [
+    "输入",
+    "Input"
+  ],
+  "tokens × $0.0118 / 百万": [
+    "tokens × $0.0118 / 百万",
+    "tokens × $0.0118 / million"
+  ],
+  "缓存 token 大于输入 token，无法可靠估算": [
+    "缓存 token 大于输入 token，无法可靠估算",
+    "Cached tokens exceed input tokens; a reliable estimate is unavailable"
+  ],
+  "tokens × ${0} / 百万": [
+    "tokens × ${0} / 百万",
+    "tokens × ${0} / million"
+  ],
+  "未缓存输入": [
+    "未缓存输入",
+    "Uncached input"
+  ],
+  "缓存输入": [
+    "缓存输入",
+    "Cached input"
+  ],
+  "输出（已含推理 token）": [
+    "输出（已含推理 token）",
+    "Output (including reasoning tokens)"
+  ],
+  "token 用量 × 当前公开单价": [
+    "token 用量 × 当前公开单价",
+    "Token usage × current public rate"
+  ],
+  "缓存拆分缺失：展示全命中至全未命中的区间": [
+    "缓存拆分缺失：展示全命中至全未命中的区间",
+    "Cache breakdown missing: range from all cache hits to all cache misses"
+  ],
+  "峰时窗口：中国节假日未核对，展示半价至峰价区间": [
+    "峰时窗口：中国节假日未核对，展示半价至峰价区间",
+    "Peak pricing: Chinese holidays not checked; range from half-price to peak rate"
+  ],
+  "Worker 请求": [
+    "Worker 请求",
+    "Worker requests"
+  ],
+  "D1 读取行": [
+    "D1 读取行",
+    "D1 rows read"
+  ],
+  "D1 写入行": [
+    "D1 写入行",
+    "D1 rows written"
+  ],
+  "单位 × ${0} / 百万": [
+    "单位 × ${0} / 百万",
+    "units × ${0} / million"
+  ],
+  "Invalid observation start time": [
+    "观察起始时间无效",
+    "Invalid observation start time"
+  ],
+  "Book not found": [
+    "未找到书籍",
+    "Book not found"
+  ],
+  "部分操作未返回计量，仅展示已知部分（{0} 项缺失）": [
+    "部分操作未返回计量，仅展示已知部分（{0} 项缺失）",
+    "Some operations lack usage data; showing known costs only ({0} missing)"
+  ],
+  "D1 返回的行数 / R2 成功操作次数 × 单价；不含 CPU 和后台 Agent": [
+    "D1 返回的行数 / R2 成功操作次数 × 单价；不含 CPU 和后台 Agent",
+    "D1 rows / successful R2 operations × rate; excludes CPU and background Agent"
+  ],
+  "数据库 / 文件 / 请求": [
+    "数据库 / 文件 / 请求",
+    "Database / files / requests"
+  ],
+  "按当前公开单价估算的已知费用小计，不是供应商账单；未扣免费额度、优惠、税费，也未应用账单取整。": [
+    "按当前公开单价估算的已知费用小计，不是供应商账单；未扣免费额度、优惠、税费，也未应用账单取整。",
+    "Known costs estimated at current public rates, not a provider bill. Free allowances, discounts, tax and billing rounding are not applied."
+  ],
+  "未计量：Workers CPU、Durable Objects（含 Agent 内部数据库操作）、Vectorize、Queues、邮件、日志，以及 D1/封面/识图缓存存储。": [
+    "未计量：Workers CPU、Durable Objects（含 Agent 内部数据库操作）、Vectorize、Queues、邮件、日志，以及 D1/封面/识图缓存存储。",
+    "Not metered: Workers CPU, Durable Objects (including Agent database operations), Vectorize, Queues, email, logs, and D1 / cover / image-recognition cache storage."
+  ],
+  "原书存储仅为当前文件大小保持一个月的推算，单列展示，不加入操作小计；不代表历史 GB-month 用量。": [
+    "原书存储仅为当前文件大小保持一个月的推算，单列展示，不加入操作小计；不代表历史 GB-month 用量。",
+    "Book storage is a one-month projection of current file sizes, shown separately from operation subtotals. It is not historical GB-month usage."
+  ],
+  "调试窗口轮询、计量表自身读写和登录请求未计入；收起窗口或切换到后台会暂停自动刷新。": [
+    "调试窗口轮询、计量表自身读写和登录请求未计入；收起窗口或切换到后台会暂停自动刷新。",
+    "Debug polling, metering-table reads/writes and sign-in requests are excluded. Automatic refresh pauses when collapsed or in the background."
+  ],
+  "DeepSeek 峰时遇中国节假日可能按低价计费；缺少缓存拆分时显示范围，未知模型不猜测单价。": [
+    "DeepSeek 峰时遇中国节假日可能按低价计费；缺少缓存拆分时显示范围，未知模型不猜测单价。",
+    "DeepSeek peak periods may use lower rates on Chinese holidays. Missing cache breakdowns are shown as ranges. Prices for unknown models are not guessed."
+  ],
+  "旧向量化记录没有 token / 字符数据时无法回算；失败或中断调用若缺少用量也不按零费用处理。": [
+    "旧向量化记录没有 token / 字符数据时无法回算；失败或中断调用若缺少用量也不按零费用处理。",
+    "Old embedding records without token / character data cannot be estimated retrospectively. Failed or interrupted calls with missing usage are not treated as free."
+  ],
+  "Walnut": [
+    "胡桃木",
+    "Walnut"
+  ],
+  "Linen": [
+    "亚麻",
+    "Linen"
+  ],
+  "Graphite": [
+    "石墨",
+    "Graphite"
+  ],
+  "Sage": [
+    "鼠尾草",
+    "Sage"
+  ],
+  "Limestone": [
+    "石灰岩",
+    "Limestone"
+  ],
+  "Ivory": [
+    "象牙白",
+    "Ivory"
+  ],
+  "Sand": [
+    "沙色",
+    "Sand"
+  ],
+  "Slate": [
+    "板岩",
+    "Slate"
+  ],
+  "Burgundy": [
+    "勃艮第红",
+    "Burgundy"
+  ],
+  "Top-down": [
+    "俯视",
+    "Top-down"
+  ],
+  "界面语言": [
+    "界面语言",
+    "Interface language"
+  ],
+  "Email address": [
+    "邮箱地址",
+    "Email address"
+  ],
+  "Verification code": [
+    "验证码",
+    "Verification code"
+  ],
+  "SELECTED PASSAGE": [
+    "所选原文",
+    "SELECTED PASSAGE"
+  ],
+  "YOUR READING COMPANION": [
+    "你的阅读伙伴",
+    "YOUR READING COMPANION"
+  ],
+  "NOTE": [
+    "笔记",
+    "NOTE"
+  ],
+  "tag": [
+    "标签",
+    "tag"
+  ],
+  "closed": [
+    "已合上",
+    "closed"
+  ],
+  "{0} of {1} books": [
+    "{0} / {1} 本书",
+    "{0} of {1} books"
+  ],
+  "{0} book": [
+    "{0} 本书",
+    "{0} book"
+  ],
+  "{0} books": [
+    "{0} 本书",
+    "{0} books"
+  ],
+  "Showing {0} of {1}": [
+    "已显示 {0} / {1}",
+    "Showing {0} of {1}"
+  ],
+  " / month": [
+    " / 月",
+    " / month"
+  ],
+  "读取书籍出版信息": [
+    "读取书籍出版信息",
+    "Read book metadata"
+  ],
+  "补提取书籍出版信息": [
+    "补提取书籍出版信息",
+    "Extract missing book metadata"
+  ],
+  "提取书籍出版信息": [
+    "提取书籍出版信息",
+    "Extract book metadata"
+  ],
+  "思维导图请求": [
+    "思维导图请求",
+    "Mind map request"
+  ],
+  "问答请求": [
+    "问答请求",
+    "Conversation request"
+  ],
+  "读取笔记": [
+    "读取笔记",
+    "Read notes"
+  ],
+  "保存／删除笔记": [
+    "保存／删除笔记",
+    "Save / delete notes"
+  ],
+  "读取划线": [
+    "读取划线",
+    "Read highlights"
+  ],
+  "保存／删除划线": [
+    "保存／删除划线",
+    "Save / delete highlights"
+  ],
+  "地图请求": [
+    "地图请求",
+    "Map request"
+  ],
+  "读取书籍文件／封面": [
+    "读取书籍文件／封面",
+    "Read book file / cover"
+  ],
+  "重新索引请求": [
+    "重新索引请求",
+    "Reindex request"
+  ],
+  "上传书籍": [
+    "上传书籍",
+    "Upload book"
+  ],
+  "删除书籍": [
+    "删除书籍",
+    "Delete book"
+  ],
+  "同步阅读进度／设置": [
+    "同步阅读进度／设置",
+    "Sync reading progress / settings"
+  ],
+  "读取书架／书籍状态": [
+    "读取书架／书籍状态",
+    "Read shelf / book status"
+  ],
+  "书籍解析与索引": [
+    "书籍解析与索引",
+    "Parse and index book"
+  ],
+  "生成任务中断或保存状态待确认。为避免重复收费，不会自动重新生成，请稍后查看。": [
+    "生成任务中断或保存状态待确认。为避免重复收费，不会自动重新生成，请稍后查看。",
+    "Generation was interrupted or its save status is unconfirmed. To avoid duplicate charges, it will not restart automatically. Please check back later."
+  ],
+  "上次生成超时。": [
+    "上次生成超时。",
+    "The last generation timed out."
+  ],
+  "上次导图输出达到长度上限。": [
+    "上次导图输出达到长度上限。",
+    "The last mind map reached the output length limit."
+  ],
+  "上次模型服务暂时不可用。": [
+    "上次模型服务暂时不可用。",
+    "The model service was unavailable during the last attempt."
+  ],
+  "模型已返回内容，但导图结构校验未通过。": [
+    "模型已返回内容，但导图结构校验未通过。",
+    "The model returned content, but its mind map structure failed validation."
+  ],
+  "上次生成未完成。": [
+    "上次生成未完成。",
+    "The last generation did not finish."
+  ],
+  "已记录可获得的用量；手动重试可能产生新的费用。": [
+    "已记录可获得的用量；手动重试可能产生新的费用。",
+    "Available usage has been recorded. Retrying manually may incur additional costs."
+  ],
+  "思维导图服务尚未配置。": [
+    "思维导图服务尚未配置。",
+    "The mind map service is not configured yet."
+  ],
+  "原书文件不存在。": [
+    "原书文件不存在。",
+    "The original book file is missing."
+  ],
+  "此书文件过大，暂不支持生成思维导图。": [
+    "此书文件过大，暂不支持生成思维导图。",
+    "This book is too large for mind map generation."
+  ],
+  "书籍文件不存在。": [
+    "书籍文件不存在。",
+    "The book file is missing."
+  ],
+  "此书文件过大，暂不支持地图识别。": [
+    "此书文件过大，暂不支持地图识别。",
+    "This book is too large for map recognition."
+  ],
+  "地图识别服务尚未配置。": [
+    "地图识别服务尚未配置。",
+    "Map recognition is not configured yet."
+  ],
+  "思维导图服务暂时不可用。": [
+    "思维导图服务暂时不可用。",
+    "The mind map service is temporarily unavailable."
+  ],
+  "导图输出达到长度上限，未能完整生成；本次用量已记录。": [
+    "导图输出达到长度上限，未能完整生成；本次用量已记录。",
+    "The mind map reached the output limit and is incomplete. Usage has been recorded."
+  ],
+  "模型未返回完整导图，本次用量已记录。": [
+    "模型未返回完整导图，本次用量已记录。",
+    "The model did not return a complete mind map. Usage has been recorded."
+  ],
+  "生成超时，供应商可能已产生用量。": [
+    "生成超时，供应商可能已产生用量。",
+    "Generation timed out. The provider may have incurred usage."
+  ],
+  "未能获得完整的思维导图，已记录本次调用用量。": [
+    "未能获得完整的思维导图，已记录本次调用用量。",
+    "A complete mind map could not be obtained. Usage for this call has been recorded."
+  ],
+  "无法定位该目录的正文。": [
+    "无法定位该目录的正文。",
+    "The text for this contents entry could not be located."
+  ],
+  "无法定位该节的起止位置，尚未调用 AI。": [
+    "无法定位该节的起止位置，尚未调用 AI。",
+    "The section boundaries could not be located. No AI call was made."
+  ],
+  "该目录不在原书中，请重新打开书籍。": [
+    "该目录不在原书中，请重新打开书籍。",
+    "This contents entry is not in the original book. Please reopen the book."
+  ],
+  "目录顺序无法确定，尚未调用 AI。": [
+    "目录顺序无法确定，尚未调用 AI。",
+    "The contents order could not be determined. No AI call was made."
+  ],
+  "该目录没有足够的正文可生成思维导图。": [
+    "该目录没有足够的正文可生成思维导图。",
+    "This entry does not contain enough text to generate a mind map."
+  ],
+  "本章内容较长，请先为其下各节生成思维导图。": [
+    "本章内容较长，请先为其下各节生成思维导图。",
+    "This chapter is long. Generate mind maps for its individual sections first."
+  ],
+  "导图节点或层级过多，已保留模型结果供检查。": [
+    "导图节点或层级过多，已保留模型结果供检查。",
+    "The mind map has too many nodes or levels. The model output has been retained for inspection."
+  ],
+  "导图节点格式无法识别，已保留模型结果供检查。": [
+    "导图节点格式无法识别，已保留模型结果供检查。",
+    "The node format is unrecognized. The model output has been retained for inspection."
+  ],
+  "导图包含缺少标题的节点，已保留模型结果供检查。": [
+    "导图包含缺少标题的节点，已保留模型结果供检查。",
+    "Some nodes have no title. The model output has been retained for inspection."
+  ],
+  "导图节点文字过长，已保留模型结果供检查。": [
+    "导图节点文字过长，已保留模型结果供检查。",
+    "Node text is too long. The model output has been retained for inspection."
+  ],
+  "导图分支格式无法识别，已保留模型结果供检查。": [
+    "导图分支格式无法识别，已保留模型结果供检查。",
+    "The branch format is unrecognized. The model output has been retained for inspection."
+  ],
+  "导图分支过多，已保留模型结果供检查。": [
+    "导图分支过多，已保留模型结果供检查。",
+    "The mind map has too many branches. The model output has been retained for inspection."
+  ],
+  "模型只返回了标题，未生成导图分支。": [
+    "模型只返回了标题，未生成导图分支。",
+    "The model returned only a title without any branches."
+  ],
+  "模型返回的导图过大，无法显示。": [
+    "模型返回的导图过大，无法显示。",
+    "The generated mind map is too large to display."
+  ],
+  "模型返回的导图 JSON 无法解析，已保留结果供检查。": [
+    "模型返回的导图 JSON 无法解析，已保留结果供检查。",
+    "The mind map JSON could not be parsed. The output has been retained for inspection."
+  ],
+  "图片超过 6 MB，暂不支持识别。": [
+    "图片超过 6 MB，暂不支持识别。",
+    "Images over 6 MB are not supported for recognition."
+  ],
+  "无法从书籍中读取图片。": [
+    "无法从书籍中读取图片。",
+    "The image could not be read from the book."
+  ],
+  "书籍中没有这张图片。": [
+    "书籍中没有这张图片。",
+    "This image is not in the book."
+  ],
+  "自动识别支持 JPEG、PNG、WebP 和 GIF 图片。": [
+    "自动识别支持 JPEG、PNG、WebP 和 GIF 图片。",
+    "Automatic recognition supports JPEG, PNG, WebP and GIF images."
+  ],
+  "这张图片没有识别为地理地图。你仍可以查看原图。": [
+    "这张图片没有识别为地理地图。你仍可以查看原图。",
+    "This image was not recognized as a geographic map. You can still view the original."
+  ],
+  "尚不能可靠判断地图的区域。请放大原图核对，或重新识别。": [
+    "尚不能可靠判断地图的区域。请放大原图核对，或重新识别。",
+    "The map region could not be reliably determined. Enlarge the original to check, or try recognition again."
+  ],
+  "识别到了地图，但暂时没有地名能与坐标库可靠匹配。请对照原图，或重新识别。": [
+    "识别到了地图，但暂时没有地名能与坐标库可靠匹配。请对照原图，或重新识别。",
+    "A map was recognized, but no place names could be reliably matched to coordinates. Check the original or try again."
+  ],
+  "地图已自动识别。地名坐标来自 Natural Earth，区域范围与图中标记为 AI 估计。": [
+    "地图已自动识别。地名坐标来自 Natural Earth，区域范围与图中标记为 AI 估计。",
+    "Map recognized. Coordinates come from Natural Earth; region bounds and image markers are AI estimates."
+  ],
+  "识别超时，请稍后重试。": [
+    "识别超时，请稍后重试。",
+    "Recognition timed out. Please try again later."
+  ],
+  "这次未能获得可靠的识别结果，请重试。": [
+    "这次未能获得可靠的识别结果，请重试。",
+    "A reliable recognition result could not be obtained. Please try again."
+  ],
+  "地图识别服务暂不可用，请稍后重试。": [
+    "地图识别服务暂不可用，请稍后重试。",
+    "Map recognition is temporarily unavailable. Please try again later."
+  ],
+  "备用识别服务暂不可用，请稍后重试。": [
+    "备用识别服务暂不可用，请稍后重试。",
+    "The fallback recognition service is temporarily unavailable. Please try again later."
+  ],
+  "About": [
+    "关于",
+    "About"
+  ],
+  "Privacy": [
+    "隐私",
+    "Privacy"
+  ],
+  "Terms": [
+    "条款",
+    "Terms"
+  ],
+  "Open the reader": [
+    "打开阅读器",
+    "Open the reader"
+  ],
+  "Terms of Use (TOU)": [
+    "使用条款（TOU）",
+    "Terms of Use (TOU)"
+  ],
+  "Please read and accept the Terms of Use before signing in.": [
+    "请先阅读并接受使用条款，再登录。",
+    "Please read and accept the Terms of Use before signing in."
+  ],
+  "The Terms of Use have changed. Refresh this page, read the current terms and accept them.": [
+    "使用条款已更新，请刷新页面，阅读并接受当前版本。",
+    "The Terms of Use have changed. Refresh this page, read the current terms and accept them."
+  ],
+  "Request too large": [
+    "请求内容过大",
+    "Request too large"
+  ],
+  "Invalid navigation target": [
+    "目录目标无效",
+    "Invalid navigation target"
+  ],
+  "Too many requests, slow down": [
+    "请求过于频繁，请稍后重试",
+    "Too many requests, slow down"
+  ],
+  "Email login is not configured on this deployment": [
+    "本站尚未配置邮箱登录",
+    "Email login is not configured on this deployment"
+  ],
+  "Annotation id already exists": [
+    "该标注已存在",
+    "Annotation id already exists"
+  ],
+  "Annotation not found": [
+    "未找到标注",
+    "Annotation not found"
+  ],
+  "Note id already exists": [
+    "该笔记已存在",
+    "Note id already exists"
+  ],
+  "Note not found": [
+    "未找到笔记",
+    "Note not found"
+  ],
+  "Could not restore conversation": [
+    "无法恢复对话记录",
+    "Could not restore conversation"
+  ],
+  "AI usage storage is temporarily unavailable": [
+    "AI 用量存储暂不可用",
+    "AI usage storage is temporarily unavailable"
+  ],
+  "File exceeds {0} MB": [
+    "文件超过 {0} MB",
+    "File exceeds {0} MB"
+  ],
+  "Empty upload": [
+    "上传文件为空",
+    "Empty upload"
+  ],
+  "File is not a valid EPUB (zip) archive": [
+    "文件不是有效的 EPUB（ZIP）压缩包",
+    "File is not a valid EPUB (zip) archive"
+  ],
+  "Wait until the book is ready before extracting metadata": [
+    "请等待书籍就绪后再提取出版信息",
+    "Wait until the book is ready before extracting metadata"
+  ],
+  "File missing": [
+    "文件不存在",
+    "File missing"
+  ],
+  "No cover": [
+    "没有封面",
+    "No cover"
+  ],
+  "Sign in required": [
+    "请先登录",
+    "Sign in required"
+  ],
+  "Please sign in again and accept the current Terms of Use.": [
+    "请重新登录并接受当前使用条款。",
+    "Please sign in again and accept the current Terms of Use."
+  ],
+  "Please wait before requesting another code": [
+    "请稍后再获取验证码",
+    "Please wait before requesting another code"
+  ],
+  "Could not send the sign-in email": [
+    "无法发送登录邮件",
+    "Could not send the sign-in email"
+  ],
+  "Invalid or expired code": [
+    "验证码无效或已过期",
+    "Invalid or expired code"
+  ],
+  "Google login is not configured": [
+    "尚未配置 Google 登录",
+    "Google login is not configured"
+  ],
+  "Invalid conversation request": [
+    "对话请求无效",
+    "Invalid conversation request"
+  ],
+  "Conversation mismatch": [
+    "对话不匹配",
+    "Conversation mismatch"
+  ],
+  "Response stopped": [
+    "回答已停止",
+    "Response stopped"
+  ],
+  "Request id already used": [
+    "该请求标识已被使用",
+    "Request id already used"
+  ],
+  "This conversation is still responding. Please wait or stop it first.": [
+    "此对话仍在回答中，请等待或先停止回答。",
+    "This conversation is still responding. Please wait or stop it first."
+  ],
+  "Could not clear conversation": [
+    "无法清除对话记录",
+    "Could not clear conversation"
+  ],
+  "Account storage is temporarily unavailable. Please try again shortly.": [
+    "账号存储暂不可用，请稍后重试。",
+    "Account storage is temporarily unavailable. Please try again shortly."
+  ],
+  "Internal server error": [
+    "服务器内部错误，请稍后重试",
+    "Internal server error"
+  ],
+  "No such endpoint": [
+    "请求的接口不存在",
+    "No such endpoint"
+  ],
+  "The service is temporarily unavailable. Please try again later.": [
+    "服务暂不可用，请稍后重试。",
+    "The service is temporarily unavailable. Please try again later."
+  ],
+  "Invalid request. Please check your input.": [
+    "请求无效，请检查输入内容。",
+    "Invalid request. Please check your input."
+  ],
+  "Try again in {0}s.": [
+    "请在 {0} 秒后重试。",
+    "Try again in {0}s."
+  ],
+  "上次生成超时。已记录可获得的用量；手动重试可能产生新的费用。": [
+    "上次生成超时。已记录可获得的用量；手动重试可能产生新的费用。",
+    "The last generation timed out. Available usage has been recorded. Retrying manually may incur additional costs."
+  ],
+  "上次导图输出达到长度上限。已记录可获得的用量；手动重试可能产生新的费用。": [
+    "上次导图输出达到长度上限。已记录可获得的用量；手动重试可能产生新的费用。",
+    "The last mind map reached the output length limit. Available usage has been recorded. Retrying manually may incur additional costs."
+  ],
+  "上次模型服务暂时不可用。已记录可获得的用量；手动重试可能产生新的费用。": [
+    "上次模型服务暂时不可用。已记录可获得的用量；手动重试可能产生新的费用。",
+    "The model service was unavailable during the last attempt. Available usage has been recorded. Retrying manually may incur additional costs."
+  ],
+  "模型已返回内容，但导图结构校验未通过。已记录可获得的用量；手动重试可能产生新的费用。": [
+    "模型已返回内容，但导图结构校验未通过。已记录可获得的用量；手动重试可能产生新的费用。",
+    "The model returned content, but its mind map structure failed validation. Available usage has been recorded. Retrying manually may incur additional costs."
+  ],
+  "上次生成未完成。已记录可获得的用量；手动重试可能产生新的费用。": [
+    "上次生成未完成。已记录可获得的用量；手动重试可能产生新的费用。",
+    "The last generation did not finish. Available usage has been recorded. Retrying manually may incur additional costs."
+  ],
+  "导图节点或层级过多，本次用量已记录。": [
+    "导图节点或层级过多，本次用量已记录。",
+    "The mind map has too many nodes or levels. Usage has been recorded."
+  ],
+  "导图节点格式无法识别，本次用量已记录。": [
+    "导图节点格式无法识别，本次用量已记录。",
+    "The node format is unrecognized. Usage has been recorded."
+  ],
+  "导图包含缺少标题的节点，本次用量已记录。": [
+    "导图包含缺少标题的节点，本次用量已记录。",
+    "Some nodes have no title. Usage has been recorded."
+  ],
+  "导图节点文字过长，本次用量已记录。": [
+    "导图节点文字过长，本次用量已记录。",
+    "Node text is too long. Usage has been recorded."
+  ],
+  "导图分支格式无法识别，本次用量已记录。": [
+    "导图分支格式无法识别，本次用量已记录。",
+    "The branch format is unrecognized. Usage has been recorded."
+  ],
+  "导图分支过多，本次用量已记录。": [
+    "导图分支过多，本次用量已记录。",
+    "The mind map has too many branches. Usage has been recorded."
+  ],
+  "模型返回的导图 JSON 无法解析，本次用量已记录。": [
+    "模型返回的导图 JSON 无法解析，本次用量已记录。",
+    "The mind map JSON could not be parsed. Usage has been recorded."
+  ],
+  "This question reached the research limit. Please narrow the question or continue in a new message.": [
+    "本次问题已达到检索上限，请缩小问题范围或发送新消息继续。",
+    "This question reached the research limit. Please narrow the question or continue in a new message."
+  ],
+  "This book is no longer available.": [
+    "这本书已不可用。",
+    "This book is no longer available."
+  ],
+  "AI usage could not be saved. Please try again later.": [
+    "AI 用量无法保存，请稍后重试。",
+    "AI usage could not be saved. Please try again later."
+  ],
+  "The AI response was interrupted. Please try again.": [
+    "AI 回答已中断，请重试。",
+    "The AI response was interrupted. Please try again."
+  ],
+  "Back to reference {0}": [
+    "返回引用 {0}",
+    "Back to reference {0}"
+  ],
+  "text": [
+    "文本",
+    "text"
+  ],
+  "Reading and note fonts · Open-source licenses": [
+    "阅读与笔记字体 · 开源许可",
+    "Reading and note fonts · Open-source licenses"
+  ],
+  "Full license": [
+    "许可全文",
+    "Full license"
+  ],
+  "Original project": [
+    "原始项目",
+    "Original project"
+  ],
+  "Caveat handwriting (WenKai for Chinese)": [
+    "Caveat 英文手写（中文搭配霞鹜文楷）",
+    "Caveat handwriting (WenKai for Chinese)"
+  ],
+  "Fonts are loaded on demand from this site. Reading content is not sent to font services.": [
+    "字体按需从本站加载，不向字体服务发送阅读内容。",
+    "Fonts are loaded on demand from this site. Reading content is not sent to font services."
+  ],
+  "These fonts are provided under SIL Open Font License 1.1 and may be used commercially with copyright notices and license text retained. Font files are not sold on their own. Classic book type uses EB Garamond for Latin text and the device’s serif font for Chinese. System fallback fonts are not distributed with this app.": [
+    "以下字体依据 SIL Open Font License 1.1 提供，可用于商业应用，保留作者版权及许可全文。字体文件不单独出售。经典书刊的西文使用 EB Garamond，中文使用设备已有的宋体；系统回退字体不随本应用分发。",
+    "These fonts are provided under SIL Open Font License 1.1 and may be used commercially with copyright notices and license text retained. Font files are not sold on their own. Classic book type uses EB Garamond for Latin text and the device’s serif font for Chinese. System fallback fonts are not distributed with this app."
+  ],
+  "Font licenses": [
+    "字体许可",
+    "Font licenses"
+  ],
+  "Map": [
+    "地图",
+    "Map"
+  ],
+  "Attribution": [
+    "版权归属",
+    "Attribution"
+  ],
+  "Toggle attribution": [
+    "展开版权信息",
+    "Toggle attribution"
+  ],
+  "MapLibre logo": [
+    "MapLibre 标志",
+    "MapLibre logo"
+  ],
+  "这张图片没有识别为地理地图。你仍可以查看原图。 备用识别服务暂不可用，请稍后重试。": [
+    "这张图片没有识别为地理地图。你仍可以查看原图。 备用识别服务暂不可用，请稍后重试。",
+    "This image was not recognized as a geographic map. You can still view the original. The fallback recognition service is temporarily unavailable. Please try again later."
+  ],
+  "尚不能可靠判断地图的区域。请放大原图核对，或重新识别。 备用识别服务暂不可用，请稍后重试。": [
+    "尚不能可靠判断地图的区域。请放大原图核对，或重新识别。 备用识别服务暂不可用，请稍后重试。",
+    "The map region could not be reliably determined. Enlarge the original to check, or try recognition again. The fallback recognition service is temporarily unavailable. Please try again later."
+  ],
+  "识别到了地图，但暂时没有地名能与坐标库可靠匹配。请对照原图，或重新识别。 备用识别服务暂不可用，请稍后重试。": [
+    "识别到了地图，但暂时没有地名能与坐标库可靠匹配。请对照原图，或重新识别。 备用识别服务暂不可用，请稍后重试。",
+    "A map was recognized, but no place names could be reliably matched to coordinates. Check the original or try again. The fallback recognition service is temporarily unavailable. Please try again later."
+  ],
+  "后台解析书籍": [
+    "后台解析书籍",
+    "Parse book in background"
+  ],
+  "后台索引批次": [
+    "后台索引批次",
+    "Background indexing batch"
+  ],
+  "Drag to rotate map, click to reset north": [
+    "拖动旋转地图，点击恢复正北方向",
+    "Drag to rotate map, click to reset north"
+  ],
+  "Show reading controls": [
+    "展开阅读工具栏",
+    "Show reading controls"
+  ],
+  "Hide reading controls": [
+    "收起阅读工具栏",
+    "Hide reading controls"
+  ],
+  "Reading controls": [
+    "阅读工具栏",
+    "Reading controls"
+  ],
+  "Reading appearance": [
+    "阅读外观",
+    "Reading appearance"
+  ],
+  "划线思维导图": [
+    "划线思维导图",
+    "Highlight mind map"
+  ],
+  "生成划线思维导图": [
+    "生成划线思维导图",
+    "Generate mind map from highlight"
+  ],
+  "查看划线思维导图（已保存）": [
+    "查看划线思维导图（已保存）",
+    "View highlight mind map (saved)"
+  ],
+  "正在保存划线…": [
+    "正在保存划线…",
+    "Saving highlight…"
+  ],
+  "划线尚未同步，请检查网络后重试。": [
+    "划线尚未同步，请检查网络后重试。",
+    "The highlight has not synced yet. Check your connection and try again."
+  ],
+  "未找到已同步的划线，请等待划线保存后重试。": [
+    "未找到已同步的划线，请等待划线保存后重试。",
+    "The synced highlight was not found. Wait for it to save, then try again."
+  ],
+  "这条划线没有可供生成思维导图的文字。": [
+    "这条划线没有可供生成思维导图的文字。",
+    "This highlight has no text to turn into a mind map."
+  ],
+  "划线内容过长，请选择较短的段落。": [
+    "划线内容过长，请选择较短的段落。",
+    "The highlight is too long. Please select a shorter passage."
+  ],
+  "正在梳理划线内容…": [
+    "正在梳理划线内容…",
+    "Mapping the highlighted passage…"
+  ],
+  "划线原文": [
+    "划线原文",
+    "Highlighted passage"
+  ],
+  "Invalid annotation target": [
+    "无效的划线目标",
+    "Invalid annotation target"
+  ],
+  "清瓷": [
+    "清瓷",
+    "Porcelain"
+  ],
+  "纸墨": [
+    "纸墨",
+    "Ink"
+  ],
+  "森境": [
+    "森境",
+    "Grove"
+  ],
+  "午夜": [
+    "午夜",
+    "Midnight"
+  ],
+  "暖砂": [
+    "暖砂",
+    "Warm Sand"
+  ],
+  "冷白画布 · 清透彩枝": [
+    "冷白画布 · 清透彩枝",
+    "Cool white · soft color"
+  ],
+  "温润纸色 · 宋体细线": [
+    "温润纸色 · 宋体细线",
+    "Warm paper · serif type"
+  ],
+  "深林底色 · 苔绿与黄铜": [
+    "深林底色 · 苔绿与黄铜",
+    "Deep forest · moss & brass"
+  ],
+  "深蓝夜幕 · 柔光分支": [
+    "深蓝夜幕 · 柔光分支",
+    "Night blue · soft light"
+  ],
+  "奶油暖底 · 陶土与鼠尾草": [
+    "奶油暖底 · 陶土与鼠尾草",
+    "Cream · clay & sage"
+  ],
+  "思维导图主题": [
+    "思维导图主题",
+    "Mind map themes"
+  ],
+  "思维导图主题：{0}": [
+    "思维导图主题：{0}",
+    "Mind map theme: {0}"
+  ],
+  "只改变外观，不消耗 token": [
+    "只改变外观，不消耗 token",
+    "Appearance only · no tokens used"
+  ],
+  "关闭主题选择": [
+    "关闭主题选择",
+    "Close theme picker"
+  ],
+  "选择主题": [
+    "选择主题",
+    "Choose a theme"
+  ],
+  "自动记住此浏览器的选择": [
+    "自动记住此浏览器的选择",
+    "Your choice is saved in this browser"
+  ],
+  "Note Markdown mode": [
+    "笔记 Markdown 模式",
+    "Note Markdown mode"
+  ],
+  "Preview": [
+    "预览",
+    "Preview"
+  ],
+  "Markdown supported": [
+    "支持 Markdown",
+    "Markdown supported"
+  ],
+  "Note preview": [
+    "笔记预览",
+    "Note preview"
+  ],
+  "Edit": [
+    "编辑",
+    "Edit"
+  ],
+  "正在自动同步…": [
+    "正在自动同步…",
+    "Syncing automatically…"
+  ],
+  "正在自动保存…": [
+    "正在自动保存…",
+    "Saving automatically…"
+  ],
+  "未同步，请重试": [
+    "未同步，请重试",
+    "Not synced. Please retry."
+  ],
+  "保存失败，请重试": [
+    "保存失败，请重试",
+    "Save failed. Please retry."
+  ],
+  "已自动保存到云端": [
+    "已自动保存到云端",
+    "Autosaved to cloud"
+  ],
+  "已自动保存到此设备": [
+    "已自动保存到此设备",
+    "Autosaved on this device"
+  ],
+  "重试": [
+    "重试",
+    "Retry"
+  ],
+  "调整笔记编辑框大小": [
+    "调整笔记编辑框大小",
+    "Resize note editor"
+  ],
+  "拖动调整大小；双击恢复默认。也可使用方向键调整。": [
+    "拖动调整大小；双击恢复默认。也可使用方向键调整。",
+    "Drag to resize; double-click to reset. Arrow keys also resize."
+  ],
+  "Live Markdown · edit the current paragraph": [
+    "实时 Markdown · 当前段落可编辑",
+    "Live Markdown · edit the current paragraph"
+  ],
+  "Book list": [
+    "书单",
+    "Book list"
+  ],
+  "Extract book list": [
+    "提取书单",
+    "Extract book list"
+  ],
+  "Summarize the book titles mentioned in this book": [
+    "将本书中提及的书名汇总成一个书单",
+    "Summarize the book titles mentioned in this book"
+  ],
+  "Collect the books mentioned in this book, with excerpts for reference.": [
+    "汇总本书中提及的书籍，并附上原文片段供核对。",
+    "Collect the books mentioned in this book, with excerpts for reference."
+  ],
+  "Sign in and open an uploaded book to extract its book list.": [
+    "请登录并打开已上传的书籍，再提取书单。",
+    "Sign in and open an uploaded book to extract its book list."
+  ],
+  "Starting extraction…": [
+    "正在开始提取…",
+    "Starting extraction…"
+  ],
+  "Extracting book list · {0} of {1} parts": [
+    "正在提取书单 · 已完成 {0}/{1} 段",
+    "Extracting book list · {0} of {1} parts"
+  ],
+  "Preparing the full book…": [
+    "正在准备全书内容…",
+    "Preparing the full book…"
+  ],
+  "Extraction progress": [
+    "提取进度",
+    "Extraction progress"
+  ],
+  "You can close this panel. Extraction continues in the background and is saved automatically.": [
+    "可以关闭此面板，提取将在后台继续，结果自动保存。",
+    "You can close this panel. Extraction continues in the background and is saved automatically."
+  ],
+  "Book list output was incomplete.": [
+    "模型返回的书单不完整。",
+    "Book list output was incomplete."
+  ],
+  "The model response could not be verified against the book.": [
+    "模型返回的内容未通过原文核验。",
+    "The model response could not be verified against the book."
+  ],
+  "This book exceeds the extraction size limit.": [
+    "本书超出当前支持的提取大小上限。",
+    "This book exceeds the extraction size limit."
+  ],
+  "Readable source text is unavailable for this book.": [
+    "未能读取本书的原文内容。",
+    "Readable source text is unavailable for this book."
+  ],
+  "The extraction request timed out.": [
+    "本次提取请求超时。",
+    "The extraction request timed out."
+  ],
+  "Book list extraction did not finish.": [
+    "书单提取尚未完成。",
+    "Book list extraction did not finish."
+  ],
+  "Extraction was interrupted. Check saved status before retrying.": [
+    "提取任务中断，请先检查保存状态，再决定是否重试。",
+    "Extraction was interrupted. Check saved status before retrying."
+  ],
+  "Completed parts are kept. Available usage is recorded; retrying unfinished parts may incur additional costs.": [
+    "已完成的部分会保留，可获得的用量已记录；重试未完成部分可能产生额外费用。",
+    "Completed parts are kept. Available usage is recorded; retrying unfinished parts may incur additional costs."
+  ],
+  "Check saved status": [
+    "检查保存状态",
+    "Check saved status"
+  ],
+  "Continue extraction (may incur costs)": [
+    "继续提取（可能产生费用）",
+    "Continue extraction (may incur costs)"
+  ],
+  "{0} books mentioned": [
+    "共提及 {0} 本书",
+    "{0} books mentioned"
+  ],
+  "Saved · no new AI call when reopening": [
+    "已保存 · 再次打开不调用 AI",
+    "Saved · no new AI call when reopening"
+  ],
+  "No mentioned books were identified.": [
+    "未识别到本书提及的其他书籍。",
+    "No mentioned books were identified."
+  ],
+  "Mention in the original text": [
+    "查看原文提及片段",
+    "Mention in the original text"
+  ],
+  "AI may miss or misidentify titles. Check the quoted text when needed.": [
+    "AI 可能遗漏或误判书名，请结合引用原文核对。",
+    "AI may miss or misidentify titles. Check the quoted text when needed."
+  ],
+  "提取书单": [
+    "提取书单",
+    "Book list extraction"
+  ],
+  "书单请求": [
+    "书单请求",
+    "Book list request"
+  ],
+  "书单提取后台任务": [
+    "书单提取后台任务",
+    "Book list background task"
+  ],
+  "Loading…": [
+    "正在加载…",
+    "Loading…"
+  ],
+  "Extracts with AI and saves the result. Tokens and cost appear in Cost Debug.": [
+    "首次提取会调用 AI 并保存结果，token 和成本将计入费用 Debug。",
+    "Extracts with AI and saves the result. Tokens and cost appear in Cost Debug."
+  ],
+  "Administrator access required": [
+    "仅管理员可访问",
+    "Administrator access required"
+  ],
+  "Extracts with AI and saves the result for later.": [
+    "使用 AI 提取书单，结果保存后可随时查看。",
+    "Extracts with AI and saves the result for later."
+  ],
+  "Generated results are saved for later.": [
+    "生成结果会自动保存，供下次查看。",
+    "Generated results are saved for later."
+  ],
+  "Enter fullscreen": [
+    "进入全屏阅读",
+    "Enter fullscreen"
+  ],
+  "Exit fullscreen (Esc)": [
+    "退出全屏（Esc）",
+    "Exit fullscreen (Esc)"
+  ],
+  "Fit book to screen (0)": [
+    "书籍适应屏幕（0）",
+    "Fit book to screen (0)"
+  ],
+  "Fullscreen is not supported by this browser": [
+    "当前浏览器不支持全屏阅读",
+    "Fullscreen is not supported by this browser"
+  ],
+  "Could not enter fullscreen. Please try again.": [
+    "未能进入全屏，请重试。",
+    "Could not enter fullscreen. Please try again."
+  ],
+  "Could not exit fullscreen. Please try again.": [
+    "未能退出全屏，请重试。",
+    "Could not exit fullscreen. Please try again."
+  ],
+  "None of the candidate books could be verified against the source.": [
+    "本段候选书名均未通过原文校验，提取尚未完成。",
+    "None of the candidate books could be verified against the source."
+  ],
+  "{0} unverified candidates were excluded. The list below contains only source-verified entries and may be incomplete.": [
+    "已排除 {0} 条无法核实的候选项。以下仅展示通过原文校验的内容，书单可能不完整。",
+    "{0} unverified candidates were excluded. The list below contains only source-verified entries and may be incomplete."
+  ],
+  "Book list extraction is currently disabled.": [
+    "书单提取功能已停用。",
+    "Book list extraction is currently disabled."
+  ],
+  "Markdown · format as you type": [
+    "Markdown · 边写边排版",
+    "Markdown · format as you type"
+  ],
+  "This note could not be opened in the rich editor. Your Markdown is preserved below.": [
+    "此笔记暂时无法在富文本编辑器中打开，已保留 Markdown 原文供编辑。",
+    "This note could not be opened in the rich editor. Your Markdown is preserved below."
+  ],
+  "Infinite Reader — A quiet space for deep reading": [
+    "Infinite Reader — 留一处安静，读一个世界",
+    "Infinite Reader — A quiet space for deep reading"
+  ],
+  "Your EPUBs, a beautiful reading desk, thoughtful notes, and AI when you need it. Make every book your own with Infinite Reader.": [
+    "在 Infinite Reader，把 EPUB 带到你的书桌。在书页间划线、记下思考，与 AI 深入探讨，让阅读成为自己的收获。",
+    "Your EPUBs, a beautiful reading desk, thoughtful notes, and AI when you need it. Make every book your own with Infinite Reader."
+  ],
+  "Skip to content": [
+    "跳至正文",
+    "Skip to content"
+  ],
+  "Infinite Reader home": [
+    "Infinite Reader 首页",
+    "Infinite Reader home"
+  ],
+  "Main navigation": [
+    "主导航",
+    "Main navigation"
+  ],
+  "The experience": [
+    "阅读体验",
+    "The experience"
+  ],
+  "Beyond the page": [
+    "书页之外",
+    "Beyond the page"
+  ],
+  "FAQ": [
+    "常见问题",
+    "FAQ"
+  ],
+  "My shelf": [
+    "我的书架",
+    "My shelf"
+  ],
+  "A little space. Infinite possibilities.": [
+    "一方书桌，无限可能",
+    "A little space. Infinite possibilities."
+  ],
+  "A book opens.": [
+    "阅读之中，",
+    "A book opens."
+  ],
+  "A world unfolds.": [
+    "自有无限。",
+    "A world unfolds."
+  ],
+  "Settle into a good book. Leave a thought in the margin. Follow a question a little further.": [
+    "安静地读一本书。在字里行间留下思考，沿着一个问题，再走远一点。",
+    "Settle into a good book. Leave a thought in the margin. Follow a question a little further."
+  ],
+  "A considered home for your EPUBs, your ideas, and everything in between.": [
+    "让书有归处，让灵感有回响。一个属于你的 EPUB 阅读与思考空间。",
+    "A considered home for your EPUBs, your ideas, and everything in between."
+  ],
+  "Start reading": [
+    "开始阅读",
+    "Start reading"
+  ],
+  "Try a sample book": [
+    "翻开示例书",
+    "Try a sample book"
+  ],
+  "In your browser. At your own pace.": [
+    "打开浏览器，回到自己的阅读节奏。",
+    "In your browser. At your own pace."
+  ],
+  "Explore the reading experience": [
+    "探索阅读体验",
+    "Explore the reading experience"
+  ],
+  "An open book on the Infinite Reader desk, with warm paper and a two-page reading layout": [
+    "Infinite Reader 实际阅读界面：书桌上展开的书籍，温暖的纸张与双页排版",
+    "An open book on the Infinite Reader desk, with warm paper and a two-page reading layout"
+  ],
+  "Your own quiet corner": [
+    "属于你的安静角落",
+    "Your own quiet corner"
+  ],
+  "A note in the margin": [
+    "书页旁的一点思考",
+    "A note in the margin"
+  ],
+  "The best books give us more than answers. They give us better questions.": [
+    "好的书不只带来答案，也让我们学会提出更好的问题。",
+    "The best books give us more than answers. They give us better questions."
+  ],
+  "inspiration": [
+    "灵感",
+    "inspiration"
+  ],
+  "Example note · Markdown supported": [
+    "笔记示例 · 支持 Markdown",
+    "Example note · Markdown supported"
+  ],
+  "See how the ideas connect": [
+    "看见思考之间的联系",
+    "See how the ideas connect"
+  ],
+  "Example mind map": [
+    "思维导图示例",
+    "Example mind map"
+  ],
+  "A book, understood": [
+    "读懂一本书",
+    "A book, understood"
+  ],
+  "The central idea": [
+    "核心观点",
+    "The central idea"
+  ],
+  "The supporting details": [
+    "关键论据",
+    "The supporting details"
+  ],
+  "Your own connections": [
+    "我的联想",
+    "Your own connections"
+  ],
+  "What is the author saying?": [
+    "作者想表达什么？",
+    "What is the author saying?"
+  ],
+  "What makes it convincing?": [
+    "哪些细节支持了观点？",
+    "What makes it convincing?"
+  ],
+  "Where does it take you?": [
+    "它让我想到了什么？",
+    "Where does it take you?"
+  ],
+  "Less interface. More immersion.": [
+    "让界面退后，让阅读向前。",
+    "Less interface. More immersion."
+  ],
+  "Keep the thought beside the passage.": [
+    "把思考，留在触动你的那段文字旁。",
+    "Keep the thought beside the passage."
+  ],
+  "Turn a passage into a new perspective.": [
+    "从一段文字，看见新的脉络。",
+    "Turn a passage into a new perspective."
+  ],
+  "A closer look": [
+    "翻开看看",
+    "A closer look"
+  ],
+  "Reading preview": [
+    "阅读功能预览",
+    "Reading preview"
+  ],
+  "Reading": [
+    "沉浸阅读",
+    "Reading"
+  ],
+  "Mind maps": [
+    "看见脉络",
+    "Mind maps"
+  ],
+  "Made for EPUB": [
+    "为 EPUB 而生",
+    "Made for EPUB"
+  ],
+  "Not just a place to keep books.": [
+    "不只是收藏书籍",
+    "Not just a place to keep books."
+  ],
+  "A place to stay with them.": [
+    "更是与好书相处的地方。",
+    "A place to stay with them."
+  ],
+  "Reading is more than reaching the last page. It is noticing, questioning, and making connections that stay with you.": [
+    "阅读的意义，不只在于翻到最后一页。那些停顿、追问与不期而遇的联想，才是一本书留下的东西。",
+    "Reading is more than reaching the last page. It is noticing, questioning, and making connections that stay with you."
+  ],
+  "Reading features": [
+    "阅读功能",
+    "Reading features"
+  ],
+  "Make yourself at home.": [
+    "让阅读，舒服一点。",
+    "Make yourself at home."
+  ],
+  "Warm paper, natural page turns, and a desk that feels like yours. Choose your typeface and theme, then let the interface fall away.": [
+    "温润的纸张，自然的翻页，合心意的书桌。挑一种喜欢的字体与主题，让界面隐去，只留下你和书。",
+    "Warm paper, natural page turns, and a desk that feels like yours. Choose your typeface and theme, then let the interface fall away."
+  ],
+  "Read": [
+    "阅",
+    "Read"
+  ],
+  "Your books. Your reading rhythm.": [
+    "你的书，你的阅读节奏",
+    "Your books. Your reading rhythm."
+  ],
+  "Let a thought take root.": [
+    "让灵感，有处落笔。",
+    "Let a thought take root."
+  ],
+  "Highlight a line. Write beside it. Shape your notes with Markdown and revisit related ideas through tags. Your thoughts belong with the words that sparked them.": [
+    "划下一句，在旁边写下所想。用 Markdown 整理笔记，用标签重逢相关的灵感。让思考始终挨着它的来处。",
+    "Highlight a line. Write beside it. Shape your notes with Markdown and revisit related ideas through tags. Your thoughts belong with the words that sparked them."
+  ],
+  "Some sentences ask you to pause.": [
+    "有些句子，值得停下来。",
+    "Some sentences ask you to pause."
+  ],
+  "And some deserve a thought of your own.": [
+    "也值得，留下自己的想法。",
+    "And some deserve a thought of your own."
+  ],
+  "worth-remembering": [
+    "值得记住",
+    "worth-remembering"
+  ],
+  "Highlights": [
+    "高亮与划线",
+    "Highlights"
+  ],
+  "Highlights, inline notes & tags": [
+    "划线 · 行间笔记 · 标签汇总",
+    "Highlights, inline notes & tags"
+  ],
+  "Follow your curiosity.": [
+    "让好奇，多走一步。",
+    "Follow your curiosity."
+  ],
+  "Ask Infinite about a passage, explore an idea in context, or turn a chapter into a mind map. A reading companion, there when you want to go deeper.": [
+    "就一段原文向 Infinite 提问，结合上下文探讨观点，或把章节整理成思维导图。想读得更深时，身边有个可以交流的伙伴。",
+    "Ask Infinite about a passage, explore an idea in context, or turn a chapter into a mind map. A reading companion, there when you want to go deeper."
+  ],
+  "What is the idea behind this passage?": [
+    "这段话背后的核心观点是什么？",
+    "What is the idea behind this passage?"
+  ],
+  "Passage": [
+    "原文",
+    "Passage"
+  ],
+  "Question": [
+    "提问",
+    "Question"
+  ],
+  "Perspective": [
+    "新视角",
+    "Perspective"
+  ],
+  "AI conversations & saved mind maps": [
+    "AI 对话 · 思维导图 · 持久保存",
+    "AI conversations & saved mind maps"
+  ],
+  "A new reading ritual": [
+    "从一本书开始",
+    "A new reading ritual"
+  ],
+  "Bring a book.": [
+    "带一本书来，",
+    "Bring a book."
+  ],
+  "Make room for an idea.": [
+    "为思考留一点空间。",
+    "Make room for an idea."
+  ],
+  "Bring your own library.": [
+    "把喜欢的书，带到书架。",
+    "Bring your own library."
+  ],
+  "Sign in and add an EPUB to your shelf. Or start with a sample and look around.": [
+    "登录后上传 EPUB，或先翻开一本示例书，随意看看。",
+    "Sign in and add an EPUB to your shelf. Or start with a sample and look around."
+  ],
+  "Find your reading rhythm.": [
+    "找到舒服的阅读节奏。",
+    "Find your reading rhythm."
+  ],
+  "Set your typeface, settle into your desk, and turn the first page.": [
+    "选好字体，坐回你的书桌，翻开第一页。",
+    "Set your typeface, settle into your desk, and turn the first page."
+  ],
+  "Keep what stays with you.": [
+    "留住真正打动你的东西。",
+    "Keep what stays with you."
+  ],
+  "Save a thought, ask a question, and return to the ideas that matter.": [
+    "记下一个念头，追问一个问题，再回到值得细读的地方。",
+    "Save a thought, ask a question, and return to the ideas that matter."
+  ],
+  "Before the first page": [
+    "在翻开之前",
+    "Before the first page"
+  ],
+  "A few good questions.": [
+    "你可能想知道。",
+    "A few good questions."
+  ],
+  "What can I read here?": [
+    "支持哪些书籍格式？",
+    "What can I read here?"
+  ],
+  "Infinite Reader is built for EPUB books. Sign in to upload your own EPUB files; PDFs and other formats are not currently supported.": [
+    "Infinite Reader 专为 EPUB 电子书设计。登录后可以上传自己的 EPUB 文件，目前暂不支持 PDF 等其他格式。",
+    "Infinite Reader is built for EPUB books. Sign in to upload your own EPUB files; PDFs and other formats are not currently supported."
+  ],
+  "Can I try it before signing in?": [
+    "可以先体验，再登录吗？",
+    "Can I try it before signing in?"
+  ],
+  "Yes. Open a sample book and explore the reading experience without an account. Sign in when you are ready to add your own books.": [
+    "可以。进入书架，选择中文或英文示例书，无需登录即可体验阅读。准备好添加自己的书籍时，再登录即可。",
+    "Yes. Enter the shelf and choose a Chinese or English sample book to try reading without an account. Sign in when you are ready to add your own books."
+  ],
+  "Will my notes be saved?": [
+    "笔记会保存吗？",
+    "Will my notes be saved?"
+  ],
+  "Notes save automatically as you edit. Books, highlights, notes, and AI conversations in your signed-in account are saved to the cloud. Sample reading while signed out stays in this browser.": [
+    "笔记会在编辑时自动保存。登录账号后，书籍、划线、笔记及 AI 对话会保存到云端；未登录时的示例阅读记录保存在当前浏览器。",
+    "Notes save automatically as you edit. Books, highlights, notes, and AI conversations in your signed-in account are saved to the cloud. Sample reading while signed out stays in this browser."
+  ],
+  "Do I need to use AI?": [
+    "一定要使用 AI 吗？",
+    "Do I need to use AI?"
+  ],
+  "Only when you want to. AI questions and mind maps are optional. Turning pages, highlighting, and editing notes do not call a language model.": [
+    "由你决定。AI 问答与思维导图是可选功能。普通翻页、划线和笔记编辑不会调用大模型。",
+    "Only when you want to. AI questions and mind maps are optional. Turning pages, highlighting, and editing notes do not call a language model."
+  ],
+  "There is a world waiting in your next book.": [
+    "下一本书里，还有一个世界在等你。",
+    "There is a world waiting in your next book."
+  ],
+  "Turn the first page.": [
+    "就从第一页开始。",
+    "Turn the first page."
+  ],
+  "Enter your reading space": [
+    "进入你的阅读空间",
+    "Enter your reading space"
+  ],
+  "Or take a look with a sample book": [
+    "或者，先翻开一本示例书",
+    "Or take a look with a sample book"
+  ],
+  "For the books you read. And the person you become.": [
+    "为读过的书，也为正在成为的自己。",
+    "For the books you read. And the person you become."
+  ],
+  "Footer navigation": [
+    "页脚导航",
+    "Footer navigation"
+  ],
+  "Chinese sample": [
+    "中文样书",
+    "Chinese sample"
+  ],
+  "English classic": [
+    "英文经典",
+    "English classic"
+  ],
+  "No account needed": [
+    "无需登录 · 即刻试读",
+    "No account needed"
+  ],
+  "Start with a sample book": [
+    "从一本示例书开始。",
+    "Start with a sample book"
+  ],
+  "Choose a book below to try reading. Sign in whenever you want to add your own books.": [
+    "选择下方的示例书，体验翻页与阅读。想添加自己的书籍时，再登录即可。",
+    "Choose a book below to try reading. Sign in whenever you want to add your own books."
+  ],
+  "Read sample": [
+    "开始试读",
+    "Read sample"
+  ],
+  "More sample books": [
+    "更多示例书",
+    "More sample books"
+  ],
+  "A book. A world. No distractions.": [
+    "翻开一本书，走进一个世界。",
+    "A book. A world. No distractions."
+  ],
+  "Watch the cover open and the pages turn. A familiar reading ritual, reimagined for your screen.": [
+    "封面缓缓展开，纸页轻轻翻动。熟悉的阅读仪式，在屏幕上重新发生。",
+    "Watch the cover open and the pages turn. A familiar reading ritual, reimagined for your screen."
+  ],
+  "A thought, right where it belongs.": [
+    "让灵感，留在发生的地方。",
+    "A thought, right where it belongs."
+  ],
+  "Highlight what moves you. Write beside the passage. Let your own voice become part of the reading.": [
+    "划下触动你的句子，在原文旁写下想法。让你的声音，也成为阅读的一部分。",
+    "Highlight what moves you. Write beside the passage. Let your own voice become part of the reading."
+  ],
+  "Watch your understanding unfold.": [
+    "让字里行间，连成新的理解。",
+    "Watch your understanding unfold."
+  ],
+  "Follow a question beyond the page. Connect a chapter’s ideas with AI conversations and mind maps.": [
+    "带着问题走出书页。通过 AI 对话与思维导图，看见章节中相连的思想。",
+    "Follow a question beyond the page. Connect a chapter’s ideas with AI conversations and mind maps."
+  ],
+  "Every book is a beginning.": [
+    "每一次翻开，都是一个开始。",
+    "Every book is a beginning."
+  ],
+  "Skip the animation": [
+    "跳过动画",
+    "Skip the animation"
+  ],
+  "Scroll to unfold": [
+    "向下滚动，慢慢展开",
+    "Scroll to unfold"
+  ],
+  "Angle & depth": [
+    "视角与厚度",
+    "Angle & depth"
+  ],
+  "A book with another dimension.": [
+    "俯仰之间，看见书的厚度。",
+    "A book with another dimension."
+  ],
+  "Fonts & themes": [
+    "字体与主题",
+    "Fonts & themes"
+  ],
+  "Make the atmosphere your own.": [
+    "让阅读氛围，随心而变。",
+    "Make the atmosphere your own."
+  ],
+  "Choose your reading typeface and desk theme. Move from a warm reading nook to a quiet, dark desk.": [
+    "选择喜欢的阅读字体与桌面主题。在温暖的阅读角落与安静的深色桌面之间，自由切换。",
+    "Choose your reading typeface and desk theme. Move from a warm reading nook to a quiet, dark desk."
+  ],
+  "Keep the lines that stay with you.": [
+    "留下那些，让你停顿的句子。",
+    "Keep the lines that stay with you."
+  ],
+  "Highlight a passage or underline a sentence. Give a thought a place to return to.": [
+    "为段落涂上高亮，或在句子下轻轻划线。让值得记住的想法，有迹可循。",
+    "Highlight a passage or underline a sentence. Give a thought a place to return to."
+  ],
+  "Live Markdown": [
+    "实时 Markdown",
+    "Live Markdown"
+  ],
+  "Write Markdown. See it take shape.": [
+    "写下 Markdown，格式即刻呈现。",
+    "Write Markdown. See it take shape."
+  ],
+  "Headings, emphasis, and lists appear as you write inside the inline note. Stay beside the passage, without switching to a preview pane.": [
+    "在 inline note 中边写边呈现标题、强调和列表。留在原文旁思考，无需切换预览窗口。",
+    "Headings, emphasis, and lists appear as you write inside the inline note. Stay beside the passage, without switching to a preview pane."
+  ],
+  "Auto-save": [
+    "自动保存",
+    "Auto-save"
+  ],
+  "Stay with the thought. It is saved.": [
+    "继续思考，笔记已经保存。",
+    "Stay with the thought. It is saved."
+  ],
+  "Inline notes save as you edit. Signed-in notes sync to your account; sample reading while signed out stays in this browser.": [
+    "inline note 随编辑自动保存。登录后的笔记同步到账号；未登录的示例阅读内容保留在当前浏览器。",
+    "Inline notes save as you edit. Signed-in notes sync to your account; sample reading while signed out stays in this browser."
+  ],
+  "Ask in context": [
+    "原文问答",
+    "Ask in context"
+  ],
+  "Let one question open another.": [
+    "沿着一个问题，走得更远。",
+    "Let one question open another."
+  ],
+  "Ask AI about the passage you are reading. Explore an idea in context, and keep the conversation with your book.": [
+    "针对正在读的段落向 AI 提问。在上下文中探究一个想法，让对话与书籍一起保留。",
+    "Ask AI about the passage you are reading. Explore an idea in context, and keep the conversation with your book."
+  ],
+  "Turn a passage or chapter into a mind map. Follow the connections between the central idea, its details, and your own questions.": [
+    "将段落或章节整理成思维导图。沿着核心观点、关键细节与自己的疑问，看见思路如何相连。",
+    "Turn a passage or chapter into a mind map. Follow the connections between the central idea, its details, and your own questions."
+  ],
+  "3D atlas": [
+    "3D 地图",
+    "3D atlas"
+  ],
+  "Step into the places on the page.": [
+    "走进书页里的山川与城市。",
+    "Step into the places on the page."
+  ],
+  "For supported maps in a book, explore locations on a globe and move into a 3D terrain view. Give the story a sense of place.": [
+    "对受支持的书内地图，在地球上探索地点，并进入 3D 地形视图。让文字中的故事，有真实的地理坐标。",
+    "For supported maps in a book, explore locations on a globe and move into a 3D terrain view. Give the story a sense of place."
+  ],
+  "Fullscreen": [
+    "全屏阅读",
+    "Fullscreen"
+  ],
+  "More room for the world inside.": [
+    "让书中的世界，占满视野。",
+    "More room for the world inside."
+  ],
+  "Expand your browser to fullscreen, or fit the book comfortably to your screen. Settle in and keep reading.": [
+    "将浏览器切换为全屏，或将书籍适配到屏幕的舒适位置。安静下来，继续阅读。",
+    "Expand your browser to fullscreen, or fit the book comfortably to your screen. Settle in and keep reading."
+  ],
+  "A thought worth keeping": [
+    "值得留下的想法",
+    "A thought worth keeping"
+  ],
+  "Notice the central idea.": [
+    "留意段落的核心观点。",
+    "Notice the central idea."
+  ],
+  "Ask a better question.": [
+    "提出一个更好的问题。",
+    "Ask a better question."
+  ],
+  "Read slowly. Think freely.": [
+    "慢慢阅读，自由思考。",
+    "Read slowly. Think freely."
+  ],
+  "See the spine and page edges.": [
+    "看见书脊与纸张的层次。",
+    "See the spine and page edges."
+  ],
+  "A passage worth returning to": [
+    "一段值得重读的文字",
+    "A passage worth returning to"
+  ],
+  "Saved to your account": [
+    "已保存到你的账号",
+    "Saved to your account"
+  ],
+  "Example conversation": [
+    "对话示例",
+    "Example conversation"
+  ],
+  "Some words stay with us.": [
+    "有些文字，会一直留在心里。",
+    "Some words stay with us."
+  ],
+  "Why does this passage matter?": [
+    "这段话为什么值得停下来想一想？",
+    "Why does this passage matter?"
+  ],
+  "It shifts reading from collecting information to making it your own.": [
+    "它让阅读从收集信息，转向形成自己的理解。",
+    "It shifts reading from collecting information to making it your own."
+  ],
+  "The note beside a sentence records how your understanding is changing.": [
+    "句子旁的笔记，记录着你的理解如何慢慢发生变化。",
+    "The note beside a sentence records how your understanding is changing."
+  ],
+  "Globe & terrain": [
+    "地球与地形视图",
+    "Globe & terrain"
+  ],
+  "See the places in your book in 3D.": [
+    "让书中的地点，立体呈现。",
+    "See the places in your book in 3D."
+  ],
+  "Previous feature": [
+    "上一个功能",
+    "Previous feature"
+  ],
+  "Next feature": [
+    "下一个功能",
+    "Next feature"
+  ],
+  "Choose a feature": [
+    "选择要体验的功能",
+    "Choose a feature"
+  ],
+  "Fit to screen": [
+    "适配屏幕",
+    "Fit to screen"
+  ],
+  "Saving…": [
+    "正在保存…",
+    "Saving…"
+  ],
+  "Stay directly in front of the book and adjust the viewing pitch. See the layered page edges and book thickness as you move from a top-down view to a lower angle.": [
+    "始终正对书籍，调整俯仰角度。从俯视到低角度阅读，看见层叠的纸张与书籍厚度。",
+    "Stay directly in front of the book and adjust the viewing pitch. See the layered page edges and book thickness as you move from a top-down view to a lower angle."
+  ],
+  "Agent reading companion": [
+    "Agent 伴读书童",
+    "Agent reading companion"
+  ],
+  "Meet the agent reading beside you.": [
+    "读书这件事，有书童陪你。",
+    "Meet the agent reading beside you."
+  ],
+  "Your AI reading companion": [
+    "你的 AI 伴读书童",
+    "Your AI reading companion"
+  ],
+  "Help me connect this passage to what came before.": [
+    "帮我把这段话和前文联系起来。",
+    "Help me connect this passage to what came before."
+  ],
+  "Check the contents": [
+    "查看目录",
+    "Check the contents"
+  ],
+  "Find related passages": [
+    "检索书中线索",
+    "Find related passages"
+  ],
+  "Read the source text": [
+    "回读相关原文",
+    "Read the source text"
+  ],
+  "Looking for the connection in your book…": [
+    "正在书中寻找这段话的线索…",
+    "Looking for the connection in your book…"
+  ],
+  "Earlier, reading is described as an inward journey. Your questions and notes are a way to keep the thoughts you discover along the way.": [
+    "前文把阅读比作“向内的旅行”。这里的提问与注释，是把阅读途中发现的想法留下来。",
+    "Earlier, reading is described as an inward journey. Your questions and notes are a way to keep the thoughts you discover along the way."
+  ],
+  "Sources in the book": [
+    "原文出处",
+    "Sources in the book"
+  ],
+  "[1] Page 6": [
+    "[1] 第 6 页",
+    "[1] Page 6"
+  ],
+  "[2] Page 7": [
+    "[2] 第 7 页",
+    "[2] Page 7"
+  ],
+  "How could I start a note?": [
+    "那我可以怎样开始记笔记？",
+    "How could I start a note?"
+  ],
+  "Ask again. Keep the context.": [
+    "继续追问，承接前文",
+    "Ask again. Keep the context."
+  ],
+  "Companion demo": [
+    "伴读演示",
+    "Companion demo"
+  ],
+  "Infinite is your AI reading companion. It finds and reads relevant passages, answers with sources, and follows your questions.": [
+    "Infinite 是你的 AI 伴读书童。它会查目录、找原文、带着出处回答，并承接你的追问。",
+    "Infinite is your AI reading companion. It finds and reads relevant passages, answers with sources, and follows your questions."
+  ],
+  "引用字体": [
+    "引用字体",
+    "Quotation font"
+  ],
+  "为书中引文选择独立字体，或跟随正文。": [
+    "为书中引文选择独立字体，或跟随正文。",
+    "Give book quotations their own typeface, or use the body font."
+  ],
+  "已识别的地图": [
+    "已识别的地图",
+    "Recognized maps"
+  ],
+  "返回地图列表": [
+    "返回地图列表",
+    "Back to map list"
+  ],
+  "放大地图": [
+    "放大地图",
+    "Expand map"
+  ],
+  "收起地图": [
+    "收起地图",
+    "Collapse map"
+  ],
+  "返回地图原文": [
+    "返回地图原文",
+    "Go to map in book"
+  ],
+  "第 {0} 页": [
+    "第 {0} 页",
+    "Page {0}"
+  ],
+  "章节幻灯片": [
+    "章节幻灯片",
+    "Chapter slides"
+  ],
+  "退出全屏": [
+    "退出全屏",
+    "Exit full screen"
+  ],
+  "全屏演示": [
+    "全屏演示",
+    "Present full screen"
+  ],
+  "关闭幻灯片": [
+    "关闭幻灯片",
+    "Close slides"
+  ],
+  "幻灯片目录": [
+    "幻灯片目录",
+    "Slide outline"
+  ],
+  "第 {0} 页，共 {1} 页": [
+    "第 {0} 页，共 {1} 页",
+    "Slide {0} of {1}"
+  ],
+  "章节精要": [
+    "章节精要",
+    "CHAPTER INSIGHTS"
+  ],
+  "已保存 · 再次打开无需生成": [
+    "已保存 · 再次打开无需生成",
+    "Saved · Ready whenever you return"
+  ],
+  "上一张幻灯片": [
+    "上一张幻灯片",
+    "Previous slide"
+  ],
+  "下一张幻灯片": [
+    "下一张幻灯片",
+    "Next slide"
+  ],
+  "AI 整理，请结合原文阅读。": [
+    "AI 整理，请结合原文阅读。",
+    "AI summary · Read alongside the original."
+  ],
+  "正在将这一章整理为幻灯片…": [
+    "正在将这一章整理为幻灯片…",
+    "Preparing your chapter slides…"
+  ],
+  "幻灯片暂未就绪": [
+    "幻灯片暂未就绪",
+    "Slides are not ready yet"
+  ],
+  "根据章节内容生成 1–10 页，完成后自动保存。可以关闭窗口，稍后回来查看。": [
+    "根据章节内容生成 1–10 页，完成后自动保存。可以关闭窗口，稍后回来查看。",
+    "Creating 1–10 slides to suit this chapter. They will be saved automatically. You can close this window and return later."
+  ],
+  "已完成 {0} / {1} 个步骤": [
+    "已完成 {0} / {1} 个步骤",
+    "Completed {0} of {1} steps"
+  ],
+  "此目录项不是章，暂不提供幻灯片。": [
+    "此目录项不是章，暂不提供幻灯片。",
+    "This entry is not a chapter. Slides are available for chapters only."
+  ],
+  "生成未完成。已完成的步骤会保留，手动重试可能产生新的费用。": [
+    "生成未完成。已完成的步骤会保留，手动重试可能产生新的费用。",
+    "Generation did not finish. Completed steps are preserved; retrying may incur additional costs."
+  ],
+  "生成状态待确认，为避免重复生成，请稍后检查保存状态。": [
+    "生成状态待确认，为避免重复生成，请稍后检查保存状态。",
+    "The generation status is uncertain. Check again later to avoid duplicate generation."
+  ],
+  "重试未完成的步骤": [
+    "重试未完成的步骤",
+    "Retry unfinished steps"
+  ],
+  "无法读取幻灯片，请稍后重试。": [
+    "无法读取幻灯片，请稍后重试。",
+    "Could not load slides. Please try again later."
+  ],
+  "无法进入全屏，仍可在此窗口查看。": [
+    "无法进入全屏，仍可在此窗口查看。",
+    "Full screen is unavailable. You can continue viewing here."
+  ],
+  "生成／查看章节幻灯片": [
+    "生成／查看章节幻灯片",
+    "Generate / view chapter slides"
+  ],
+  "请登录并从书架打开已上传的书籍，再生成幻灯片。": [
+    "请登录并从书架打开已上传的书籍，再生成幻灯片。",
+    "Sign in and open an uploaded book from your shelf to generate slides."
+  ],
+  "章节幻灯片后台任务": [
+    "章节幻灯片后台任务",
+    "Chapter slides background task"
+  ],
+  "按操作开始时间由近到远 · 本地时间": [
+    "按操作开始时间由近到远 · 本地时间",
+    "Newest operation first · Local time"
+  ],
+  "分类汇总 · 最近使用在前": [
+    "分类汇总 · 最近使用在前",
+    "Category totals · Most recently used first"
+  ],
+  "最近一次：": [
+    "最近一次：",
+    "Latest: "
+  ],
+  "外部搜索": ["外部搜索", "External search"],
+  "费用类型": ["费用类型", "Cost type"],
+  "所有操作": ["所有操作", "All operations"],
+  "仅外部搜索": ["仅外部搜索", "Search only"],
+  "Ceramic 搜索": ["Ceramic 搜索", "Ceramic search"],
+  "次 × $0.25 / 千次": ["次 × $0.25 / 千次", "requests × $0.25 / 1,000"],
+  "额度购入手续费分摊（5%）": ["额度购入手续费分摊（5%）", "Allocated credit purchase fee (5%)"],
+  "次 × $0.0000125": ["次 × $0.0000125", "requests × $0.0000125"],
+  "应用记录的成功搜索次数 × 公开单价，含付费额度购入手续费分摊；不是供应商确认扣款，未完成账单对账": ["应用记录的成功搜索次数 × 公开单价，含付费额度购入手续费分摊；不是供应商确认扣款，未完成账单对账", "Successful searches recorded by the app × list price, including an allocated paid-credit purchase fee; estimated, not a provider-confirmed charge or reconciled invoice."],
+  "未确认成功搜索次数；失败、超时或取消仍可能扣费，待供应商账单核对，不按零计费": ["未确认成功搜索次数；失败、超时或取消仍可能扣费，待供应商账单核对，不按零计费", "Successful search count is unconfirmed. Failed, timed-out or canceled calls may still be billed; reconcile with the provider, not treated as free."],
+  "已确认成功搜索：{0}；已记录发送尝试：{1}": ["已确认成功搜索：{0}；已记录发送尝试：{1}", "Confirmed successful searches: {0}; recorded dispatch attempts: {1}"],
+  "搜索计价版本：{0}": ["搜索计价版本：{0}", "Search pricing version: {0}"],
+  "供应商请求 ID：{0}": ["供应商请求 ID：{0}", "Provider request ID: {0}"],
+  "错误代码：{0}": ["错误代码：{0}", "Error code: {0}"],
+  "未知": ["未知", "Unknown"],
+  "Ceramic 按成功搜索次数估算，另计付费额度购入时 5% 手续费的分摊；不重复计入充值本金。未确认用量的异常调用需在 Cloudflare 核对，赠送额度及实际扣款未自动对账。": ["Ceramic 按成功搜索次数估算，另计付费额度购入时 5% 手续费的分摊；不重复计入充值本金。未确认用量的异常调用需在 Cloudflare 核对，赠送额度及实际扣款未自动对账。", "Ceramic is estimated from successful searches plus an allocated 5% paid-credit purchase fee; credit top-ups are not charged again. Reconcile calls with unconfirmed usage in Cloudflare; promotional credits and actual charges are not automatically reconciled."],
+  "生成阅读地图": ["生成阅读地图", "Generate reading map"],
+  "生成阅读地图？": ["生成阅读地图？", "Generate a reading map?"],
+  "阅读地图": ["阅读地图", "Reading map"],
+  "将把所选文字和书名发送给 AI，解析地名并生成阅读地图，会消耗 token。是否继续？": ["将把所选文字和书名发送给 AI，解析地名并生成阅读地图，会消耗 token。是否继续？", "The selected text and book title will be sent to AI to identify places and generate a reading map. This consumes tokens. Continue?"],
+  "仅在确认后开始。已有结果会直接复用；取消不会发起 AI 请求。": ["仅在确认后开始。已有结果会直接复用；取消不会发起 AI 请求。", "Starts only after confirmation. Saved results are reused; canceling sends no AI request."],
+  "确认生成": ["确认生成", "Confirm generation"],
+  "正在生成阅读地图…": ["正在生成阅读地图…", "Generating reading map…"],
+  "正在解析地名并查询坐标库。关闭窗口不会撤销已开始的 token 消耗，请勿重复生成。": ["正在解析地名并查询坐标库。关闭窗口不会撤销已开始的 token 消耗，请勿重复生成。", "Identifying places and looking up coordinates. Closing this window does not undo token usage already started. Please avoid repeated requests."],
+  "本次尝试可能已消耗 token。重试需要再次确认。": ["本次尝试可能已消耗 token。重试需要再次确认。", "This attempt may have consumed tokens. Retrying requires confirmation again."],
+  "暂未可靠定位": ["暂未可靠定位", "No reliable locations yet"],
+  "所选文字中暂未找到能可靠匹配坐标的地点，不会绘制猜测位置。": ["所选文字中暂未找到能可靠匹配坐标的地点，不会绘制猜测位置。", "No places in this passage could be reliably matched to coordinates. Guessed locations will not be plotted."],
+  "AI 提取地名，坐标来自地名库；匹配结果请结合原文核对。自然地形不代表历史疆域或行军路线。": ["AI 提取地名，坐标来自地名库；匹配结果请结合原文核对。自然地形不代表历史疆域或行军路线。", "AI extracts place names; coordinates come from a gazetteer. Check matches against the passage. Natural terrain does not represent historical borders or troop movements."],
+  "查看来源": ["查看来源", "View source"],
+  "选择地点查看位置": ["选择地点查看位置", "Select a place to view its location"],
+  "地图组件加载失败，请关闭后重新打开。已有结果会保留。": ["地图组件加载失败，请关闭后重新打开。已有结果会保留。", "The map could not load. Close and reopen it; saved results are retained."],
+  "请登录并打开已上传的书籍，再生成阅读地图。": ["请登录并打开已上传的书籍，再生成阅读地图。", "Sign in and open an uploaded book to generate a reading map."],
+  "请选择 2 至 6000 字的原文。": ["请选择 2 至 6000 字的原文。", "Select between 2 and 6000 characters."],
+  "地图正在生成，请稍后重新打开。": ["地图正在生成，请稍后重新打开。", "The map is being generated. Please reopen it shortly."],
+  "上次生成未完成，请再次确认后重试。": ["上次生成未完成，请再次确认后重试。", "The previous attempt did not complete. Confirm again to retry."],
+  "地图生成服务尚未配置。": ["地图生成服务尚未配置。", "Map generation is not configured."],
+  "地名库暂不可用，请稍后重试。": ["地名库暂不可用，请稍后重试。", "The gazetteer is temporarily unavailable. Please try again later."],
+  "地图生成超时，请稍后重试。": ["地图生成超时，请稍后重试。", "Map generation timed out. Please try again later."],
+  "地图生成失败，请稍后重试。": ["地图生成失败，请稍后重试。", "Map generation failed. Please try again later."],
+  "重新尝试": ["重新尝试", "Try again"],
+  "历史别名；标注为地名库中的对应位置": ["历史别名；标注为地名库中的对应位置", "Historical alias; marker shows the corresponding gazetteer location"],
+  "删除地点“{0}”": ["删除地点“{0}”", "Delete place “{0}”"],
+  "删除地点“{0}”？": ["删除地点“{0}”？", "Delete place “{0}”?"],
+  "将从本书所有文字地图中移除此地点，包括本段地图和文字地点汇总。重新打开或识别不会自动恢复，不影响图片地图。": ["将从本书所有文字地图中移除此地点，包括本段地图和文字地点汇总。重新打开或识别不会自动恢复，不影响图片地图。", "Remove this place from all text maps in this book, including passage maps and the book summary. Reopening or recognition will not restore it. Image maps are unaffected."],
+  "删除失败，请重试。地点仍保留。": ["删除失败，请重试。地点仍保留。", "Could not delete this place. It is still saved; please try again."],
+  "暂无可显示的文字地点": ["暂无可显示的文字地点", "No text places to display"],
+  "已删除的地点不会再出现在本书文字地图中。": ["已删除的地点不会再出现在本书文字地图中。", "Removed places will no longer appear in this book’s text maps."],
+  "正在删除…": ["正在删除…", "Deleting…"],
+  "确认删除": ["确认删除", "Confirm deletion"],
+  "无效的地点。": ["无效的地点。", "Invalid place."],
+  "地图请求过于频繁，请等待后重试。": ["地图请求过于频繁，请等待后重试。", "Too many map requests. Please wait before retrying."],
+  "地点识别每分钟最多 6 次，请等待后重试。": ["地点识别每分钟最多 6 次，请等待后重试。", "Place recognition is limited to 6 attempts per minute. Please wait before retrying."],
+  "今日地点识别已达 120 次上限。已有地图仍可查看。": ["今日地点识别已达 120 次上限。已有地图仍可查看。", "Today’s limit of 120 place recognition attempts has been reached. Saved maps remain available."],
+  "本次请求未开始 AI 识别，不消耗 token。已有地图仍可查看。": ["本次请求未开始 AI 识别，不消耗 token。已有地图仍可查看。", "This request did not start AI recognition and used no tokens. Saved maps remain available."],
+  "可重试时间（设备当地时间）：{0}": ["可重试时间（设备当地时间）：{0}", "Retry at (device local time): {0}"],
+  "等待 {0} 秒后重试": ["等待 {0} 秒后重试", "Retry in {0} seconds"],
+  "等待额度恢复": ["等待额度恢复", "Waiting for quota reset"],
+  "DeepSeek 搜索": ["DeepSeek 搜索", "DeepSeek search"],
+  "按供应商规则计费的搜索次数：{0}": ["按供应商规则计费的搜索次数：{0}", "Searches billed under provider rules: {0}"],
+  "DeepSeek 搜索按非空成功结果计费，由 DeepSeek 余额扣除；明确失败和空结果不计费，本地超时或取消后未确认的用量仍需核对。问答 token 单独计量。": ["DeepSeek 搜索按非空成功结果计费，由 DeepSeek 余额扣除；明确失败和空结果不计费，本地超时或取消后未确认的用量仍需核对。问答 token 单独计量。", "DeepSeek search is charged to your DeepSeek balance for successful nonempty results. Confirmed provider failures and empty results are not billed; unconfirmed usage after local timeouts or cancellation still needs reconciliation. Chat tokens are metered separately."],
+  "未确认 DeepSeek 搜索计费用量；超时、取消或异常响应需核对账单，不按零计费": ["未确认 DeepSeek 搜索计费用量；超时、取消或异常响应需核对账单，不按零计费", "DeepSeek search usage is unconfirmed. Reconcile timeouts, cancellations and invalid responses with the provider; they are not assumed free."],
+  "按 DeepSeek 返回状态及结果推算计费次数 × 公开单价；空结果和供应商明确失败不计费，本地超时仍待核对；不含问答 token，未完成账单对账": ["按 DeepSeek 返回状态及结果推算计费次数 × 公开单价；空结果和供应商明确失败不计费，本地超时仍待核对；不含问答 token，未完成账单对账", "Estimated billed requests from DeepSeek status and results × published price. Empty results and confirmed provider failures are free; local timeouts still need reconciliation. Chat tokens are separate; this is not a reconciled invoice."],
+  "缩小地图": ["缩小地图", "Shrink map"]
+}

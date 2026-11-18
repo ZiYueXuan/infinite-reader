@@ -1,0 +1,18 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Reading map consent check</title><div id="root"></div><output id="calls">Paid requests: 0</output>
+<script type="module">
+import React,{useState} from 'react'; import {createRoot} from 'react-dom/client';
+import {TextAtlasDialog} from '/src/ui/TextAtlasDialog.tsx';
+let count=0; const originalFetch=window.fetch;
+window.fetch=async(...args)=>{
+  if (String(args[0]).includes('/text-atlas')) {
+    count++; document.getElementById('calls').textContent='Paid requests: '+count;
+    await new Promise(r=>setTimeout(r,1500));
+    return Response.json({error:{message:'地图生成失败，请稍后重试。'}},{status:502});
+  }
+  return originalFetch(...args);
+};
+function App(){const[open,setOpen]=useState(false);return React.createElement(React.Fragment,null,
+React.createElement('button',{onClick:()=>setOpen(true)},'打开地图入口'),
+open&&React.createElement(TextAtlasDialog,{bookId:'fixture',text:'平型关，位于晋北繁峙县的东北方向，自古为交通要冲。其西面是恒山，东面是太行山。',scene:null,onRecognized:()=>true,onClose:()=>setOpen(false)}));}
+createRoot(document.getElementById('root')).render(React.createElement(App));
+</script></html>

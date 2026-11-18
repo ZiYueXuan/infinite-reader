@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas rendering regression preview</title>
+<style>html,body,#root{margin:0;width:100%;height:100%}#root{position:relative;background:#f0ede3}</style>
+<div id="root" class="book-atlas atlas-viewport" style="position:relative;inset:auto;max-width:none;max-height:none;border:0;border-radius:0"></div>
+<form id="view" style="position:fixed;left:16px;bottom:16px;z-index:5;background:#f7f5ef;padding:10px;border-radius:8px;font:12px sans-serif;max-width:360px">
+  <label>Location <select name="location"><option value="shanghai">Shanghai</option><option value="shanxi">Shanxi</option><option value="london">London</option><option value="kabul">Kabul</option><option value="india">India</option><option value="italy">Italy</option><option value="alps">Alps</option><option value="tibet">Tibet</option><option value="greenland">Greenland</option></select></label>
+  <label>Zoom <input name="zoom" type="number" value="6.5" min="0.6" max="14" step="0.1" style="width:55px"></label>
+  <button>Apply view</button>
+  <label><input name="shading" type="checkbox" checked> Hillshade</label>
+  <label><input name="atmosphere" type="checkbox" checked> Atmosphere</label>
+  <label><input name="water" type="checkbox" checked> Water</label>
+  <label><input name="globe" type="checkbox" checked> Globe</label>
+  <output id="diagnostics" style="display:block;margin-top:7px"></output>
+</form>
+<script type="module">
+  // Development-only preview: exercise the actual map without an account or book upload.
+  import React from 'react'
+  import { createRoot } from 'react-dom/client'
+  import * as maplibre from 'maplibre-gl'
+  import AtlasMap from '/src/ui/AtlasMap.tsx'
+  import { BOOK_MAPS } from '/src/atlas/catalog.ts'
+  import '/src/ui/atlas.css'
+  let previewMap
+  const form = document.querySelector('#view')
+  const report = () => {
+    if (!previewMap?.isStyleLoaded()) return
+    const map = previewMap
+    const loaded = ['elevation', 'shading', 'water'].every((id) => map.isSourceLoaded(id))
+    document.querySelector('#diagnostics').textContent = `${map.getCenter().lng.toFixed(3)}, ${map.getCenter().lat.toFixed(3)} · z${map.getZoom().toFixed(2)} · pitch ${map.getPitch().toFixed(0)} · ${loaded ? 'Tiles ready' : 'Loading tiles'} · terrain ${!!map.getTerrain()}`
+  }
+  const addControl = maplibre.Map.prototype.addControl
+  maplibre.Map.prototype.addControl = function (...args) {
+    if (previewMap !== this) {
+      previewMap = this
+      this.on('idle', report)
+      this.on('moveend', report)
+    }
+    return addControl.apply(this, args)
+  }
+  form.addEventListener('submit', (event) => {
+    event.preventDefault()
+    const locations = { shanghai: [121.49, 31.23], shanxi: [112.53, 37.85], london: [-0.12, 51.5], kabul: [69.2, 34.6], india: [78, 23], italy: [12.5, 43], alps: [6.865, 45.833], tibet: [89, 32], greenland: [-42, 73] }
+    previewMap.stop().jumpTo({ center: locations[form.elements.location.value], zoom: Number(form.elements.zoom.value), pitch: 0, bearing: 0 })
+  })
+  form.elements.shading.addEventListener('change', () => {
+    previewMap.setLayoutProperty('hillshade', 'visibility', form.elements.shading.checked ? 'visible' : 'none')
+  })
+  form.elements.atmosphere.addEventListener('change', () => {
+    previewMap.setSky({ ...previewMap.getStyle().sky, 'atmosphere-blend': form.elements.atmosphere.checked ? 0.65 : 0 })
+  })
+  form.elements.water.addEventListener('change', () => {
+    previewMap.setLayoutProperty('water', 'visibility', form.elements.water.checked ? 'visible' : 'none')
+  })
+  form.elements.globe.addEventListener('change', () => {
+    previewMap.setProjection({ type: form.elements.globe.checked ? 'globe' : 'mercator' })
+  })
+  function Preview() {
+    const [selected, setSelected] = React.useState(null)
+    return React.createElement(AtlasMap, { atlas: BOOK_MAPS[0], selected, onSelect: setSelected })
+  }
+  createRoot(document.getElementById('root')).render(React.createElement(Preview))
+</script>
+</html>

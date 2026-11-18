@@ -1,0 +1,29 @@
+{
+  "name": "infinite-reader-test",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-13",
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": { "bindings": [{ "name": "READER_AGENT", "class_name": "ReaderAgent" }] },
+  "migrations": [{ "tag": "v1-reader-agent", "new_sqlite_classes": ["ReaderAgent"] }],
+  "d1_databases": [{ "binding": "DB", "database_name": "test", "database_id": "00000000-0000-0000-0000-000000000000" }],
+  "r2_buckets": [{ "binding": "BOOKS", "bucket_name": "test-books" }],
+  "vars": {
+    "APP_NAME": "Infinite Reader",
+    "CONTACT_EMAIL": "owner@example.com",
+    "DEEPSEEK_BASE_URL": "https://llm.test",
+    "DEEPSEEK_MODEL": "deepseek-chat",
+    "DEEPSEEK_ALLOWED_MODELS": "deepseek-chat,deepseek-reasoner",
+    "EMBEDDING_MODEL": "@cf/baai/bge-m3",
+    "MAX_UPLOAD_MB": "5",
+    "EMAIL_PROVIDER": "cloudflare",
+    "EMAIL_FROM": "Infinite Reader <login@example.com>",
+    "ALLOWED_EMAILS": "",
+    "ALLOWED_ORIGINS": "",
+    "PUBLIC_BASE_URL": "",
+    "SESSION_TTL_DAYS": "30",
+    "SESSION_SECRET": "test-secret-test-secret-test-secret",
+    "GOOGLE_CLIENT_ID": "gid",
+    "GOOGLE_CLIENT_SECRET": "gsecret",
+    "DEEPSEEK_API_KEY": "sk-test"
+  }
+}

@@ -1,0 +1,51 @@
+.text-atlas h1 { margin: 6px 0 0; font-size: 24px; }
+.text-atlas-scope-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; padding: 10px 22px; border-bottom: 1px solid #354b3420; flex: none; }
+.text-atlas-scope { display: flex; gap: 4px; padding: 4px; background: #354b340d; border-radius: 26px; }
+.text-atlas-scope button { min-height: 40px; padding: 8px 16px; border-radius: 22px; color: #405c4d; font-size: 13px; cursor: pointer; }
+.text-atlas-scope button[aria-pressed="true"] { background: #344f40; color: #fff; }
+.text-atlas-scope button:focus-visible { outline: 2px solid #516d59; outline-offset: 2px; }
+.text-atlas-scope button:disabled { opacity: .6; cursor: wait; }
+.text-atlas-scope-bar > span { color: #536256; font-size: 12px; }
+.book-atlas.text-atlas-prompt { width: min(500px, calc(100vw - 24px)); height: fit-content; max-height: calc(100dvh - 32px); }
+.text-atlas-consent { padding: 22px 26px; overflow-y: auto; line-height: 1.8; font-size: 15px; }
+.text-atlas blockquote { margin: 16px 0; padding: 10px 14px; border-left: 3px solid #819082; background: #e4e6dc; font-size: 14px; max-height: 180px; overflow-y: auto; white-space: pre-wrap; }
+.text-atlas-consent small { display: block; color: #536256; font-size: 12px; }
+.text-atlas-review-heading { margin: 0 0 8px; font-size: 21px; }
+.text-atlas-review-heading:focus { outline: none; }
+.text-atlas-review-list { margin: 18px 0; padding-left: 24px; }
+.text-atlas-review-list li { padding: 12px 0; border-bottom: 1px solid #354b3420; overflow-wrap: anywhere; }
+.text-atlas-review-list strong, .text-atlas-review-list span { display: block; }
+.text-atlas-review-list span, .text-atlas-review-list a { font-size: 13px; color: #405c4d; }
+.text-atlas-unresolved { padding: 12px 16px; margin-bottom: 16px; border-radius: 12px; background: #e8ddc8; }
+.text-atlas-unresolved p { margin: 4px 0; overflow-wrap: anywhere; }
+.text-atlas-review details { margin: 16px 0; }
+.text-atlas-review .text-atlas-actions { flex-wrap: wrap; }
+.text-atlas-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
+.text-atlas-actions button { border: 1px solid #647768; border-radius: 24px; padding: 10px 22px; min-height: 44px; }
+.text-atlas-actions .text-atlas-primary { background: #344f40; color: #fff; }
+.text-atlas-actions button:disabled { opacity: .55; cursor: not-allowed; }
+.text-atlas-source { display: inline-block; padding: 2px 6px 10px; font-size: 11px; color: #405c4d; }
+.text-atlas-reference details { flex: none; }
+.text-atlas-place-entry { scroll-margin-block: 4px; border-radius: 8px; transition: background-color .2s ease; }
+.text-atlas-place-entry:has(.text-atlas-place-row > button[aria-pressed="true"]) { background-color: #dce4d4; }
+.text-atlas-place-row { display: flex; align-items: center; gap: 8px; }
+.text-atlas-place-row > button:first-child { min-width: 0; flex: 1; }
+.text-atlas-place-row .text-atlas-delete { width: auto; flex: none; min-height: 44px; padding: 8px 10px; color: #934437; border: 1px solid #93443740; border-radius: 10px; font-size: 12px; }
+.text-atlas-delete-confirm { width: min(440px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; padding: 24px; background: #f0eee3; color: #283e37; border: 1px solid #354b3440; border-radius: 20px; box-shadow: 0 20px 60px #0005; }
+.text-atlas-delete-confirm::backdrop { background: #14221c70; }
+.text-atlas-delete-confirm h2 { margin: 0 0 14px; font-size: 20px; overflow-wrap: anywhere; }
+.text-atlas-delete-confirm p { font-size: 14px; line-height: 1.7; }
+.text-atlas-delete-confirm .text-atlas-danger { background: #934437; border-color: #934437; color: white; }
+.text-atlas-delete-confirm button:disabled { opacity: .6; cursor: wait; }
+.text-atlas-delete-confirm button:focus-visible, .text-atlas-delete:focus-visible { outline: 2px solid #516d59; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .text-atlas-place-entry { transition: none; }
+}
+@media (max-width: 760px) {
+  .text-atlas-scope-bar { padding: 8px 12px; gap: 6px; }
+  .text-atlas-scope button { min-height: 44px; padding: 8px 14px; }
+  .text-atlas .text-atlas-reference { display: flex; flex-direction: column; flex-basis: 220px; gap: 6px; overflow-y: auto; }
+  .text-atlas-reference .atlas-places { overflow: visible; flex: none; }
+  .text-atlas-consent { padding: 16px 20px; }
+  .text-atlas h1 { font-size: 21px; }
+}

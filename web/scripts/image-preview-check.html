@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Image preview regression fixture</title></head>
+<body><div id="root"></div><output id="fixture-status" data-ui style="position:fixed;left:10px;top:10px;z-index:50;padding:8px 12px;background:#fffef2;color:#26382f;border-radius:8px;font:12px monospace;pointer-events:none">Preparing local fixture…</output>
+<script type="module">
+// Local-only synthetic book. No requests to a real API are allowed by this fixture.
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import JSZip from 'jszip'
+import { DeskView } from '/src/ui/DeskView.tsx'
+import { useReader } from '/src/store/useReader.ts'
+import { prepareBook } from '/src/book/loader.ts'
+import { setStorageMode } from '/src/storage/mode.ts'
+import { BOOK_MAPS } from '/src/atlas/catalog.ts'
+import '/src/index.css'
+
+const previewWidth = Number(new URLSearchParams(location.search).get('width'))
+if (previewWidth > 0) {
+  document.getElementById('fixture-status').remove()
+  const frame = document.createElement('iframe')
+  const scale = Math.min(1, innerHeight / 780, innerWidth / previewWidth)
+  frame.src = location.pathname
+  frame.title = `${previewWidth}px responsive preview`
+  frame.style.cssText = `width:${previewWidth}px;height:780px;border:0;position:absolute;left:50%;top:0;transform-origin:top center;transform:translateX(-50%) scale(${scale})`
+  document.getElementById('root').append(frame)
+} else {
+const status = document.getElementById('fixture-status')
+let recognitionRequests = 0, blockedApiRequests = 0, ready = false
+const realFetch = window.fetch.bind(window)
+window.fetch = async (input, init) => {
+  const url = new URL(input instanceof Request ? input.url : String(input), location.href)
+  if (url.pathname.startsWith('/api/')) {
+    if (url.pathname.endsWith('/atlas') && (init?.method ?? 'GET') === 'POST') {
+      recognitionRequests++
+      updateStatus()
+      return Response.json({ status: 'not_map', map: null, message: 'Local fixture: explicit globe activation recorded.', model: 'fixture', recognizedAt: Date.now(), cached: false })
+    }
+    blockedApiRequests++
+    updateStatus()
+    return new Response(null, { status: 204 })
+  }
+  if (url.origin !== location.origin && !['blob:', 'data:'].includes(url.protocol)) throw new Error('Fixture blocked external fetch: ' + url.origin)
+  return realFetch(input, init)
+}
+function updateStatus() {
+  const scene = useReader.getState().scene
+  status.textContent = `${ready ? 'READY' : 'LOADING'} · Atlas POST: ${recognitionRequests} · blocked API: ${blockedApiRequests} · spread: ${scene?.turnedLeaves ?? '-'} · visible: ${scene ? Object.values(scene.visiblePages).join(',') : '-'} · zoom: ${Math.round(useReader.getState().zoom * 100)}%`
+}
+
+setStorageMode('api')
+useReader.setState({ session: { status: 'user', user: { id: 'fixture', email: 'fixture@example.invalid', name: 'Fixture reader', avatar_url: null } }, showLogin: false, loading: null, tilt: 0.2, desk: 'stone' })
+createRoot(document.getElementById('root')).render(React.createElement(React.StrictMode, null, React.createElement('div', { className: 'app' }, React.createElement(DeskView))))
+useReader.subscribe(updateStatus)
+
+function png(width, height, title, color) {
+  const canvas = document.createElement('canvas')
+  canvas.width = width; canvas.height = height
+  const context = canvas.getContext('2d')
+  context.fillStyle = color; context.fillRect(0, 0, width, height)
+  context.strokeStyle = '#fff9e8'; context.lineWidth = Math.max(2, width / 120)
+  for (let x = 0; x < width; x += width / 12) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, height); context.stroke() }
+  for (let y = 0; y < height; y += height / 12) { context.beginPath(); context.moveTo(0, y); context.lineTo(width, y); context.stroke() }
+  context.fillStyle = '#fff9e8'; context.textAlign = 'center'; context.font = `600 ${Math.max(9, width / 14)}px serif`
+  context.fillText(title, width / 2, height * 0.45)
+  context.font = `${Math.max(7, width / 22)}px sans-serif`
+  context.fillText(`${width} × ${height}`, width / 2, height * 0.55)
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
+}
+
+try {
+  const zip = new JSZip()
+  zip.file('mimetype', 'application/epub+zip')
+  zip.file('META-INF/container.xml', '<container xmlns="urn:oasis:names:tc:opendocument:xmlns:container" version="1.0"><rootfiles><rootfile full-path="OPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>')
+  const images = [['portrait', 700, 1000, 'PORTRAIT', '#777e6c'], ['landscape', 1200, 500, 'LANDSCAPE', '#526f7a'], ['small', 48, 48, '48', '#b56d52']]
+  for (const [name, w, h, title, color] of images) zip.file(`OPS/${name}.png`, await (await png(w, h, title, color)).arrayBuffer())
+  const chapters = [
+    '<h1>Image preview fixture</h1><p>Only the globe button may request atlas recognition.</p>',
+    '<img src="portrait.png" alt="Portrait illustration"/>',
+    '<img src="landscape.png" alt="Landscape illustration"/><p>Select this ordinary sentence to verify text selection still works.</p><img src="small.png" alt="Small illustration below the old 100 pixel threshold"/>',
+    '<h1>Next chapter</h1><p>Page turns remain available away from illustrations.</p>',
+  ]
+  chapters.forEach((body, i) => zip.file(`OPS/ch${i}.xhtml`, `<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Fixture ${i}</title></head><body>${body}</body></html>`))
+  zip.file('OPS/content.opf', `<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="uid"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="uid">local-image-fixture</dc:identifier><dc:title>Image preview fixture</dc:title><dc:creator>Local test</dc:creator><dc:language>en</dc:language></metadata><manifest>${chapters.map((_, i) => `<item id="ch${i}" href="ch${i}.xhtml" media-type="application/xhtml+xml"/>`).join('')}${images.map(([name]) => `<item id="${name}" href="${name}.png" media-type="image/png"/>`).join('')}</manifest><spine>${chapters.map((_, i) => `<itemref idref="ch${i}"/>`).join('')}</spine></package>`)
+  const prepared = await prepareBook(await zip.generateAsync({ type: 'blob' }))
+  // Exercise the existing-map handoff without paying for recognition of a synthetic image.
+  if (new URLSearchParams(location.search).has('catalog')) prepared.loaded.maps.set('OPS/landscape.png', BOOK_MAPS[0])
+  while (!useReader.getState().scene) await new Promise(resolve => requestAnimationFrame(resolve))
+  const scene = useReader.getState().scene
+  const meta = { ...prepared.parsed.meta, id: 'bk_image_fixture', addedAt: Date.now() }
+  useReader.setState({ current: { meta, parsed: prepared.parsed }, turned: 2, open: true, annotations: [], loading: null })
+  scene.loadBook({ ...prepared.loaded, id: meta.id, turned: 2 }, true)
+  ready = true
+  updateStatus()
+} catch (error) { status.textContent = String(error?.stack ?? error) }
+}
+</script></body></html>

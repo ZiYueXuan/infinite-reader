@@ -1,0 +1,6 @@
+<!doctype html><html><meta charset="utf-8"><title>Shelf deletion preview</title><div id="root"></div><script type="module">
+import React from 'react';import {createRoot} from 'react-dom/client';import {Shelf} from '/src/ui/Shelf.tsx';import {useReader} from '/src/store/useReader.ts';import '/src/index.css';
+const books=[{id:'demo1',title:'山间阅读札记',author:'演示作者'},{id:'demo2',title:'A Quiet Library',author:'Demo Author'}];
+useReader.setState({current:null,loading:null,library:books,session:{status:'local'},desk:'limestone',removeBook:async(id)=>{useReader.setState({library:useReader.getState().library.filter(b=>b.id!==id)})}});
+document.body.style.background='#d8d0be';createRoot(document.getElementById('root')).render(React.createElement(Shelf));
+</script></html>

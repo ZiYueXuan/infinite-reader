@@ -1,0 +1,7 @@
+# Resting paper and stack fore-edge alignment
+
+The resting leaf solver preserves paper arc length along the curved gutter, so its horizontal reach is shorter than the flat sheet width. StackBlock previously placed both its outer wall and its top cap at the full flat width. In a 700-leaf fixture near the start, the visible sheet ended at x=6.27818 while the cap extended to x=6.4, exposing about 1.9% of a page width as a bright flat strip. Hiding the stack removed the strip; text was not clipped.
+
+The stack now uses one row of the existing LeafSim resting solver to find its top reach. The cap and upper head/tail/fore-edge boundaries share that reach. The lower boundary retains the flat width, so paper thickness remains visible as a tapered wall instead of an exposed top shelf. The fore-edge normal follows the taper. Resting sheets, text coordinates, page-turn physics and cover dimensions are unchanged.
+
+Validation: `check-stack-edges.mjs` runs in a Vite browser against detached BookModels. It checks cap/leaf endpoints across 8, 81, 700 and 1,600 leaves, start/middle/end positions, four opening angles, and both turn directions (142 checks). `check-edge-press.mjs` covers 108 press/hover cases. Leaf simulation, gutter-fold and binding unit tests also pass. Production screenshots cover near-overhead and oblique views. A thin visible paper side wall at an oblique angle is expected; the flat bright strip above it is not.

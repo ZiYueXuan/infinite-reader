@@ -1,0 +1,31 @@
+<!doctype html><html lang="zh-CN"><meta charset="UTF-8"><title>标注改色回归检查</title>
+<style>body{margin:0;background:#ddd2bc;color:#343c30;font:16px system-ui}main{padding:36px}nav{display:flex;gap:16px}#sample{display:block;margin:170px 0 35px;padding:18px;font-size:22px}output{display:block;white-space:pre-wrap;line-height:1.8}</style>
+<main><h1>标注改色 · 本地隔离检查</h1><nav><button id="existing">打开已有标注</button><button id="selection">首次选中文字</button><button id="note">编辑便笺</button></nav><button id="sample">这是一段用于改色检查的原文。</button><output id="status"></output><div id="root"></div></main>
+<script type="module">
+import React from 'react'
+import {createRoot} from 'react-dom/client'
+import {MarkPopover,SelectionPopover,NoteEditor} from '/src/ui/Popovers.tsx'
+import {useReader} from '/src/store/useReader.ts'
+import {storage} from '/src/storage/index.ts'
+import {MARK_COLORS} from '/src/book/annotations.ts'
+import '/src/index.css'
+// Keep real UI/store actions; isolate persistence from both API and IndexedDB.
+const realFetch=fetch.bind(window)
+window.fetch=(input,init)=>{const u=new URL(input instanceof Request?input.url:String(input),location.href);if(u.origin!==location.origin||u.pathname.startsWith('/api/'))throw Error('External/API request blocked');return realFetch(input,init)}
+let pending=0,saved='none'
+storage.putAnnotation=async(a)=>{pending++;report();await new Promise(r=>setTimeout(r,1500));saved=a.color;pending--;report()}
+const locator={chapter:0,start:0,end:18},sample=document.getElementById('sample'),status=document.getElementById('status')
+const annotation={id:'mark-check',bookId:'fixture',color:'yellow',kind:'highlight',quote:sample.textContent,locator,createdAt:0,updatedAt:0,note:{text:'本地测试便笺',x:0,y:0,rot:0}}
+const pose=()=>({left:430,top:380,width:260,height:260,rotation:0})
+const scene={clearSelection(){},setAnnotations(){},noteScreenPose:pose,setEditingNote(){}}
+useReader.setState({annotations:[annotation],current:{meta:{id:'fixture'}},scene})
+function report(){const s=useReader.getState(),a=s.annotations[0];sample.style.background=MARK_COLORS[a.color].fill;status.textContent=`标注颜色：${a.color}\n工具栏：${s.popover?.kind??'已关闭'}\n便笺：${s.editingNote?'编辑中':'未编辑'}\n保存中：${pending} · 最后保存：${saved}`}
+function open(kind){const r=sample.getBoundingClientRect();useReader.setState({editingNote:null,popover:{kind,id:annotation.id,locator,text:sample.textContent,rect:{left:r.left,top:r.top,width:r.width,height:r.height}}})}
+sample.onclick=()=>open('mark')
+document.getElementById('existing').onclick=()=>open('mark')
+document.getElementById('selection').onclick=()=>open('selection')
+document.getElementById('note').onclick=()=>useReader.setState({popover:null,editingNote:{id:annotation.id,rect:pose()}})
+useReader.subscribe(report)
+createRoot(document.getElementById('root')).render(React.createElement(React.Fragment,null,React.createElement(MarkPopover),React.createElement(SelectionPopover),React.createElement(NoteEditor)))
+report()
+</script></html>

@@ -1,0 +1,89 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="UTF-8"><title>便笺关联虚线检查</title></head><body><div id="view" style="position:absolute;inset:0"></div><header data-ui style="position:fixed;top:10px;left:10px;z-index:60;padding:8px;background:#fff7e6;color:#343c31;border-radius:12px;font:13px system-ui"><div id="controls"></div><output id="result">准备测试书籍…</output></header>
+<script type="module">
+import {ReaderScene} from '/src/engine/scene.ts'
+import {BOOK} from '/src/engine/book.ts'
+import {NOTE_SIZE} from '/src/engine/notes.ts'
+import * as THREE from 'three'
+import {prepareBook} from '/src/book/loader.ts'
+import JSZip from 'jszip'
+import '/src/index.css'
+const fetchReal=fetch.bind(window)
+window.fetch=(input,init)=>{const u=new URL(input instanceof Request?input.url:String(input),location.href);if(u.origin!==location.origin||u.pathname.startsWith('/api/'))throw Error('Fixture blocks external/API fetch');return fetchReal(input,init)}
+const output=document.querySelector('#result'),noop=()=>{}
+let editing=null,annotations=[],moved=0,selections=0,markClicks=0
+const scene=new ReaderScene(document.querySelector('#view'),{onSelection:s=>{if(s)selections++},onTurned:noop,onMarkClick:()=>{markClicks++},onNoteClick:id=>{editing=id;scene.setEditingNote(id)},onNoteMoved:(id,x,y,rot)=>{annotations=annotations.map(a=>a.id===id?{...a,note:{...a.note,x,y,rot}}:a);scene.setAnnotations(annotations);moved++;},onBlankDeskClick:()=>{editing=null;scene.setEditingNote(null)},onOpenChange:noop,onZoom:noop,onTilt:noop})
+const zip=new JSZip();zip.file('mimetype','application/epub+zip');zip.file('META-INF/container.xml','<container xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>')
+zip.file('OPS/content.opf','<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="id"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="id">note-link-fixture</dc:identifier><dc:title>阅读与思考</dc:title><dc:creator>Local fixture</dc:creator><dc:language>zh</dc:language></metadata><manifest><item id="ch" href="chapter.xhtml" media-type="application/xhtml+xml"/></manifest><spine><itemref idref="ch"/></spine></package>')
+zip.file('OPS/chapter.xhtml','<html xmlns="http://www.w3.org/1999/xhtml"><head><title>阅读与思考</title></head><body><h1>阅读与思考</h1>'+Array.from({length:45},()=>'<p>阅读是一场安静的对话。我们在书页之间留下思考，用便笺保存那些值得再次回味的文字。每一条细淡的连线，都将想法带回它最初发生的地方。真正重要的并非读过多少页，而是理解了多少，记住了什么。</p>').join('')+'</body></html>')
+const prepared=await prepareBook(await zip.generateAsync({type:'blob'}));const pag=prepared.loaded.pag
+const turned=2
+scene.loadBook({...prepared.loaded,turned},true)
+scene.setDesk('stone');scene.setTilt(.22,false)
+for(const [i,index]of [turned*2-1,turned*2].entries()){
+ const p=pag.pages[index],line=p.lines[4],start=line.words.find(w=>w.s>=0).s,end=p.lines[5].words.at(-1).e
+ annotations.push({id:'note-link-'+i,bookId:'fixture',kind:'highlight',color:i?'violet':'green',quote:'标注文字',locator:{chapter:p.chapter,start,end},note:{text:i?'把这段文字留下，再慢慢思考。':'这里是想法的起点。',x:(i?1:-1)*(BOOK.W+NOTE_SIZE*.8),y:2.2,rot:0},createdAt:0,updatedAt:0})
+}
+scene.setAnnotations(annotations);scene.advance(2)
+const original=structuredClone(annotations)
+function button(text,fn){const b=document.createElement('button');b.textContent=text;b.style.cssText='padding:5px 9px;margin:2px;border:1px solid #c1b79f;border-radius:8px';b.onclick=fn;document.querySelector('#controls').append(b)}
+let dark=false,low=false,closed=false
+button('深浅桌面',()=>{dark=!dark;scene.setDesk(dark?'ink':'stone')})
+button('改变视角',()=>{low=!low;scene.setTilt(low?1.05:.22)})
+button('放大',()=>scene.zoomBy(1.2));button('缩小',()=>scene.zoomBy(1/1.2))
+button('后一页',()=>scene.goToLeaf(turned+1));button('返回标注页',()=>scene.goToLeaf(turned))
+button('编辑 / 完成',()=>{editing=editing?null:annotations[0].id;scene.setEditingNote(editing)})
+button('开合书籍',()=>{closed=!closed;scene.setOpen(!closed)})
+button('恢复便笺位置',()=>{annotations=structuredClone(original);scene.setAnnotations([]);scene.setAnnotations(annotations)})
+button('放入左右书页',()=>{editing=null;scene.setEditingNote(null);annotations=original.map((a,i)=>({...a,note:{...a.note,x:(i?1:-1)*BOOK.W*.5,y:2.2}}));scene.setAnnotations([]);scene.setAnnotations(annotations);scene.advance(2);scene.paused=false})
+button('检查手柄缩放',()=>{
+ const handle=document.querySelector('.note-drag-handle'),r=handle.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2
+ const wheel=new WheelEvent('wheel',{bubbles:true,cancelable:true,ctrlKey:true,deltaY:-30,clientX:x,clientY:y})
+ let before=scene.view.tzoom;handle.dispatchEvent(wheel);const wheelOk=wheel.defaultPrevented&&scene.view.tzoom>before
+ const mouseWheel=new WheelEvent('wheel',{bubbles:true,cancelable:true,deltaY:-100,clientX:x,clientY:y})
+ before=scene.view.tzoom;handle.dispatchEvent(mouseWheel);const mouseOk=mouseWheel.defaultPrevented&&scene.view.tzoom>before
+ const start=new Event('gesturestart',{bubbles:true,cancelable:true});Object.assign(start,{clientX:x,clientY:y,scale:1});handle.dispatchEvent(start)
+ before=scene.view.tzoom;const change=new Event('gesturechange',{bubbles:true,cancelable:true});Object.assign(change,{scale:1.2,clientX:x,clientY:y});handle.dispatchEvent(change)
+ const end=new Event('gestureend',{bubbles:true,cancelable:true});Object.assign(end,{scale:1.2});handle.dispatchEvent(end)
+ const gestureOk=start.defaultPrevented&&change.defaultPrevented&&end.defaultPrevented&&scene.view.tzoom>before
+ const otherUi=document.createElement('button');otherUi.dataset.ui='';document.querySelector('#view').appendChild(otherUi)
+ const uiWheel=new WheelEvent('wheel',{bubbles:true,cancelable:true,ctrlKey:true,deltaY:-30});before=scene.view.tzoom;otherUi.dispatchEvent(uiWheel);const uiOk=!uiWheel.defaultPrevented&&scene.view.tzoom===before;otherUi.remove()
+ output.textContent=`${wheelOk?'PASS':'FAIL'} 手柄 Ctrl 滚轮 · ${mouseOk?'PASS':'FAIL'} 手柄普通滚轮 · ${gestureOk?'PASS':'FAIL'} 手柄触控板手势 · ${uiOk?'PASS':'FAIL'} 其他控件不拦截滚轮`
+})
+button('运行回归',()=>{
+ const checks=[];function check(name,ok){checks.push(`${ok?'PASS':'FAIL'} ${name}`);if(!ok)throw Error(name)}
+ const paths=()=>Array.from(document.querySelectorAll('.note-connectors path'))
+ const handles=()=>Array.from(document.querySelectorAll('.note-drag-handle'))
+ const handleFollowsPaper=()=>handles().every(button=>{
+  const note=scene.notes.get(button.dataset.noteId),geo=note.mesh.geometry,pos=geo.attributes.position,edge=geo.parameters.widthSegments
+  note.mesh.updateWorldMatrix(true,false)
+  const project=i=>{const p=new THREE.Vector3().fromBufferAttribute(pos,i).applyMatrix4(note.mesh.matrixWorld).project(scene.camera);return {x:(p.x+1)*scene.w/2,y:(1-p.y)*scene.h/2}}
+  const tl=project(0),right=project(1),bottom=project(edge+1),m=new DOMMatrix(getComputedStyle(button).transform)
+  const ax=(right.x-tl.x)*edge/100,ay=(right.y-tl.y)*edge/100,bx=(bottom.x-tl.x)*geo.parameters.heightSegments/100,by=(bottom.y-tl.y)*geo.parameters.heightSegments/100
+  return [m.a-ax,m.b-ay,m.c-bx,m.d-by,m.e-(tl.x+ax*3+bx),m.f-(tl.y+ay*3+by)].every(delta=>Math.abs(delta)<0.01)
+ })
+ try{
+ scene.paused=true;scene.setOpen(true);scene.goToLeaf(turned);scene.resetView();editing=null;scene.setEditingNote(null);annotations=structuredClone(original);scene.setAnnotations([]);scene.setAnnotations(annotations);scene.advance(5)
+ check('左右页各一条虚线',paths().length===2)
+ check('每张便笺均有六点手柄',handles().length===2&&handles().every(h=>h.querySelectorAll('circle').length===6))
+ check('手柄比例和位置贴合纸面',handleFollowsPaper())
+ const before=paths().map(p=>p.getAttribute('d')).join('|');scene.zoomBy(1.2);scene.advance(2);check('缩放跟随',paths().map(p=>p.getAttribute('d')).join('|')!==before);check('放大后手柄比例和位置不变',handleFollowsPaper())
+ scene.zoomBy(.45);scene.advance(3);check('缩小后手柄比例和位置不变',handleFollowsPaper());scene.zoomBy(1/.45);scene.advance(3)
+ const zoomed=paths().map(p=>p.getAttribute('d')).join('|');scene.setTilt(1,false);scene.renderNow();check('低角度跟随',paths().length===2&&paths().map(p=>p.getAttribute('d')).join('|')!==zoomed);check('低角度手柄贴合纸面',handleFollowsPaper())
+ scene.setEditingNote(annotations[0].id);check('编辑时只隐藏对应连线',paths().length===1);scene.setEditingNote(null);check('Done恢复连线',paths().length===2)
+ scene.suspendInteraction(true);check('浮层隐藏连线',paths().length===0);scene.suspendInteraction(false);scene.renderNow()
+ scene.goToLeaf(turned+1);scene.advance(.1);check('翻页中隐藏',paths().length===0);scene.advance(5);check('原文不在当前页隐藏',paths().length===0)
+ scene.goToLeaf(turned);scene.advance(5);check('翻回后恢复',paths().length===2)
+ scene.setOpen(false);scene.advance(5);check('合书隐藏',paths().length===0);scene.setOpen(true);scene.advance(5)
+ scene.setAnnotations([]);scene.renderNow();check('删除便笺移除连线',paths().length===0)
+ scene.setAnnotations(annotations);scene.advance(2);scene.setDesk('stone');scene.setTilt(.22,false);scene.resetView();scene.advance(2)
+ scene.setEditingNote(annotations[0].id);check('编辑时只隐藏对应手柄',handles().length===1);scene.setEditingNote(null);check('完成后恢复手柄',handles().length===2)
+ scene.suspendInteraction(true);check('浮层隐藏手柄',handles().length===0);scene.suspendInteraction(false);scene.renderNow()
+ scene.goToLeaf(turned+1);scene.advance(.1);check('翻页时隐藏手柄',handles().length===0);scene.advance(5);check('翻页完成恢复手柄',handles().length===2)
+ scene.setOpen(false);scene.advance(5);check('合书隐藏手柄',handles().length===0);scene.setOpen(true);scene.goToLeaf(turned);scene.advance(5)
+ scene.setAnnotations([]);scene.renderNow();check('删除便笺移除手柄',handles().length===0);scene.setAnnotations(annotations);scene.advance(2)
+ document.querySelector('#result').textContent=checks.join(' · ')
+ }catch(e){output.textContent=checks.join(' · ')+' · '+e}finally{scene.paused=false}
+})
+let last=0;function status(t){if(t-last>500){const view=document.querySelector('#view');view.dataset.links=document.querySelectorAll('.note-connectors path').length;view.dataset.moved=moved;view.dataset.editing=editing??'';view.dataset.selections=selections;view.dataset.markClicks=markClicks;view.dataset.zoom=scene.view.tzoom;last=t}requestAnimationFrame(status)}requestAnimationFrame(status)
+output.textContent='READY · 可拖动便笺验证连线 · 不访问生产数据'
+</script></body></html>

@@ -1,0 +1,49 @@
+.ask .msg.ai { min-width: 0; width: 100%; white-space: normal; }
+.answer-markdown { min-width: 0; overflow-wrap: anywhere; }
+.ask .answer-markdown > :first-child { margin-top: 0; }
+.ask .answer-markdown > :last-child { margin-bottom: 0; }
+.ask .answer-markdown :is(h1,h2,h3,h4,h5,h6) { font-family: inherit; font-weight: 650; line-height: 1.4; margin: 1.2em 0 .55em; color: #f5edd8; }
+.answer-markdown h1 { font-size: 1.5em; }
+.answer-markdown h2 { font-size: 1.3em; padding-bottom: .3em; border-bottom: 1px solid var(--agent-line); }
+.answer-markdown h3 { font-size: 1.15em; }
+.answer-markdown :is(h4,h5,h6) { font-size: 1em; }
+.ask .answer-markdown p { margin: .65em 0; }
+.ask .answer-markdown :is(ul,ol) { margin: .7em 0; padding-left: 1.6em; }
+.ask .answer-markdown li { margin: .25em 0; }
+.ask .answer-markdown li > :is(ul,ol) { margin: .25em 0; }
+.answer-markdown .contains-task-list { list-style: none; padding-left: .3em; }
+.answer-markdown input[type=checkbox] { margin-right: .5em; accent-color: var(--agent-accent); }
+.ask .answer-markdown blockquote { font: inherit; margin: .8em 0; padding: .15em .8em; background: #d8c59d08; }
+.answer-markdown a { color: #e3cc98; text-decoration: underline; text-underline-offset: 3px; }
+.answer-markdown hr { border: 0; border-top: 1px solid #8c947b; margin: 1.2em 0; }
+.answer-markdown :is(code,kbd,samp,pre) { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .88em; }
+.answer-markdown :not(pre) > code, .answer-markdown kbd { background: #ffffff10; padding: .12em .3em; border-radius: 4px; box-decoration-break: clone; }
+.answer-code { margin: .85em 0; overflow: hidden; border: 1px solid var(--agent-line); border-radius: 9px; background: #101912; }
+.answer-code-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; font-size: 11px; color: #bdc7b7; background: #ffffff06; }
+.answer-code-toolbar button { padding: 3px 7px; border: 1px solid #7c876766; border-radius: 4px; }
+.ask .answer-markdown pre { margin: 0; padding: 12px; overflow: auto; white-space: pre; line-height: 1.6; tab-size: 4; }
+.answer-markdown pre code { font-size: 1em; padding: 0; background: transparent; }
+.answer-table { max-width: 100%; overflow-x: auto; margin: .9em 0; border: 1px solid var(--agent-line); border-radius: 8px; scrollbar-width: thin; }
+.answer-table table { width: 100%; border-collapse: collapse; font-size: .92em; }
+.answer-table :is(th,td) { min-width: 100px; padding: 8px 10px; border: 1px solid var(--agent-line); text-align: left; vertical-align: top; }
+.answer-table th { background: #d8c59d12; font-weight: 650; }
+.answer-table tr:nth-child(even) { background: #ffffff04; }
+.answer-markdown img { display: block; max-width: 100%; height: auto; margin: .65em 0; border-radius: 5px; }
+.answer-markdown details { margin: .7em 0; }
+.answer-markdown summary { cursor: pointer; color: var(--agent-accent); }
+.answer-markdown .footnotes { margin-top: 1.25em; padding-top: .5em; border-top: 1px solid var(--agent-line); font-size: .9em; }
+.answer-markdown .footnotes h2 { position: static; width: auto; height: auto; clip-path: none; font-size: 1em; }
+.answer-markdown .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: .35em 0; }
+.answer-markdown .katex { font-size: 1.1em; }
+.answer-diagram { padding: 8px; }
+.answer-diagram img { width: 100%; }
+.answer-diagram-status { font-size: 12px; color: var(--agent-muted); }
+/* Scoped syntax colors, so code themes do not affect book typography. */
+.answer-markdown .hljs { color: #e5eadf; }
+.answer-markdown :is(.hljs-keyword,.hljs-selector-tag,.hljs-literal) { color: #d9ace8; }
+.answer-markdown :is(.hljs-string,.hljs-attr,.hljs-template-tag) { color: #b5d893; }
+.answer-markdown :is(.hljs-number,.hljs-symbol,.hljs-bullet) { color: #f0c18a; }
+.answer-markdown :is(.hljs-title,.hljs-section,.hljs-built_in) { color: #9fd6dd; }
+.answer-markdown :is(.hljs-comment,.hljs-quote) { color: #a0af9a; font-style: italic; }
+.answer-table :is(th,td)[align=center] { text-align: center; }
+.answer-table :is(th,td)[align=right] { text-align: right; }

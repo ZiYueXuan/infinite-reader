@@ -1,0 +1,8 @@
+.language-switch { display:inline-flex; align-items:center; gap:4px; color:inherit; font:inherit; flex-shrink:0; }
+.language-switch select { cursor:pointer; color:inherit; background:transparent; border:0; font:inherit; padding:6px 3px; max-width:100px; }
+.language-switch select option { color:#252820; background:#f5f1e7; }
+.language-switch select:focus-visible { outline:2px solid currentColor; outline-offset:2px; border-radius:4px; }
+.login-language { display:flex; justify-content:flex-end; margin-bottom:8px; }
+.account-language { padding:8px 14px; }
+.language-switch > span { display:inline-flex; align-items:center; }
+@media (max-width:540px) { .language-switch {font-size:12px} .language-switch > span {display:none} .language-switch select {max-width:75px} }

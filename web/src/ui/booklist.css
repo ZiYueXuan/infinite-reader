@@ -1,0 +1,25 @@
+/* Keep all three peer tabs readable in the narrow drawer, in either language. */
+.drawer-tabbed header .tabs button { min-width: 0; height: auto; min-height: 36px; padding: 4px; font-size: 12px; line-height: 1.3; }
+.drawer-tabbed header .tabs button:nth-child(2) { flex: 1.7; }
+.booklist-panel { padding: 14px 8px 8px; overflow-wrap: anywhere; }
+.booklist-empty, .booklist-progress { padding: 26px 4px 12px; text-align: center; }
+.booklist-empty > svg, .booklist-progress > svg { color: var(--muted); margin: 0 auto 10px; }
+.booklist-panel p { line-height: 1.65; font-size: 13px; }
+.booklist-panel .hint { font-size: 12px; line-height: 1.65; }
+.booklist-panel .booklist-extract { width: 100%; height: auto; padding: 13px 10px; gap: 8px; margin: 10px 0; white-space: normal; }
+.booklist-extract > svg { flex: none; }
+.booklist-extract small { display: block; margin-top: 5px; font-size: 11px; font-weight: 400; opacity: .8; line-height: 1.5; }
+.booklist-progress progress { width: 100%; height: 5px; accent-color: var(--accent); }
+.booklist-summary { display: flex; flex-direction: column; gap: 7px; padding: 2px 0 18px; border-bottom: 1px solid var(--hair); }
+.booklist-summary b { font-size: 15px; font-weight: 500; }
+.booklist-summary span { font-size: 11px; color: var(--muted); }
+.booklist-items { list-style: decimal; padding-left: 23px; margin: 4px 0 18px; }
+.booklist-items li { padding: 16px 0; border-bottom: 1px solid var(--hair); }
+.booklist-items li::marker { font-size: 12px; color: var(--muted); }
+.booklist-items h3 { font: 500 16px/1.5 var(--font-book, serif); margin: 0; }
+.booklist-panel .booklist-author { margin: 5px 0 8px; font-size: 12px; color: var(--muted); }
+.booklist-items summary { font-size: 11px; color: var(--muted); cursor: pointer; margin-top: 10px; }
+.booklist-items blockquote { font-size: 12px; line-height: 1.75; margin: 10px 0 0; padding: 0 0 0 10px; border-left: 2px solid var(--hair); white-space: pre-wrap; }
+.booklist-error .btn { height: auto; min-height: 34px; white-space: normal; margin: 4px 4px 4px 0; padding: 8px 10px; font-size: 12px; }
+
+.booklist-items h3, .booklist-items blockquote, .booklist-author { user-select: text; -webkit-user-select: text; }

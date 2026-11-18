@@ -1,0 +1,7 @@
+# Copy to .dev.vars for local dev (never commit .dev.vars). In production use `wrangler secret put <NAME>`.
+SESSION_SECRET=dev-only-change-me-32-bytes-minimum-xxxxxxxx
+DEEPSEEK_API_KEY=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+RESEND_API_KEY=
+COST_DEBUG_EMAILS=

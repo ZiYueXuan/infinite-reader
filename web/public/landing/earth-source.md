@@ -1,0 +1,1 @@
+The globe texture is a simplified equirectangular rendering of the Natural Earth water mask in `public/atlas/water.json` (public domain). See `public/atlas/README.md` for provenance. Geometry is simplified to 0.18 degrees for this small illustrative globe; it is not a detailed navigation map.

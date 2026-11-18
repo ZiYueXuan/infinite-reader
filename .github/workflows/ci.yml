@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run lint
+      - run: npm run build
+      - name: Check selection after page turns
+        env:
+          VITE_BACKEND: local
+          READER_URL: http://127.0.0.1:5183/?sample=zh&lang=zh-CN
+        run: |
+          browser_dir="$RUNNER_TEMP/infinite-reader-browser"
+          npm install --prefix "$browser_dir" --no-save --no-package-lock --no-audit --no-fund puppeteer-core@24.43.1
+          PUPPETEER_CORE="$(node -p 'require.resolve("puppeteer-core", { paths: [process.argv[1]] })' "$browser_dir")"
+          CHROME_BIN="$(command -v google-chrome)"
+          export PUPPETEER_CORE CHROME_BIN
+
+          ./node_modules/.bin/vite --host 127.0.0.1 --port 5183 --strictPort > "$RUNNER_TEMP/reader-vite.log" 2>&1 &
+          vite_pid=$!
+          trap 'kill "$vite_pid" 2>/dev/null || true' EXIT
+          if ! curl --fail --silent --show-error --retry 15 --retry-connrefused --retry-delay 1 --max-time 5 "$READER_URL" -o /dev/null; then
+            cat "$RUNNER_TEMP/reader-vite.log"
+            exit 1
+          fi
+          node scripts/check-selection-readiness.mjs
+
+  worker:
+    name: Worker
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: worker
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      # The Worker lockfile uses legacy peer resolution (see worker/README.md).
+      - run: npm ci --legacy-peer-deps --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
