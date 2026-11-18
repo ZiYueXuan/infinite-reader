@@ -12,6 +12,8 @@
   <a href="./worker/README.md">后端开发</a>
 </p>
 
+<p align="center">开源版会随正式版本更新。</p>
+
 ![Infinite Reader 中打开中文样书的仿真双页视图](./web/public/landing/reader-zh-CN.webp)
 
 ## 阅读体验
