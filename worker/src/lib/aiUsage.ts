@@ -6,7 +6,7 @@ export interface AiUsageContext {
   bookId: string | null;
 }
 export interface AiCallContext extends AiUsageContext {
-  feature: "chapter_slides" | "booklist" | "mindmap" | "highlight_mindmap" | "atlas_primary" | "atlas_fallback" | "text_atlas" | "ask" | "web_search" | "index_embedding" | "retrieval_embedding";
+  feature: "chapter_slides" | "booklist" | "mindmap" | "highlight_mindmap" | "atlas_primary" | "atlas_fallback" | "text_atlas" | "ask" | "ask_summary" | "web_search" | "index_embedding" | "retrieval_embedding";
   provider: "deepseek" | "cloudflare";
   model: string;
   inputCharacters?: number;

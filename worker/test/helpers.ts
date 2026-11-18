@@ -206,11 +206,11 @@ export function mockFetch(handlers: Record<string, (req: Request) => Response | 
   return { calls, restore: () => spy.mockRestore() };
 }
 
-export function sseStream(chunks: string[], usage = { prompt_tokens: 10, completion_tokens: 5 }): Response {
+export function sseStream(chunks: string[], usage = { prompt_tokens: 10, completion_tokens: 5 }, finishReason: "stop" | "length" = "stop"): Response {
   const enc = new TextEncoder();
   const lines = [
     ...chunks.map((c) => `data: ${JSON.stringify({ choices: [{ delta: { content: c } }] })}\n\n`),
-    `data: ${JSON.stringify({ choices: [{ delta: {}, finish_reason: "stop" }] })}\n\n`,
+    `data: ${JSON.stringify({ choices: [{ delta: {}, finish_reason: finishReason }] })}\n\n`,
     `data: ${JSON.stringify({ choices: [], usage })}\n\n`,
     "data: [DONE]\n\n",
   ];

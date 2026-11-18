@@ -17,7 +17,7 @@ export const SOURCES = [
   { label: 'D1', url: 'https://developers.cloudflare.com/d1/platform/pricing/' },
   { label: 'R2', url: 'https://developers.cloudflare.com/r2/pricing/' },
 ];
-export const FEATURE_LABELS: Record<string, string> = { text_atlas: '阅读地图', web_search: '外部搜索', chapter_slides: '章节幻灯片', booklist: '提取书单', mindmap: '章节思维导图', highlight_mindmap: '划线思维导图', ask: 'AI 问答', index_embedding: '书籍索引向量化', retrieval_embedding: '检索向量化', atlas_primary: '地图识别', atlas_fallback: '地图识别 · 备用模型' };
+export const FEATURE_LABELS: Record<string, string> = { text_atlas: '阅读地图', web_search: '外部搜索', chapter_slides: '章节幻灯片', booklist: '提取书单', mindmap: '章节思维导图', highlight_mindmap: '划线思维导图', ask: 'AI 问答', ask_summary: '对话历史摘要', index_embedding: '书籍索引向量化', retrieval_embedding: '检索向量化', atlas_primary: '地图识别', atlas_fallback: '地图识别 · 备用模型' };
 export interface UsageRow {
   id: string; operation_id: string; book_id: string | null; book_title?: string | null; feature: string; provider: string
   requested_model: string; response_model: string | null; status: string; started_at: number

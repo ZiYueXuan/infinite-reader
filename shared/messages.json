@@ -1980,6 +1980,10 @@
     "AI 问答",
     "AI conversation"
   ],
+  "对话历史摘要": [
+    "对话历史摘要",
+    "Conversation summaries"
+  ],
   "书籍索引向量化": [
     "书籍索引向量化",
     "Book index embeddings"
@@ -2687,6 +2691,10 @@
   "The AI response was interrupted. Please try again.": [
     "AI 回答已中断，请重试。",
     "The AI response was interrupted. Please try again."
+  ],
+  "Conversation history could not be fully summarized. Send your question again to resume.": [
+    "历史对话尚未整理完。请重新发送问题，已完成的摘要会自动复用。",
+    "Conversation history could not be fully summarized. Send your question again to resume."
   ],
   "Back to reference {0}": [
     "返回引用 {0}",

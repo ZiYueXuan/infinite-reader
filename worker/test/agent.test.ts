@@ -9,6 +9,20 @@ beforeEach(resetDb);
 let restore: (() => void) | undefined;
 afterEach(() => { restore?.(); restore = undefined; });
 
+async function longDiscussion() {
+  const reader = await setup();
+  for (let i = 0; i < 8; i++) {
+    await env.DB.prepare("INSERT INTO chat_messages (id, book_id, user_id, thread_id, role, content, created_at) VALUES (?, ?, ?, 'default', ?, ?, ?)")
+      .bind(`legacy-${i}`, reader.bookId, reader.scope.userId, i % 2 ? "assistant" : "user", `Chapter ${i}. ` + "Earlier discussion of the book. ".repeat(80), i).run();
+  }
+  const ask = (operationId: string) => reader.client.fetch("/api/ask", { method: "POST", json: { bookId: reader.bookId, question: "Continue the discussion", operationId } });
+  return { ...reader, ask };
+}
+
+// Report a high context measurement and keep enough recent text for Pi to select only the old prefix.
+const recentAnswer = () => sseStream(["Recent answer. ".repeat(1200)], { prompt_tokens: 30_000, completion_tokens: 4000 });
+const cappedSummary = () => sseStream(["INCOMPLETE OUTPUT"], { prompt_tokens: 4010, completion_tokens: 8192 }, "length");
+
 describe("Pi reader harness", () => {
   it("executes DSML-text calls through Pi and persists only the final answer", async () => {
     const { client, bookId } = await setup();
@@ -65,26 +79,109 @@ describe("Pi reader harness", () => {
     expect(await env.DB.prepare("SELECT status, error_code FROM ai_usage WHERE operation_id = 'bad-protocol'").first()).toMatchObject({ status: "failed", error_code: "llm_tool_protocol" });
   });
 
-  it("meters automatic context compaction through the same provider boundary", async () => {
-    const { client, bookId, scope } = await setup();
-    for (let i = 0; i < 10; i++) await env.DB.prepare("INSERT INTO chat_messages (id, book_id, user_id, thread_id, role, content, created_at) VALUES (?, ?, ?, 'default', ?, ?, ?)").bind(`legacy-${i}`, bookId, scope.userId, i % 2 ? "assistant" : "user", "Earlier discussion of the book. ".repeat(120), i).run();
-    let calls = 0;
+  it("splits a capped history summary, meters each attempt and answers the question in the same turn", async () => {
+    const { ask, bookId, client } = await longDiscussion();
     const requests: any[] = [];
     restore = mockFetch({ "https://llm.test/chat/completions": async req => {
       requests.push(await req.json());
-      calls++;
-      // Keep enough recent text for Pi to select an older prefix without discarding the whole history.
-      return sseStream([calls === 1 ? "Recent answer. ".repeat(1200) : calls === 2 ? "The earlier conversation discussed this book." : "Hello"], { prompt_tokens: calls === 1 ? 30_000 : 100, completion_tokens: 10 });
+      if (requests.length === 1) return recentAnswer();
+      if (requests.length === 2) return cappedSummary();
+      if (requests.length === 5) return toolStream("get_book_outline", {});
+      return sseStream([requests.length === 3 ? "First half summary" : requests.length === 4 ? "Combined history" : "Final answer"]);
     } }).restore;
-    await client.fetch("/api/ask", { method: "POST", json: { bookId, question: "hello", operationId: "before-compaction" } });
-    const response = await client.fetch("/api/ask", { method: "POST", json: { bookId, question: "hello again", operationId: "with-compaction" } });
-    expect(parseSse(await response.text()).at(-1)?.event).toBe("done");
-    expect(calls).toBe(3);
-    expect(JSON.stringify(requests[1].messages)).toContain("<conversation>");
-    expect(JSON.stringify(requests[2].messages)).toContain("The earlier conversation discussed this book.");
-    const usage = await env.DB.prepare("SELECT * FROM ai_usage WHERE operation_id = 'with-compaction'").all<any>();
-    expect(usage.results).toHaveLength(2);
-    expect(usage.results.every(c => c.status === "succeeded" && c.input_tokens === 100 && c.output_tokens === 10)).toBe(true);
+    await ask("before-compaction");
+    const response = await (await ask("with-compaction")).text();
+    expect(parseSse(response).at(-1)).toMatchObject({ event: "done", data: { status: "done" } });
+    expect(response).not.toMatch(/INCOMPLETE OUTPUT|First half summary|Combined history/);
+    expect(requests.map(r => r.max_tokens ?? r.max_completion_tokens)).toEqual([4096, 8192, 8192, 8192, 4096, 4096]);
+    const summaries = requests.slice(1, 4);
+    expect(summaries.every(r => !r.tools && !r.tool_choice)).toBe(true);
+    const [whole, left, right] = summaries.map(r => JSON.parse(r.messages.at(-1).content));
+    expect(left.excerpt + right.excerpt).toBe(whole.excerpt);
+    expect(left.previousSummary).toBe("");
+    expect(right.previousSummary).toBe("First half summary");
+    expect(JSON.stringify(requests[4].messages)).toContain("Combined history");
+    expect(JSON.stringify(requests[4].messages)).toContain("Recent answer.");
+    expect(requests[4].tool_choice).not.toBe("none");
+    expect(JSON.parse(requests[5].messages.at(-1).content).chapters).toHaveLength(2);
+    const history = await (await client.fetch(`/api/books/${bookId}/chat`)).json() as any;
+    expect(history.messages.at(-1).content).toBe("Final answer");
+    const usage = await env.DB.prepare("SELECT feature, status, finish_reason, error_code, output_tokens FROM ai_usage WHERE operation_id = 'with-compaction' ORDER BY started_at, rowid").all<any>();
+    expect(usage.results.map(r => [r.feature, r.status, r.output_tokens])).toEqual([
+      ["ask_summary", "failed", 8192], ["ask_summary", "succeeded", 5], ["ask_summary", "succeeded", 5], ["ask", "succeeded", 5], ["ask", "succeeded", 5],
+    ]);
+    expect(usage.results[0]).toMatchObject({ finish_reason: "length", error_code: "summary_output_limit" });
+  });
+
+  it("resumes only the unfinished segment after a provider retry, a failed turn and a Durable Object restart", async () => {
+    const { ask, inject } = await longDiscussion();
+    const parts: { previousSummary: string; excerpt: string }[] = [];
+    let answers = 0, recovered = false;
+    restore = mockFetch({ "https://llm.test/chat/completions": async req => {
+      const body = await req.json() as any;
+      if (body.tools) return ++answers === 1 ? recentAnswer() : sseStream(["Recovered answer"]);
+      parts.push(JSON.parse(body.messages.at(-1).content));
+      if (parts.length === 1) return cappedSummary();
+      if (parts.length === 2) return sseStream(["Saved first half"]);
+      if (!recovered) return new Response("Service unavailable", { status: 503 });
+      return sseStream(["Both halves"]);
+    } }).restore;
+    await ask("prepare-resume");
+    const failed = parseSse(await (await ask("failed-summary")).text());
+    expect(failed.at(-1)).toMatchObject({ event: "error", data: { code: "history_summary_incomplete" } });
+    expect(parts).toHaveLength(4);
+    expect(parts[2]).toEqual(parts[3]);
+    await abortAllDurableObjects();
+    await inject();
+    recovered = true;
+    const events = parseSse(await (await ask("resumed-summary")).text());
+    expect(events.at(-1)).toMatchObject({ event: "done", data: { status: "done" } });
+    expect(events.filter(e => e.event === "answer").at(-1)?.data.text).toBe("Recovered answer");
+    expect(parts).toHaveLength(5);
+    expect(parts[4]).toEqual(parts[2]);
+    expect(parts[4].previousSummary).toBe("Saved first half");
+    expect(answers).toBe(2);
+    const usage = await env.DB.prepare("SELECT feature FROM ai_usage WHERE operation_id = 'resumed-summary' ORDER BY started_at, rowid").all();
+    expect(usage.results).toEqual([{ feature: "ask_summary" }, { feature: "ask" }]);
+  });
+
+  it("bounds repeated truncation and continues from the saved split on the next turn", async () => {
+    const { ask } = await longDiscussion();
+    const excerpts: string[] = [];
+    let answers = 0;
+    restore = mockFetch({ "https://llm.test/chat/completions": async req => {
+      const body = await req.json() as any;
+      if (body.tools) return ++answers === 1 ? recentAnswer() : sseStream(["Answer"]);
+      excerpts.push(JSON.parse(body.messages.at(-1).content).excerpt);
+      // Two nested splits, then a successful prefix, then repeated truncation of its sibling.
+      return [1, 2, 4, 5].includes(excerpts.length) ? cappedSummary() : sseStream(["Complete segment"]);
+    } }).restore;
+    await ask("prepare-budget");
+    const first = parseSse(await (await ask("summary-budget")).text());
+    expect(first.at(-1)).toMatchObject({ event: "error", data: { code: "history_summary_incomplete" } });
+    expect(excerpts).toHaveLength(5);
+    expect(answers).toBe(1);
+    const next = parseSse(await (await ask("summary-budget-resume")).text());
+    expect(next.at(-1)).toMatchObject({ event: "done", data: { status: "done" } });
+    expect(excerpts[5].length).toBeLessThan(excerpts[4].length);
+    expect([excerpts[2], ...excerpts.slice(5)].join("")).toBe(excerpts[0]);
+    expect(answers).toBe(2);
+  });
+
+  it("keeps an ordinary capped answer on the answer path", async () => {
+    const { client, bookId } = await setup();
+    const requests: any[] = [];
+    restore = mockFetch({ "https://llm.test/chat/completions": async req => {
+      requests.push(await req.json());
+      return sseStream(["Visible answer"], { prompt_tokens: 100, completion_tokens: 4096 }, "length");
+    } }).restore;
+    const response = await client.fetch("/api/ask", { method: "POST", json: { bookId, question: "Explain the tag <conversation>", operationId: "capped-answer" } });
+    const events = parseSse(await response.text());
+    expect(events.at(-1)?.data.status).toBe("done");
+    expect(events.filter(e => e.event === "answer").at(-1)?.data.text).toBe("Visible answer");
+    expect(requests.map(r => r.max_tokens ?? r.max_completion_tokens)).toEqual([4096]);
+    expect(await env.DB.prepare("SELECT feature, status, finish_reason FROM ai_usage WHERE operation_id = 'capped-answer'").first())
+      .toEqual({ feature: "ask", status: "succeeded", finish_reason: "length" });
   });
 
   it("caps repeated model/tool rounds even if the provider ignores tool_choice none", async () => {

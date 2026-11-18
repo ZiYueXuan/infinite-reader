@@ -18,14 +18,14 @@ export type { Citation, BookCitation, WebCitation } from '../../../shared/citati
 export interface Operation extends Scope {
   id: string; request: AskRequest; model: string; startedAt: number; deadline: number;
   userMessageId: string; messageId: string;
-  modelCalls: number; toolCalls: number; citationIds: number[];
+  modelCalls: number; summaryCalls?: number; toolCalls: number; citationIds: number[];
   webSearchAllowed?: boolean; webSearchQueries?: string[];
   retrieval: "skipped" | "ok" | "failed";
   status: "running" | "done" | "error" | "aborted";
   errorCode?: string; text: string;
   submitted?: boolean; projected?: boolean;
 }
-export const LIMITS = { modelCalls: 6, tools: 8, webSearches: 2, durationMs: 180_000, outputTokens: 4096 };
+export const LIMITS = { modelCalls: 6, tools: 8, webSearches: 2, durationMs: 180_000, answerTokens: 4096, summaryTokens: 8192 };
 export const agentName = (scope: Scope) => JSON.stringify([scope.userId, scope.bookId, scope.threadId]);
 export const readerAgent = (env: Env, scope: Scope) => env.READER_AGENT.getByName(agentName(scope));
 export const messageIds = (op: Operation) => ({ userMessageId: op.userMessageId, messageId: op.messageId });

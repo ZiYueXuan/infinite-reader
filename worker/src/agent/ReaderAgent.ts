@@ -1,10 +1,10 @@
 import { DurableObject } from "cloudflare:workers";
 import { PiHarness } from "agents/harness/pi";
 import { Lifecycle } from "agents/lifecycle";
-import { createModels, type AssistantMessage } from "@earendil-works/pi-ai";
+import type { AssistantMessage } from "@earendil-works/pi-ai";
 import { createRegistry, Harness, type AgentEvent, type EntryRecord } from "@earendil-works/pi-durable";
 import { BACKGROUND_CONTEXT } from "@earendil-works/chord/context";
-import { readerModelProvider } from "./model";
+import { readerModels, type ModelPurpose } from "./model";
 import { readingTools } from "./tools";
 import { LIMITS, READER_PROMPT, messageIds, sse, userPrompt, type AskRequest, type Citation, type BookCitation, type WebCitation, type Operation, type Scope } from "./protocol";
 import { requestsWebSearch } from './searchIntent';
@@ -15,6 +15,7 @@ import { newId, sha256Hex } from "../lib/util";
 const textOf = (m?: AssistantMessage) => m?.content.filter(p => p.type === "text").map(p => p.text).join("") ?? "";
 const failureText = (code?: string) => code === "agent_budget_exhausted"
   ? "This question reached the research limit. Please narrow the question or continue in a new message."
+  : code === "history_summary_incomplete" ? "Conversation history could not be fully summarized. Send your question again to resume."
   : code === "book_unavailable" ? "This book is no longer available."
   : code === "ai_usage_unavailable" ? "AI usage could not be saved. Please try again later."
   : "The AI response was interrupted. Please try again.";
@@ -31,7 +32,8 @@ export class ReaderAgent extends DurableObject<Env> {
     harness: ({ storage, context, onWake }) => {
       const host = {
         env: this.env,
-        operation: () => this.operation(), beforeTool: () => this.reserve("toolCalls"), beforeModel: () => this.reserve("modelCalls"),
+        operation: () => this.operation(), beforeTool: () => this.reserve("toolCalls"),
+        beforeModel: (purpose: ModelPurpose) => this.reserve("modelCalls", purpose === "summary"),
         sources: (chunks: RetrievedChunk[]) => this.sources(chunks),
         reserveWebSearch: (query: string) => this.reserveWebSearch(query),
         webSources: (sources: WebSource[]) => this.webSources(sources),
@@ -41,8 +43,7 @@ export class ReaderAgent extends DurableObject<Env> {
       const registry = createRegistry();
       registry.install({ name: "reader.instructions", sections: [{ key: "preamble", tag: false, render: () => READER_PROMPT }] });
       registry.install(readingTools(host));
-      const models = createModels();
-      models.setProvider(readerModelProvider(host));
+      const models = readerModels(host, this.ctx.storage);
       return Harness.open(storage, {
         models, registry, onWake,
         settings: {
@@ -83,12 +84,14 @@ export class ReaderAgent extends DurableObject<Env> {
       await tx.put(`op:${id}`, op);
     });
   }
-  private async reserve(kind: "modelCalls" | "toolCalls") {
+  private async reserve(kind: "modelCalls" | "toolCalls", summary = false) {
     await this.authorized();
     await this.update(op => {
       if (op.status !== "running") throw new Error("agent_cancelled");
       if (Date.now() >= op.deadline || op[kind] >= (kind === "modelCalls" ? LIMITS.modelCalls : LIMITS.tools)) throw new Error("agent_budget_exhausted");
+      if (summary && op.modelCalls >= LIMITS.modelCalls - 1) throw new Error("history_summary_incomplete");
       op[kind]++;
+      if (summary) op.summaryCalls = (op.summaryCalls ?? 0) + 1;
     });
     return this.operation();
   }

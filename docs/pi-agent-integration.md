@@ -42,7 +42,9 @@ every generated answer.
 
 Source numbers are stable within each conversation, including follow-ups. Only known sources referenced in the final answer become persisted citation links. Existing inline superscripts and chapter navigation remain compatible. On first use, up to 12 old chat messages are imported as bounded, untrusted history; old citation numbers are stripped and must be re-established from tools.
 
-Each turn allows 6 model calls, 8 tools, 180 seconds and 4,096 output tokens per model call. Retries and compaction consume the same budget. The application uses a conservative 32K context window, blocking compaction with an 8K reserve and 4K recent-token budget; background compaction is disabled to keep accounting within a user operation. Pi handles model/tool protocol, compaction and one transient-error retry; the provider SDK's internal retries are disabled so every actual attempt can be metered separately.
+Each turn allows 6 model calls, 8 tool calls and 180 seconds. Answer and tool rounds allow up to 4,096 output tokens each. History summaries allow up to 8,192 and leave at least one model call for the answer. Pi selects the older history to summarize within a 32K context window, with an 8K reserve and a 4K recent-token budget. Background compaction is disabled.
+
+When a summary reaches its output limit, the Worker discards that output and splits the affected excerpt. Each completed segment updates a rolling summary in the conversation's Durable Object. A retry can reuse the covered prefix after checking its hash, including after an object restart. Pi places the completed summary into context and retains the recent messages verbatim. The Worker meters each provider attempt separately, including Pi's single transient-error retry.
 
 The provider adapter starts a D1 usage record before calling the model and finalizes reported usage before forwarding its terminal event. Missing counters remain unknown, never zero. Existing embedding/map recognition recording is unchanged. An abrupt runtime termination can still leave a pending row; do not interpret that as a free call. See [AI usage ledger](./ai-usage.md).
 

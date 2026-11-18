@@ -9,7 +9,8 @@ Every actual model request made by the Worker is recorded in D1 `ai_usage`, usin
 | `atlas_primary` | DeepSeek | One map recognition attempt |
 | `atlas_fallback` | Cloudflare / GLM | A separate fallback attempt, sharing the primary's `operation_id` |
 | `mindmap` | DeepSeek | One chapter/section mind-map generation attempt; saved maps make no model request |
-| `ask` | DeepSeek | One actual model attempt: final answer, intermediate tool round, retry, or automatic context compaction |
+| `ask` | DeepSeek | One answer or tool-round attempt, including retries |
+| `ask_summary` | DeepSeek | One history-summary attempt, including truncated segments and retries. Reusing a saved segment makes no provider call. Earlier releases recorded summaries under `ask`. |
 | `retrieval_embedding` | Cloudflare / BGE-M3 | One question embedding request, sharing the answer's `operation_id` |
 | `index_embedding` | Cloudflare / BGE-M3 | One embedding batch; queue retries create new attempt records |
 
