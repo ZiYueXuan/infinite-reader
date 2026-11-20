@@ -13,7 +13,7 @@ import { createPortal } from 'react-dom'
 import {
     MARK_COLORS,
     NOTE_TEXT_COLORS,
-    judouCharOf,
+    resolveJudou,
     judouSymbolOf,
     noteTextColorOf,
     type MarkColor,
@@ -111,20 +111,19 @@ function KindToggle({ value, onPick }: { value: MarkKind; onPick: (k: MarkKind) 
 }
 
 export function SelectionPopover({ onTextMap }: { onTextMap: (text: string) => void }) {
-    const {popover, mark, lastKind, lastColor, annotations, startAsk, say, toggleJudou} = useReader()
+  const { popover, mark, lastKind, lastColor, annotations, startAsk, say, toggleJudou, current } = useReader()
   if (!popover || popover.kind !== 'selection') return null
-    const target = popover.locator ? judouCharOf(popover.locator) : null
-    const marked = !!target && annotations.some((a) => a.kind === 'judou' &&
-        a.locator.chapter === target.chapter && a.locator.start === target.start && a.locator.end === target.end)
+  const range = popover.locator
+  const target = range && resolveJudou(current?.parsed.chapters[range.chapter], range, annotations)
   return (
     <Floating rect={popover.rect}>
       <KindToggle value={lastKind} onPick={(k) => useReader.setState({ lastKind: k })} />
       <Swatches onPick={(c) => void mark(lastKind, c)} />
       <span className="sep" />
-        <button className={'ib' + (marked ? ' on' : '')} title={t("句读")} aria-label={t("句读")}
-                onClick={() => popover.locator && void toggleJudou(popover.locator)}>
-            <Icon.judou/>
-        </button>
+      <button className={'ib' + (target?.existing ? ' on' : '')} title={t("句读")} aria-label={t("句读")}
+        aria-pressed={!!target?.existing} disabled={!target} onClick={() => range && void toggleJudou(range)}>
+        <Icon.judou />
+      </button>
       <button className="ib" title={t("Add inline note")} aria-label={t("Add inline note")} onClick={() => void mark(lastKind, lastColor, true)}>
         <Icon.note />
       </button>

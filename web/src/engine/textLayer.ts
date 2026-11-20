@@ -13,15 +13,6 @@ export interface SelectionInfo {
   page: number
 }
 
-/** A collapsed caret in the original text, which readSelection() deliberately ignores. */
-export interface CaretInfo {
-    chapter: number
-    /** offset between two source characters */
-    offset: number
-    /** box of the character before the caret, for anchors */
-    rect: DOMRect
-}
-
 type PageProjection = (x: number, y: number) => { x: number; y: number }
 interface TextBox {
   el: HTMLElement
@@ -357,32 +348,19 @@ export class TextLayer {
     return { locator: { chapter, start, end }, text, rect, page: Number(b.span.dataset.p) }
   }
 
-    /**
-     * The collapsed caret. `/` and the clause mark need the character a caret sits after, while
-     * readSelection() returns null until the reader drags a range.
-     */
-    readCaret(): CaretInfo | null {
-        const sel = window.getSelection()
-        if (!sel || sel.rangeCount === 0 || !sel.isCollapsed) return null
-        const range = sel.getRangeAt(0)
-        if (!this.root.contains(range.startContainer)) return null
-        const a = this.spanFor(range.startContainer, range.startOffset, false)
-        if (!a) return null
-        const start = Number(a.span.dataset.s), end = Number(a.span.dataset.e)
-        if (end <= start) return null
-        const local = Math.min(a.local, end - start)
-        // The caret itself has no width; anchor on the character it follows.
-        let rect = a.span.getBoundingClientRect()
-        const node = a.span.firstChild
-        if (node?.nodeType === 3 && local > 0) {
-            const probe = document.createRange()
-            probe.setStart(node, local - 1)
-            probe.setEnd(node, local)
-            const r = probe.getBoundingClientRect()
-            if (r.width > 0 && r.height > 0) rect = r
-        }
-        return {chapter: Number(a.span.dataset.c), offset: start + local, rect}
-    }
+  /** Keep the actual insertion point, including at paragraph boundaries. */
+  readCaret(): Locator | null {
+    const sel = window.getSelection()
+    if (!sel?.rangeCount || !sel.isCollapsed) return null
+    const range = sel.getRangeAt(0)
+    if (!this.root.contains(range.startContainer)) return null
+    const point = this.spanFor(range.startContainer, range.startOffset, false)
+    if (!point) return null
+    const start = Number(point.span.dataset.s), end = Number(point.span.dataset.e)
+    if (end <= start) return null
+    const offset = Math.min(start + point.local, end)
+    return { chapter: Number(point.span.dataset.c), start: offset, end: offset }
+  }
 
   /** Selected text rebuilt from the word spans, so ideographs never pick up stray spaces or line breaks. */
   private textInRange(range: Range, a: { span: HTMLElement; local: number }, b: { span: HTMLElement; local: number }) {

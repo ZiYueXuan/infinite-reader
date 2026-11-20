@@ -33,8 +33,10 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - run: npm ci --no-audit --no-fund
       - run: npm run lint
+      - name: Test clause mark hit areas and source ranges
+        run: node --experimental-transform-types --test src/book/judou.test.ts
       - run: npm run build
-      - name: Check selection after page turns
+      - name: Check selection and clause marks in the reader
         env:
           VITE_BACKEND: local
           READER_URL: http://127.0.0.1:5183/?sample=zh&lang=zh-CN
@@ -53,6 +55,7 @@ jobs:
             exit 1
           fi
           node scripts/check-selection-readiness.mjs
+          node scripts/check-judou.mjs
 
   worker:
     name: Worker

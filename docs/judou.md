@@ -1,7 +1,6 @@
 # 句读（/）
 
-状态：阶段 1、2 已落地（数据模型、叠层渲染、`readCaret()`、`/` 快捷键、选区气泡按钮）；阶段 2.1「行内符号 +
-点击删除」方案已定、待实现；句读模式、符号同步与回归测试未做。
+当前版本支持选区工具条、`/` 快捷键和点击斜线删除，默认使用朱红色斜线。批量句读模式与自选符号仍在规划中。
 
 读史料的读者习惯边读边断句：在某个字后面补一个记号表示句读停顿。本项目把它实现为「在单个字之后叠加一个记号」，默认符号为 `/`，
 符号本身可替换。这也是大多数电子书没有做这个功能的原因——看上去像是在改正文。
@@ -41,19 +40,18 @@
 
 选区气泡在 高亮 / 下划线 / 笔记 / Ask AI / 复制 之外增加一个句读按钮，符号加在选区最后一个字之后，桌面与手机共用。
 
-`/` 键在选区存在时加到选区末尾，光标折叠时加到光标前一个字之后。`TextLayer.readSelection()` 对折叠选区直接返回 `null`，
-因此新增 `readCaret()`，复用 `spanFor()` 现有的字符命中逻辑，返回 `{ chapter, offset, rect }`。跨页选区会把原生选区清空，
-`CrossPageSelection.locator` 因此提供已经落定的区间，三条来源在 `Scene.judouTarget()` 里归并为同一种输入。
+`/` 键给选区最后一个可见字符添加句读。光标折叠时优先取前一个字，在段首则取本段首字。
+原生选区、跨页选区与 `TextLayer.readCaret()` 都沿用书中 UTF-16 偏移。解析目标时按完整字素定位，保留“𠮷”等生僻字及组合字符。
 按键处理放在 `Scene.onKey` 中与翻页键同处，位于 `canPageFrom()`、`isUiTarget()` 之后，并尊重 `isComposing`，避免中文输入法和
 行内笔记编辑被误触发。选区在加上符号后立即清除：句读画在字上，残留的选区高亮会盖住它。
 
-`SceneHooks.onJudou()` 把这一字的 locator 交给 `useReader.toggleJudou()`：`judouCharOf()` 取区间最后一个字，已有同位置句读则为移除。
+`SceneHooks.onJudou()` 把范围交给 `useReader.toggleJudou()`。工具条与快捷键共用 `resolveJudou()`，再次操作同一个记号即可移除。
 句读不进 `Marks & notes` 列表，也不计进 tab 计数，否则一段密集断句会把真正的笔记淹没。
 
 符号本身可点：`markUnderPoint()` 对句读使用斜杠的包围盒命中，点击后走既有的 `onMarkClick()` 打开只含「移除」的标记气泡；命中区与容错规则见「阶段
 2.1」。
 
-句读模式面向整段史料的批量断句：进入后点击任意字即添加或取消记号，`Esc` 退出，光标与 dock 按钮反映当前状态。按下事件在
+计划中的句读模式面向整段史料的批量断句：进入后点击任意字即添加或取消记号，`Esc` 退出，光标与 dock 按钮反映当前状态。按下事件在
 `Scene.onPointerDown` 中被拦截，早于 tilt / pan / page / cover 各分支；位移超过 `DRAG_START_PX` 即丢弃，不落符号，同时用
 `user-select: none` 抑制文字层的原生选区，并且不弹选区气泡、不触发翻页。
 
@@ -85,7 +83,7 @@ judou，
 ，对句读只渲染一条紧凑气泡：符号预览 +
 垃圾桶（复用 `t("Remove mark")`）；以后的符号选择也放进这个气泡。命中区贴着斜杠、不覆盖整个字格，尽量不抢「在字后落光标」的点击。
 
-**`/` 容错切换。** 折叠光标时，`judouToggleRange(loc, marks, caret)` 先看光标前一个字，没有句读再看光标后一个字，只有两边都没有才在前一个字上添加。
+**`/` 容错切换。** 折叠光标时，`resolveJudou()` 优先移除前一个字或后一个字已有的句读。两边都没有时通常给前一个字添加，段首则给首字添加。
 这样点在带句读的字左半格、右半格或斜杠旁的缝隙，按 `/` 都会移除同一枚记号，不会误在前一个字上加新的。选区路径不变，仍取选区最后一个字。
 
 **气泡按钮回显。** 选区气泡里的句读按钮在目标字已有句读时显示按下态，点击即为移除，与颜色板的 `on` 状态一致。
@@ -93,7 +91,7 @@ judou，
 改动文件：
 
 - `web/src/book/pageRender.ts`：`judouAnchor()` 几何、`judouHit()`、`markUnderPoint()` 的 judou 分支；
-- `web/src/book/annotations.ts`：`judouToggleRange()` 纯函数；
+- `web/src/book/annotations.ts`：`resolveJudou()` 解析目标字、摘录和已有记号；
 - `web/src/store/useReader.ts`：`toggleJudou()` 改用新规则；
 - `web/src/ui/Popovers.tsx`：`MarkPopover` 的 judou 分支、`SelectionPopover` 的按下态；
 - `web/src/book/judou.test.ts`：几何、命中、容错切换的用例；
@@ -105,13 +103,7 @@ judou，
 
 ## 持久化
 
-IndexedDB 直接存整个标记对象，`symbol` 不需要数据库迁移。`web/src/storage/apiAdapter.ts` 把符号放进 `anchor`，`anchor`
-本身是开放
-JSON，不需要 D1 迁移；`fromServerAnnotation` 对早于此字段的标记回退为 `/`。`lastStyle` 同样要包含符号，理由与
-`annotationSignature()` 一致。后端在 `worker/src/routes/marks.ts` 的 `annCreate.kind`、`annPatch.kind` 枚举中已加入
-`judou`；
-符号在本期固定为 `/`，因此随行同步的 `anchor` 暂时不带它。上线顺序上先发前端：它能容忍未知 kind，而早于该功能的前端在遇到
-不认识的 kind 时会因取色失败而报错。
+IndexedDB 保存完整标记。云端通过现有标注接口保存 `judou` 类型、位置与摘录，读取时使用默认符号 `/`。两种存储都使用现有的数据结构。
 
 句读不和其他标注一样堆进 `Marks & notes` 抽屉：该列表与 tab 计数都过滤 `kind !== 'judou'`，否则一段密集断句会把真正的
 笔记淹没。新增文案（句读、添加/移除、模式提示等）写入 `shared/messages.json`，由 `check-i18n-source.mjs` 强制校验。
@@ -124,11 +116,9 @@ JSON，不需要 D1 迁移；`fromServerAnnotation` 对早于此字段的标记�
 
 ## 验证
 
-`judou.test.ts` 覆盖 `judouAnchor()`（行内基线几何、行末夹取）、`judouHit()`（点斜杠命中、点字格中部不命中、容差外不命中）与
-`judouToggleRange()`（无记号添加、记号在光标前移除、记号在光标后也移除）。`worker/test/marks.test.ts` 断言创建时接受 `judou`，
-且非法 kind 仍被拒绝。`web/scripts/check-judou.mjs` 在本地 Vite 与全新 Chromium 配置下运行，覆盖气泡按钮、点符号开气泡并移除、
-选区上的 `/`、折叠光标上的 `/`（字的两半格各一次）、句读模式（含不翻页、不弹气泡）、`Esc` 退出、换字体后的位置、重载持久化，
-以及右键拖动仍然只调视角。
+`web/src/book/judou.test.ts` 覆盖行内位置、斜线与高亮重叠时的点选顺序、字素边界、段首和相邻记号切换。
+`web/scripts/check-judou.mjs` 在本地 Vite 和 Chromium 中打开测试 EPUB，检查点选并删除重叠斜线、保留原高亮、给“𠮷”和段首字添加记号，
+以及重新打开书后读取完整摘录。前端 CI 运行这两项测试。Worker 的 `marks.test.ts` 另行验证云端接口接受 `judou`。
 
 ## 风险
 

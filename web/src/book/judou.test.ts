@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import {test} from 'node:test'
-import {judouCharOf, judouToggleRange, type Annotation} from './annotations.ts'
+import { resolveJudou, type Annotation } from './annotations.ts'
+import type { Chapter } from './types.ts'
 import {DEFAULT_LAYOUT, type Line, type Page, type Word} from './layout.ts'
 import {judouAnchor, judouHit, markUnderPoint} from './pageRender.ts'
 
@@ -86,24 +87,62 @@ test('a click on the painted slash opens the clause mark, the character body doe
     assert.equal(markUnderPoint(body, a.x - cfg.fontSize * 0.3, sy, [mark], cfg), null)
 })
 
-test('a selection marks its last character, a caret marks the one before it', () => {
-    assert.deepEqual(judouCharOf({chapter: 3, start: 40, end: 47}), {chapter: 3, start: 46, end: 47})
-    assert.deepEqual(judouCharOf({chapter: 0, start: 0, end: 1}), {chapter: 0, start: 0, end: 1})
-    assert.deepEqual(judouCharOf({chapter: 2, start: 9, end: 9}), {chapter: 2, start: 9, end: 10})
+test('overlapping slashes win on the stroke and preserve ordinary mark hit order elsewhere', () => {
+  const row = line(100, [word('羽', 10, 18)])
+  const body = page([row]), mark = judou(18)
+  const highlight: Annotation = { ...mark, id: 'highlight', kind: 'highlight' }
+  const underline: Annotation = { ...mark, id: 'underline', kind: 'underline' }
+  const a = judouAnchor({ x0: 10, x1: 10 + cfg.fontSize, line: row }, cfg)
+  const y = a.y + a.h / 2
+  for (const marks of [[highlight, underline, mark], [mark, highlight, underline], [underline, mark, highlight]]) {
+    assert.equal(markUnderPoint(body, a.x + a.lean / 2, y, marks, cfg), mark)
+    assert.equal(markUnderPoint(body, 10 + cfg.fontSize / 3, y, marks, cfg), marks.find(m => m.kind !== 'judou'))
+  }
 })
 
-test('a caret removes a neighbouring clause mark before adding a new one', () => {
-    const marks = [judou(10)]
-    // The caret sits before the marked character: remove it instead of marking the previous one.
-    assert.deepEqual(judouToggleRange({chapter: 1, start: 9, end: 10}, marks, true), {chapter: 1, start: 10, end: 11})
-    // The caret sits after it: the same mark goes.
-    assert.deepEqual(judouToggleRange({chapter: 1, start: 10, end: 11}, marks, true), {chapter: 1, start: 10, end: 11})
-    // A selection still marks its own last character, even when the next one is marked.
-    assert.deepEqual(judouToggleRange({chapter: 1, start: 7, end: 10}, marks, false), {chapter: 1, start: 9, end: 10})
-    // Nothing marked nearby: the caret adds after the character it follows.
-    assert.deepEqual(judouToggleRange({chapter: 1, start: 3, end: 4}, [], true), {chapter: 1, start: 3, end: 4})
-    // A caret at the chapter start can still remove the mark on the first character, but never
-    // mistakes the second character for the one before it.
-    assert.deepEqual(judouToggleRange({chapter: 1, start: 0, end: 0}, [judou(0)], true), {chapter: 1, start: 0, end: 1})
-    assert.deepEqual(judouToggleRange({chapter: 1, start: 0, end: 0}, [judou(1)], true), {chapter: 1, start: 0, end: 1})
+function chapterOf(...paragraphs: string[]): Chapter {
+  let offset = 0
+  const blocks = paragraphs.map(text => {
+    const start = offset
+    offset += text.length + 1
+    return { start, text, kind: 'p' as const, runs: [{ text }] }
+  })
+  return { index: 1, title: '', href: '', blocks, textLength: offset - 1 }
+}
+
+const range = (start: number, end = start) => ({ chapter: 1, start, end })
+
+test('selection anchors include the whole grapheme even when a DOM endpoint splits it', () => {
+  for (const glyph of ['也', '𠮷', '葛󠄀', 'e\u0301', '👩‍👧']) {
+    const chapter = chapterOf('甲' + glyph + '乙')
+    for (let end = 2; end <= 1 + glyph.length; end++) {
+      const target = resolveJudou(chapter, range(0, end), [])
+      assert.deepEqual(target?.locator, range(1, 1 + glyph.length))
+      assert.equal(target?.quote, glyph)
+    }
+  }
+})
+
+test('ranges skip trailing spaces and block separators without creating an invisible mark', () => {
+  const chapter = chapterOf('甲  ', '乙', '   ', '丙')
+  const second = chapter.blocks[1].start
+  assert.equal(resolveJudou(chapter, range(0, second), [])?.quote, '甲')
+  assert.equal(resolveJudou(chapter, range(1, second), []), null)
+  assert.equal(resolveJudou(chapter, range(second + 1, chapter.blocks[3].start), []), null)
+  assert.equal(resolveJudou(chapter, range(100), []), null)
+})
+
+test('a caret targets a neighbour in its own paragraph and honours existing marks on either side', () => {
+  const chapter = chapterOf('前', '甲𠮷乙')
+  const start = chapter.blocks[1].start
+  const first = judou(start)
+  const rare: Annotation = { ...judou(start + 1), locator: range(start + 1, start + 3) }
+  assert.deepEqual(resolveJudou(chapter, range(start), [])?.locator, first.locator)
+  assert.equal(resolveJudou(chapter, range(start), [first])?.existing, first)
+  assert.equal(resolveJudou(chapter, range(start), [rare])?.existing, undefined)
+  assert.equal(resolveJudou(chapter, range(start + 1), [rare])?.existing, rare)
+  assert.equal(resolveJudou(chapter, range(start + 1), [first, rare])?.existing, first)
+  assert.equal(resolveJudou(chapter, range(start + 3), [rare])?.existing, rare)
+  assert.equal(resolveJudou(chapter, range(start, start + 1), [rare])?.quote, '甲')
+  assert.equal(resolveJudou(chapter, range(0), [])?.quote, '前')
 })

@@ -1,4 +1,5 @@
 import { noteFontIdOf, type NoteFontId } from './noteFontCatalog.ts'
+import type { Block, Chapter } from './types.ts'
 
 export type MarkKind = 'highlight' | 'underline' | 'judou'
 export type MarkColor = 'yellow' | 'pink' | 'green' | 'blue' | 'orange' | 'violet'
@@ -12,28 +13,45 @@ export function judouSymbolOf(symbol: string | undefined) {
     return Array.from(symbol?.trim() ?? '')[0] ?? JUDOU_DEFAULT_SYMBOL
 }
 
-/** A clause mark belongs to one character: the last one of whatever range the reader acted on. */
-export function judouCharOf(loc: Locator): Locator {
-    const start = Math.max(loc.start, loc.end - 1)
-    return {chapter: loc.chapter, start, end: start + 1}
-}
+const judouGraphemes = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
 
-/**
- * The clause mark a `/` press should toggle. A caret is ambiguous: it sits between two characters,
- * and readers click either half of a marked character expecting the mark to go. So an existing mark
- * on the character before or after the caret both win over adding a new one.
- */
-export function judouToggleRange(loc: Locator, marks: Annotation[], caret: boolean): Locator {
-    const target = judouCharOf(loc)
-    if (!caret) return target
-    const has = (r: Locator) => marks.some((a) => a.kind === 'judou' &&
-        a.locator.chapter === r.chapter && a.locator.start === r.start && a.locator.end === r.end)
-    if (has(target)) return target
-    // An empty range means the caret is at the chapter start: no neighbour before it, and the first
-    // character itself must not be treated as the "next" one.
-    if (loc.end <= loc.start) return target
-    const next = {chapter: target.chapter, start: target.end, end: target.end + 1}
-    return has(next) ? next : target
+/** Source offsets stay in UTF-16, but a slash always belongs to a whole printed character. */
+export function resolveJudou(chapter: Chapter | undefined, range: Locator, marks: readonly Annotation[]) {
+  if (!chapter) return null
+
+  function at(block: Block, offset: number) {
+    if (offset < 0 || offset >= block.text.length) return null
+    const glyph = judouGraphemes.segment(block.text).containing(offset)
+    if (!glyph?.segment.trim()) return null
+    const start = block.start + glyph.index
+    const locator = { chapter: range.chapter, start, end: start + glyph.segment.length }
+    const existing = marks.find(a => a.kind === 'judou' && a.locator.chapter === locator.chapter &&
+      a.locator.start >= start && a.locator.end <= locator.end && a.locator.start < a.locator.end)
+    return { locator, quote: glyph.segment, existing }
+  }
+
+  // A range may end on whitespace or the separator between two EPUB blocks.
+  for (let i = chapter.blocks.length - 1; i >= 0; i--) {
+    const block = chapter.blocks[i]
+    if (block.start > range.end || block.footnoteDefinition || block.kind === 'img' || block.kind === 'hr') continue
+    const blockEnd = block.start + block.text.length
+    if (blockEnd < range.start) break
+    if (!block.text) continue
+
+    if (range.start === range.end) {
+      const offset = range.end - block.start
+      const before = at(block, offset - 1)
+      if (before?.existing) return before
+      const after = at(block, offset)
+      // Either side can remove a slash. At a paragraph start the first character is the target.
+      return after?.existing ? after : before ?? after
+    }
+
+    const start = Math.max(0, range.start - block.start)
+    const selected = block.text.slice(start, range.end - block.start).trimEnd()
+    if (selected) return at(block, start + selected.length - 1)
+  }
+  return null
 }
 
 export type NoteTextColor = 'default' | MarkColor

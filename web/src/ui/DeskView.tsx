@@ -88,9 +88,9 @@ export function DeskView({ recentTextMaps, excludedPlaceIds, atlasDockRef, onPla
         const r = sel.rect
         st().setPopover({ kind: 'selection', locator: sel.locator, text: sel.text, rect: { left: r.left, top: r.top, width: r.width, height: r.height } })
       },
-        onJudou(locator, keepCaret) {
-            void st().toggleJudou(locator, keepCaret)
-        },
+      onJudou(locator) {
+        void st().toggleJudou(locator)
+      },
       onTurned(turned, open) {
         const s = st()
         useReader.setState({ turned, open })

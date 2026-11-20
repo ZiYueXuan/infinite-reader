@@ -9,7 +9,7 @@ import { authApi, type User } from '../api/auth'
 import {
     JUDOU_DEFAULT_SYMBOL,
     MARK_COLORS,
-    judouToggleRange,
+    resolveJudou,
     noteLayoutSignature,
     noteTextColorOf,
     uid,
@@ -116,8 +116,7 @@ interface ReaderState {
   setPopover(p: Popover | null): void
   mark(kind: MarkKind, color: MarkColor, withNote?: boolean): Promise<void>
 
-    /** Toggle the clause mark on the last character of a source range (a caret passes one character). */
-    toggleJudou(locator: Locator, keepCaret?: boolean): Promise<void>
+  toggleJudou(locator: Locator): Promise<void>
   restyle(id: string, patch: Partial<Pick<Annotation, 'kind' | 'color'>>): Promise<void>
   removeMark(id: string): Promise<void>
   updateNoteText(id: string, text: string): Promise<void>
@@ -145,16 +144,6 @@ const noteFontSelections = new Map<string, symbol>()
 function bookAndNoteText(parsed: ParsedBook, annotations: Annotation[]) {
   return '笔记·续写下你的想法Note continued Write your thoughts' + parsed.meta.title + parsed.meta.author + parsed.chapters.map((ch) => ch.blocks.map((b) => b.text).join('')).join('') +
     annotations.map((a) => a.note ? a.note.text + (a.note.tags ?? []).join('') : '').join('')
-}
-
-function quoteAt(parsed: ParsedBook, loc: Locator) {
-    const chapter = parsed.chapters[loc.chapter]
-    if (!chapter) return ''
-    for (const block of chapter.blocks) {
-        if (block.footnoteDefinition || loc.start < block.start || loc.start >= block.start + block.text.length) continue
-        return block.text.slice(loc.start - block.start, loc.end - block.start)
-    }
-    return ''
 }
 
 function pendingBookLoading() {
@@ -688,36 +677,24 @@ export const useReader = create<ReaderState>((set, get) => ({
     await storage.putAnnotation(a)
   },
 
-    async toggleJudou(locator, keepCaret) {
-        const {current, scene} = get()
-        if (!current) return
-        const target = judouToggleRange(locator, get().annotations, !!keepCaret)
-        const existing = get().annotations.find((a) => a.kind === 'judou' &&
-            a.locator.chapter === target.chapter && a.locator.start === target.start && a.locator.end === target.end)
-        // A selection would hide the mark and its popover; a caret must survive so / can toggle again.
-        if (!keepCaret) scene?.clearSelection()
-        set({popover: null})
-        if (existing) {
-            await get().removeMark(existing.id)
-            return
-        }
-        const now = Date.now()
-        const a: Annotation = {
-            id: uid(),
-            bookId: current.meta.id,
-            locator: target,
-            quote: quoteAt(current.parsed, target),
-            kind: 'judou',
-            color: get().lastColor,
-            symbol: JUDOU_DEFAULT_SYMBOL,
-            createdAt: now,
-            updatedAt: now,
-        }
-        const annotations = [...get().annotations, a]
-        set({annotations})
-        scene?.setAnnotations(annotations)
-        await storage.putAnnotation(a)
-    },
+  async toggleJudou(locator) {
+    const { current, scene, annotations, lastColor } = get()
+    if (!current) return
+    const target = resolveJudou(current.parsed.chapters[locator.chapter], locator, annotations)
+    if (!target) return
+    if (locator.start !== locator.end) scene?.clearSelection()
+    set({ popover: null })
+    if (target.existing) return get().removeMark(target.existing.id)
+    const now = Date.now()
+    const mark: Annotation = {
+      id: uid(), bookId: current.meta.id, locator: target.locator, quote: target.quote,
+      kind: 'judou', color: lastColor, symbol: JUDOU_DEFAULT_SYMBOL, createdAt: now, updatedAt: now,
+    }
+    const updated = [...annotations, mark]
+    set({ annotations: updated })
+    scene?.setAnnotations(updated)
+    await storage.putAnnotation(mark)
+  },
 
   async restyle(id, patch) {
     const annotations = get().annotations.map((a) => (a.id === id ? { ...a, ...patch, updatedAt: Date.now() } : a))
