@@ -2,7 +2,15 @@ import { getStorageMode } from './mode'
 import { AnnotationSaveStateStore } from './annotationSaveState'
 import { noteFontIdOf } from '../book/noteFontCatalog'
 import { api, ApiError, bodyBytes, jsonBody, KEEPALIVE_BUDGET, sendKeepalive, toApiError } from '../api/http'
-import { MARK_COLORS, NOTE_TEXT_COLORS, noteTextColorOf, annotationSignature, type Annotation, type MarkColor } from '../book/annotations'
+import {
+    MARK_COLORS,
+    NOTE_TEXT_COLORS,
+    noteTextColorOf,
+    annotationSignature,
+    type Annotation,
+    type MarkColor,
+    type MarkKind
+} from '../book/annotations'
 import { noteTagsFromAnchor, noteWireAnchor } from '../book/noteTags'
 import type { BookMeta } from '../book/types'
 import type { StorageAdapter } from './adapter'
@@ -29,7 +37,7 @@ interface BookSummary {
 interface ServerAnnotation {
   id: string
   bookId: string
-  kind: 'highlight' | 'underline'
+    kind: MarkKind
   color: string
   anchor: Record<string, unknown>
   text: string | null

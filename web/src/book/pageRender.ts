@@ -1,5 +1,15 @@
 import { t } from '../i18n/runtime.ts'
-import { MARK_COLORS, NOTE_TEXT_COLORS, hash, rng, type Annotation, type MarkKind } from './annotations.ts'
+import {
+    JUDOU_DEFAULT_SYMBOL,
+    JUDOU_INK,
+    MARK_COLORS,
+    NOTE_TEXT_COLORS,
+    hash,
+    judouSymbolOf,
+    rng,
+    type Annotation,
+    type MarkKind
+} from './annotations.ts'
 import { measure, type LayoutConfig, type Line, type Page, type Word } from './layout.ts'
 
 export interface RenderOptions {
@@ -55,19 +65,27 @@ export function markBand(line: { y: number; baseline: number }, fontSize: number
   return { top, bot }
 }
 
-/** The mark whose painted band contains a page-content point, if any. */
-export function markUnderPoint(page: Page, x: number, y: number, marks: Annotation[], fontSize: number): Annotation | null {
+/** The mark whose painted band lies under a page-content point, if any. */
+export function markUnderPoint(page: Page, x: number, y: number, marks: Annotation[], cfg: LayoutConfig): Annotation | null {
+  let bandHit: Annotation | null = null
   for (const mark of marks) {
+    if (bandHit && mark.kind !== 'judou') continue
     if (mark.locator.chapter !== page.chapter) continue
     if (mark.locator.end <= page.start || mark.locator.start >= page.end) continue
     for (const r of rangeRects(page, mark.locator.start, mark.locator.end)) {
-      const band = markBand(r.line, fontSize, mark.kind)
+      // Slashes are painted over other marks. Only their own hit area takes priority.
+      if (mark.kind === 'judou') {
+        if (judouHit(r, cfg, x, y)) return mark
+        continue
+      }
+      const band = markBand(r.line, cfg.fontSize, mark.kind)
       if (y < band.top - 1.25 || y > band.bot + 1.25) continue
       if (x < r.x0 - 2 || x > r.x1 + 2) continue
-      return mark
+      bandHit = mark
+      break
     }
   }
-  return null
+  return bandHit
 }
 
 /** Rects (page content coordinates) covered by a chapter-offset range. */
@@ -135,6 +153,79 @@ function drawFrontMatter(c: Ctx, page: Page, o: RenderOptions) {
   }
 }
 
+/** A clause mark rides the text baseline in the seam after one character, in page-content coordinates. */
+export interface JudouAnchor {
+    /** bottom end of the slash */
+    x: number
+    /** top of the slash */
+    y: number
+    h: number
+    /** the slash leans right by this much over its height */
+    lean: number
+}
+
+/**
+ * Placement of one clause mark. The mark belongs to the character before it and reads inline, like
+ * 秋/十月: its centre sits on the right edge of that character's cell, and only the leaning top may
+ * reach about 0.1 em into the next cell, over that glyph's left bearing. A line-final mark may hang
+ * at most 0.2 em into the page margin.
+ */
+export function judouAnchor(rect: MarkRect, cfg: LayoutConfig): JudouAnchor {
+    const size = cfg.fontSize
+    const h = size * 0.66
+    const lean = h * 0.34
+    const contentW = cfg.pageW - cfg.marginInner - cfg.marginOuter
+    const x = Math.min(rect.x1 - size * 0.04 - lean / 2, contentW + size * 0.2 - lean)
+    return {x: Math.max(size * 0.1, x), y: rect.line.y + rect.line.baseline + size * 0.03 - h, h, lean}
+}
+
+/** Whether a page-content point falls on the painted slash, with a small finger-sized tolerance. */
+export function judouHit(rect: MarkRect, cfg: LayoutConfig, x: number, y: number) {
+    const a = judouAnchor(rect, cfg)
+    const pad = Math.max(2.5, cfg.fontSize * 0.12)
+    return x >= a.x - pad && x <= a.x + a.lean + pad && y >= a.y - pad && y <= a.y + a.h + pad
+}
+
+/**
+ * Reader clause marks. Painted after the body ink so the vermilion never mixes with the glyphs; the caller
+ * has already translated the context to the page content origin.
+ */
+function paintJudou(c: Ctx, page: Page, marks: Annotation[], cfg: LayoutConfig) {
+    c.save()
+    c.strokeStyle = JUDOU_INK
+    c.fillStyle = JUDOU_INK
+    c.lineCap = 'round'
+    c.lineJoin = 'round'
+    for (const m of marks) {
+        if (m.kind !== 'judou') continue
+        if (m.locator.chapter !== page.chapter) continue
+        if (m.locator.end <= page.start || m.locator.start >= page.end) continue
+        const symbol = judouSymbolOf(m.symbol)
+        const rand = rng(hash(m.id))
+        for (const r of rangeRects(page, m.locator.start, m.locator.end)) {
+            const a = judouAnchor(r, cfg)
+            const jx = (rand() - 0.5) * 0.7
+            const jy = (rand() - 0.5) * 0.5
+            c.globalAlpha = 0.84 + rand() * 0.12
+            if (symbol === JUDOU_DEFAULT_SYMBOL) {
+                const lean = a.lean * (0.88 + rand() * 0.24)
+                c.lineWidth = Math.max(1, cfg.fontSize * 0.08)
+                c.beginPath()
+                c.moveTo(a.x + lean + jx, a.y + jy)
+                c.quadraticCurveTo(a.x + lean * 0.55, a.y + a.h * 0.56, a.x - jx * 0.4, a.y + a.h + jy)
+                c.stroke()
+            } else {
+                // Any future symbol is typeset small, so the stroke above stays a plain slash.
+                c.font = `600 ${a.h * 1.3}px ${cfg.family}`
+                c.textAlign = 'center'
+                c.textBaseline = 'middle'
+                c.fillText(symbol, a.x + a.lean / 2, a.y + a.h / 2)
+            }
+        }
+    }
+    c.restore()
+}
+
 export function renderPage(page: Page, o: RenderOptions): PageCanvas {
   const { cfg, scale } = o
   const canvas = makeCanvas(Math.round(cfg.pageW * scale), Math.round(cfg.pageH * scale))
@@ -170,6 +261,7 @@ export function renderPage(page: Page, o: RenderOptions): PageCanvas {
   c.translate(origin.x, origin.y)
   c.globalCompositeOperation = 'multiply'
   for (const m of o.marks) {
+      if (m.kind === 'judou') continue
     if (m.locator.chapter !== page.chapter) continue
     if (m.locator.end <= page.start || m.locator.start >= page.end) continue
     const rects = rangeRects(page, m.locator.start, m.locator.end)
@@ -255,6 +347,8 @@ export function renderPage(page: Page, o: RenderOptions): PageCanvas {
       } else c.fillText(w.text, w.x, y)
     }
   }
+    // The reader's clause marks sit on top of the ink: a pen added to the setting, not part of it.
+    paintJudou(c, page, o.marks, cfg)
   // Reader notes live in the paper's text flow, with a quote rule instead of a separate card.
   for (const note of page.notes ?? []) {
     c.save()

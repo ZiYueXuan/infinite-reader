@@ -10,7 +10,16 @@ import { NOTE_FONTS, noteFontIdOf, noteFontFamily } from '../book/noteFontCatalo
 import { ensureInlineNoteFont } from '../book/fonts'
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
-import { MARK_COLORS, NOTE_TEXT_COLORS, noteTextColorOf, type MarkColor, type MarkKind, type NoteTextColor } from '../book/annotations'
+import {
+    MARK_COLORS,
+    NOTE_TEXT_COLORS,
+    resolveJudou,
+    judouSymbolOf,
+    noteTextColorOf,
+    type MarkColor,
+    type MarkKind,
+    type NoteTextColor
+} from '../book/annotations'
 import { NOTE_TAG_LIMIT, NOTE_TAG_MAX_GRAPHEMES, addNoteTags, clipGraphemes, removeNoteTag, replaceNoteTag, splitTagDraft } from '../book/noteTags'
 import { useReader } from '../store/useReader'
 import { Icon } from './icons'
@@ -102,13 +111,19 @@ function KindToggle({ value, onPick }: { value: MarkKind; onPick: (k: MarkKind) 
 }
 
 export function SelectionPopover({ onTextMap }: { onTextMap: (text: string) => void }) {
-  const { popover, mark, lastKind, lastColor, startAsk, say } = useReader()
+  const { popover, mark, lastKind, lastColor, annotations, startAsk, say, toggleJudou, current } = useReader()
   if (!popover || popover.kind !== 'selection') return null
+  const range = popover.locator
+  const target = range && resolveJudou(current?.parsed.chapters[range.chapter], range, annotations)
   return (
     <Floating rect={popover.rect}>
       <KindToggle value={lastKind} onPick={(k) => useReader.setState({ lastKind: k })} />
       <Swatches onPick={(c) => void mark(lastKind, c)} />
       <span className="sep" />
+      <button className={'ib' + (target?.existing ? ' on' : '')} title={t("句读")} aria-label={t("句读")}
+        aria-pressed={!!target?.existing} disabled={!target} onClick={() => range && void toggleJudou(range)}>
+        <Icon.judou />
+      </button>
       <button className="ib" title={t("Add inline note")} aria-label={t("Add inline note")} onClick={() => void mark(lastKind, lastColor, true)}>
         <Icon.note />
       </button>
@@ -134,8 +149,8 @@ export function MarkPopover({ onTextMap }: { onTextMap: (text: string) => void }
   const [map, setMap] = useState<{ bookId: string; target: string; title: string } | null>(null)
   const [preparing, setPreparing] = useState(false)
   const preparingRef = useRef(false)
-  const readyTargets = useReadyMindmaps(current?.meta.status && (popover?.kind === 'mark' || map) ? current.meta.id : undefined, session.status === 'user' ? session.user.id : undefined)
   const a = popover?.kind === 'mark' ? annotations.find(x => x.id === popover.id) : undefined
+    const readyTargets = useReadyMindmaps(current?.meta.status && (popover?.kind === 'mark' || map) && a?.kind !== 'judou' ? current.meta.id : undefined, session.status === 'user' ? session.user.id : undefined)
   const ready = !!a && readyTargets?.has(annotationMindmapTarget(a.id))
   const mapLabel = ready ? t("查看划线思维导图（已保存）") : t("生成划线思维导图")
   const openMap = async () => {
@@ -159,7 +174,16 @@ export function MarkPopover({ onTextMap }: { onTextMap: (text: string) => void }
   return (
     <>
     {map && <MindmapDialog key={map.bookId + map.target} {...map} scene={scene} onClose={() => setMap(null)} />}
-    {a && popover && <Floating rect={popover.rect} className="mark-popover" onDismiss={() => setPopover(null)}>
+        {a && popover && a.kind === 'judou' &&
+            <Floating rect={popover.rect} className="mark-popover" onDismiss={() => setPopover(null)}>
+                <span className="judou-preview" title={t("句读")} aria-hidden="true">{judouSymbolOf(a.symbol)}</span>
+                <button className="ib danger" title={t("Remove mark")} aria-label={t("Remove mark")}
+                        onClick={() => void removeMark(a.id)}>
+                    <Icon.trash/>
+                </button>
+            </Floating>}
+        {a && popover && a.kind !== 'judou' &&
+            <Floating rect={popover.rect} className="mark-popover" onDismiss={() => setPopover(null)}>
       <KindToggle value={a.kind} onPick={(k) => void restyle(a.id, { kind: k })} />
       <Swatches value={a.color} onPick={(c) => {
         void restyle(a.id, { color: c })

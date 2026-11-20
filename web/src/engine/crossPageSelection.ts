@@ -51,6 +51,11 @@ export class CrossPageSelection {
 
   get ownsSelection() { return this.range !== null }
 
+    /** The settled source range, for UI that acts on the selection after the native one was cleared. */
+    get locator() {
+        return this.pressed ? null : this.range
+    }
+
   reset() {
     this.stopTimer()
     this.pressed = false

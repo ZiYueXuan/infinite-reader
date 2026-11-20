@@ -6,7 +6,19 @@ import { readerFontIdOf, quoteFontIdOf, type ReaderFontId, type QuoteFontId } fr
 import { create } from 'zustand'
 import { ApiError } from '../api/http'
 import { authApi, type User } from '../api/auth'
-import { MARK_COLORS, noteLayoutSignature, noteTextColorOf, uid, type Annotation, type Locator, type MarkColor, type MarkKind, type NoteTextColor } from '../book/annotations'
+import {
+    JUDOU_DEFAULT_SYMBOL,
+    MARK_COLORS,
+    resolveJudou,
+    noteLayoutSignature,
+    noteTextColorOf,
+    uid,
+    type Annotation,
+    type Locator,
+    type MarkColor,
+    type MarkKind,
+    type NoteTextColor
+} from '../book/annotations'
 import { sanitizeNoteTags } from '../book/noteTags'
 import type { BookMeta, ParsedBook } from '../book/types'
 import type { ReaderScene } from '../engine/scene'
@@ -103,6 +115,8 @@ interface ReaderState {
   setPanel(p: Panel): void
   setPopover(p: Popover | null): void
   mark(kind: MarkKind, color: MarkColor, withNote?: boolean): Promise<void>
+
+  toggleJudou(locator: Locator): Promise<void>
   restyle(id: string, patch: Partial<Pick<Annotation, 'kind' | 'color'>>): Promise<void>
   removeMark(id: string): Promise<void>
   updateNoteText(id: string, text: string): Promise<void>
@@ -661,6 +675,25 @@ export const useReader = create<ReaderState>((set, get) => ({
     // Opening the editor must not wait for persistence or repaginate the book.
     if (withNote && get().current === current) void get().editNote(a.id, popover.rect)
     await storage.putAnnotation(a)
+  },
+
+  async toggleJudou(locator) {
+    const { current, scene, annotations, lastColor } = get()
+    if (!current) return
+    const target = resolveJudou(current.parsed.chapters[locator.chapter], locator, annotations)
+    if (!target) return
+    if (locator.start !== locator.end) scene?.clearSelection()
+    set({ popover: null })
+    if (target.existing) return get().removeMark(target.existing.id)
+    const now = Date.now()
+    const mark: Annotation = {
+      id: uid(), bookId: current.meta.id, locator: target.locator, quote: target.quote,
+      kind: 'judou', color: lastColor, symbol: JUDOU_DEFAULT_SYMBOL, createdAt: now, updatedAt: now,
+    }
+    const updated = [...annotations, mark]
+    set({ annotations: updated })
+    scene?.setAnnotations(updated)
+    await storage.putAnnotation(mark)
   },
 
   async restyle(id, patch) {

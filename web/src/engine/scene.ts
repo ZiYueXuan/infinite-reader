@@ -3,7 +3,7 @@ import { readerWheelIntent, type WebKitGesture } from './viewGestures'
 import { DEFAULT_ENDPAPER, TILT_DEFAULT, TILT_MAX, TILT_MIN, TILT_PRESETS, type DeskId, type EndpaperId } from '../settings'
 import * as THREE from 'three'
 import { READER_FOV as FOV, updateReaderCamera } from './readerCamera'
-import { hash, type Annotation, type Locator } from '../book/annotations'
+import {hash, judouSymbolOf, type Annotation, type Locator} from '../book/annotations'
 import { DEFAULT_LAYOUT, type LayoutConfig, type Paginated } from '../book/layout'
 import { isPhoneBrowser, phoneLayout } from '../book/phoneLayout'
 import { PhoneGestures } from './phoneGestures'
@@ -45,6 +45,9 @@ export interface SceneHooks {
   onFootnoteClick?(note: Footnote, anchor: HTMLButtonElement): void
   onImageClick?(path: string, map: BookMap | null): void
   onSelection(sel: SelectionInfo | null): void
+
+    /** the source range the reader wants to toggle a clause mark on; `keepCaret` when it came from a collapsed caret */
+  onJudou?(locator: Locator): void
   onTurned(turned: number, open: boolean): void
   onMarkClick(id: string, rect: DOMRect): void
   onNoteTagClick?(tag: string, anchor: HTMLButtonElement): void
@@ -671,7 +674,7 @@ export class ReaderScene {
     }
     for (const a of list) {
       const o = prev.get(a.id)
-      if (!o || o.kind !== a.kind || o.color !== a.color || o.locator.start !== a.locator.start || o.locator.end !== a.locator.end) {
+        if (!o || o.kind !== a.kind || o.color !== a.color || o.locator.start !== a.locator.start || o.locator.end !== a.locator.end || judouSymbolOf(o.symbol) !== judouSymbolOf(a.symbol)) {
         mark(a)
         if (o) mark(o)
       }
@@ -1754,6 +1757,13 @@ export class ReaderScene {
       return
     }
     if (this.isUiTarget(e.target) || !canPageFrom(e.target, e.key)) return
+    if (e.key === '/' && !e.repeat) {
+      const range = this.text?.readSelection()?.locator ?? this.crossSelection?.locator ?? this.text?.readCaret()
+      if (!range) return
+      e.preventDefault()
+      this.hooks.onJudou?.(range)
+      return
+    }
     if (this.applyZoomKey(e.key)) {
       e.preventDefault()
       return

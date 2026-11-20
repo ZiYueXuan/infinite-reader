@@ -107,6 +107,12 @@ export const Icon = {
       <path d="M7 4v7a5 5 0 0 0 10 0V4M5 20h14" />
     </I>
   ),
+    judou: (p: { size?: number }) => (
+        <I {...p}>
+            <path d="M6 4v16"/>
+            <path d="m11 15 5-9"/>
+        </I>
+    ),
   note: (p: { size?: number }) => (
     <I {...p}>
       <path d="M5 4h14v10l-5 6H5z" />

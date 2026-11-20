@@ -72,6 +72,16 @@ describe("annotations", () => {
     expect((await c.fetch(`/api/books/${bookId}/annotations`, { method: "POST", json: { kind: "highlight", color: "red;x", anchor: { a: 1 } } })).status).toBe(400);
   });
 
+    it("accepts reader clause marks", async () => {
+        const {c, bookId} = await setup();
+        const created = await c.fetch(`/api/books/${bookId}/annotations`, {
+            method: "POST",
+            json: {kind: "judou", anchor: {chapter: 0, start: 4, end: 5}, text: "也"}
+        });
+        expect(created.status).toBe(201);
+        expect(((await created.json()) as any).annotation.kind).toBe("judou");
+    });
+
   it("is private to the owner", async () => {
     const { te, c, bookId } = await setup();
     const created = await c.fetch(`/api/books/${bookId}/annotations`, { method: "POST", json: { kind: "highlight", anchor: { a: 1 } } });

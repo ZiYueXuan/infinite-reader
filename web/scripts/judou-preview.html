@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="UTF-8">
+<title>句读 · 渲染预览</title>
+<style></style>
+<header><b>句读 · 真实分页与 canvas 渲染</b><span id="status">加载字体…</span></header>
+<main id="pages"></main>
+<script type="module">
+    import JSZip from 'jszip'
+    import {parseEpub} from '/src/book/epub.ts'
+    import {paginate, DEFAULT_LAYOUT} from '/src/book/layout.ts'
+    import {renderPage, rangeRects, contentOrigin} from '/src/book/pageRender.ts'
+    import {ensureFonts} from '/src/book/loader.ts'
+
+    // Unpunctuated Shiji prose: the clause marks are the only punctuation on the page.
+    const clauseText = '项籍者下相人也字羽初起时年二十四其季父项梁梁父即楚将项燕为秦将王翦所戮者也项氏世世为楚将封于项故姓项氏'
+    const clauses = ['项籍者', '下相人也', '字羽', '初起时', '年二十四', '其季父项梁', '梁父即楚将项燕', '为秦将王翦所戮者也', '项氏世世为楚将', '封于项', '故姓项氏']
+    const prose = '秦二世元年七月陈涉等起大泽中其九月会稽守通谓梁曰江西皆反此亦天亡秦之时也吾闻先即制人后则为人所制吾欲发兵使公及桓楚将'
+
+    async function epub(chapters) {
+        const zip = new JSZip()
+        zip.file('META-INF/container.xml', '<container><rootfiles><rootfile full-path="book.opf"/></rootfiles></container>')
+        zip.file('book.opf', `<package><metadata><title>句读预览</title><creator>司马迁</creator><language>zh</language></metadata><manifest>${chapters.map((_, i) => `<item id="c${i}" href="c${i}.xhtml" media-type="application/xhtml+xml"/>`).join('')}</manifest><spine>${chapters.map((_, i) => `<itemref idref="c${i}"/>`).join('')}</spine></package>`)
+        chapters.forEach((s, i) => zip.file(`c${i}.xhtml`, `<html xmlns="http://www.w3.org/1999/xhtml"><head><title>样例</title></head><body>${s}</body></html>`))
+        return zip.generateAsync({type: 'arraybuffer'})
+    }
+
+    await ensureFonts()
+    const book = await parseEpub(await epub([`<h2>项羽本纪</h2><p>${clauseText}</p><p>${prose}</p><p>${prose.slice(0, 54)}</p>`]))
+    const chapterText = book.chapters[0].blocks.map((b) => b.text).join('\n')
+    const mark = (id, from, len, kind, color) => {
+        const start = chapterText.indexOf(from)
+        if (start < 0) throw new Error(`fixture text missing: ${from}`)
+        const s = kind === 'judou' ? start + from.length - 1 : start
+        return {
+            id,
+            bookId: 'preview',
+            locator: {chapter: 0, start: s, end: kind === 'judou' ? s + 1 : start + len},
+            quote: kind === 'judou' ? from.slice(-1) : from,
+            kind,
+            color, ...(kind === 'judou' ? {symbol: '/'} : {}),
+            createdAt: 1,
+            updatedAt: 1
+        }
+    }
+
+    const judou = clauses.map((c, i) => mark(`j${i}`, c, 1, 'judou', 'yellow'))
+    const styled = [...judou, mark('hl', '其季父项梁', 5, 'highlight', 'yellow'), mark('ul', '项梁梁父即楚', 6, 'underline', 'blue')]
+
+    const figures = []
+
+    function show(canvas, caption, zoom) {
+        const fig = document.createElement('figure')
+        if (zoom) fig.className = 'zoom'
+        fig.append(canvas)
+        const cap = document.createElement('figcaption')
+        cap.textContent = caption
+        fig.append(cap)
+        document.querySelector('#pages').append(fig)
+        figures.push(fig)
+    }
+
+    function crop(src, sx, sy, sw, sh, outW) {
+        const c = document.createElement('canvas')
+        c.width = outW
+        c.height = Math.round((outW * sh) / sw)
+        c.getContext('2d').drawImage(src, sx, sy, sw, sh, 0, 0, c.width, c.height)
+        return c
+    }
+
+    async function pageAt(cfg, marks) {
+        const pag = await paginate(book, cfg)
+        const page = pag.pages.find((p) => !p.special && p.chapter === 0 && p.lines.length)
+        const canvas = renderPage(page, {cfg, scale: 2, bookTitle: '史记', author: '司马迁', marks, images: new Map()})
+        return {page, canvas}
+    }
+
+    const normal = await pageAt(DEFAULT_LAYOUT, judou)
+    show(normal.canvas, `22 px 正文 · ${judou.length} 个句读 · 无标点原文`)
+
+    const small = await pageAt({...DEFAULT_LAYOUT, fontSize: 15}, judou)
+    show(small.canvas, '15 px · 最小正文字号的辨识度')
+
+    const large = await pageAt({...DEFAULT_LAYOUT, fontSize: 30}, judou)
+    show(large.canvas, '30 px · 大字号下的位置与倾斜')
+
+    const mixed = await pageAt(DEFAULT_LAYOUT, styled)
+    const o = contentOrigin(mixed.page, DEFAULT_LAYOUT)
+    const first = mixed.page.lines.find((l) => l.words.some((w) => w.s >= 0))
+    const top = o.y + first.y - 4
+    show(crop(mixed.canvas, o.x * 2, top * 2, 430 * 2, (first.h * 3 + 10) * 2, 960), '2 倍放大 · 句读压在朱红之上，与高亮、下划线叠加时的层次', true)
+
+    let hits = 0
+    for (const m of judou) {
+        const {page} = normal
+        if (page.chapter === m.locator.chapter && rangeRects(page, m.locator.start, m.locator.end).length) hits++
+    }
+    document.querySelector('#status').textContent = `PASS · ${judou.length} 个句读，${hits} 个落在真实字格上 · 共 ${normal.page.lines.length} 行`
+    if (location.hash === '#zoom') document.querySelector('#pages').replaceChildren(figures.at(-1))
+</script>
+</html>

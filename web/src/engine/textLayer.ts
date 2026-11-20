@@ -348,6 +348,20 @@ export class TextLayer {
     return { locator: { chapter, start, end }, text, rect, page: Number(b.span.dataset.p) }
   }
 
+  /** Keep the actual insertion point, including at paragraph boundaries. */
+  readCaret(): Locator | null {
+    const sel = window.getSelection()
+    if (!sel?.rangeCount || !sel.isCollapsed) return null
+    const range = sel.getRangeAt(0)
+    if (!this.root.contains(range.startContainer)) return null
+    const point = this.spanFor(range.startContainer, range.startOffset, false)
+    if (!point) return null
+    const start = Number(point.span.dataset.s), end = Number(point.span.dataset.e)
+    if (end <= start) return null
+    const offset = Math.min(start + point.local, end)
+    return { chapter: Number(point.span.dataset.c), start: offset, end: offset }
+  }
+
   /** Selected text rebuilt from the word spans, so ideographs never pick up stray spaces or line breaks. */
   private textInRange(range: Range, a: { span: HTMLElement; local: number }, b: { span: HTMLElement; local: number }) {
     const spans = Array.from(this.root.querySelectorAll<HTMLElement>('span.w')).filter((sp) => range.intersectsNode(sp))
@@ -384,7 +398,7 @@ export class TextLayer {
     const local = this.pointInBox(span, box, clientX, clientY)
     if (!local) return null
     const origin = contentOrigin(page, this.cfg)
-    return markUnderPoint(page, box.x - origin.x + local.x, box.y - origin.y + local.y, marks, this.cfg.fontSize)
+      return markUnderPoint(page, box.x - origin.x + local.x, box.y - origin.y + local.y, marks, this.cfg)
   }
 
   private pointInBox(span: HTMLElement, box: TextBox, clientX: number, clientY: number) {
