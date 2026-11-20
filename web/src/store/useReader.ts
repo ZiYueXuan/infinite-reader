@@ -25,7 +25,7 @@ import type { ReaderScene } from '../engine/scene'
 import { deskIdOf, endpaperIdOf, loadPrefs, savePrefs, TILT_MAX, TILT_MIN, type DeskId, type EndpaperId } from '../settings'
 import { BOOK_UNAVAILABLE, bookIdFromPath } from '../route/bookPath'
 import { runHistoryNav } from '../route/historyLock'
-import { flushStorage, getStorageMode, onSyncError, setStorageMode, storage } from '../storage'
+import { flushStorage, getAnnotationSaveState, getStorageMode, onSyncError, setStorageMode, storage } from '../storage'
 
 export type Session =
   | { status: 'checking' }
@@ -138,6 +138,7 @@ interface ReaderState {
 
 let toastTimer = 0
 let libraryTimer = 0
+let localJudouWrite = Promise.resolve()
 let noteLayoutVersion = 0
 const noteFontSelections = new Map<string, symbol>()
 
@@ -678,22 +679,38 @@ export const useReader = create<ReaderState>((set, get) => ({
   },
 
   async toggleJudou(locator) {
-    const { current, scene, annotations, lastColor } = get()
+    const { current, scene, lastColor } = get()
     if (!current) return
-    const target = resolveJudou(current.parsed.chapters[locator.chapter], locator, annotations)
-    if (!target) return
-    if (locator.start !== locator.end) scene?.clearSelection()
-    set({ popover: null })
-    if (target.existing) return get().removeMark(target.existing.id)
-    const now = Date.now()
-    const mark: Annotation = {
-      id: uid(), bookId: current.meta.id, locator: target.locator, quote: target.quote,
-      kind: 'judou', color: lastColor, symbol: JUDOU_DEFAULT_SYMBOL, createdAt: now, updatedAt: now,
+    const toggle = async () => {
+      if (get().current !== current) return
+      const target = resolveJudou(current.parsed.chapters[locator.chapter], locator, get().annotations)
+      if (!target) return
+      if (locator.start !== locator.end) scene?.clearSelection()
+      set({ popover: null })
+      if (target.existing) return get().removeMark(target.existing.id)
+      const now = Date.now()
+      const mark: Annotation = {
+        id: uid(), bookId: current.meta.id, locator: target.locator, quote: target.quote,
+        kind: 'judou', color: lastColor, symbol: JUDOU_DEFAULT_SYMBOL, createdAt: now, updatedAt: now,
+      }
+      const saving = storage.putAnnotation(mark)
+      if (getStorageMode() === 'local') {
+        await saving
+        if (get().current !== current) return
+        if (getAnnotationSaveState(mark.id) === 'error') {
+          get().say(t("保存失败，请重试"))
+          return
+        }
+      }
+      const annotations = [...get().annotations, mark]
+      set({ annotations })
+      get().scene?.setAnnotations(annotations)
+      return saving
     }
-    const updated = [...annotations, mark]
-    set({ annotations: updated })
-    scene?.setAnnotations(updated)
-    await storage.putAnnotation(mark)
+    if (getStorageMode() === 'api') return toggle()
+    // Apply rapid local toggles in order so the second press sees the first committed mark.
+    localJudouWrite = localJudouWrite.then(toggle, toggle)
+    return localJudouWrite
   },
 
   async restyle(id, patch) {
@@ -705,13 +722,24 @@ export const useReader = create<ReaderState>((set, get) => ({
   },
 
   async removeMark(id) {
-    const bookIdOf = get().current?.meta.id ?? ''
-    const hadNote = !!get().annotations.find((a) => a.id === id)?.note
-    const annotations = get().annotations.filter((a) => a.id !== id)
-    set({ annotations, popover: null, editingNote: null })
+    const { current } = get()
+    if (!current) return
+    const deletion = storage.deleteAnnotation(id, current.meta.id)
+    // Cloud deletes are already in the durable outbox. Local deletes need the IndexedDB commit.
+    if (getStorageMode() === 'local') {
+      try { await deletion } catch {
+        if (get().current === current) get().say(t("保存失败，请重试"))
+        return
+      }
+    }
+    if (get().current !== current) return
+    const { annotations: previous, popover, editingNote } = get()
+    const hadNote = !!previous.find((a) => a.id === id)?.note
+    const annotations = previous.filter((a) => a.id !== id)
+    set({ annotations, popover: popover?.id === id ? null : popover, editingNote: editingNote?.id === id ? null : editingNote })
     get().scene?.setAnnotations(annotations)
-    await storage.deleteAnnotation(id, bookIdOf)
-    if (hadNote) await get().reflowNotes()
+    await deletion
+    if (hadNote && get().current === current) await get().reflowNotes()
   },
 
   async updateNoteText(id, text) {
