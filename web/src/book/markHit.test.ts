@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import type { Annotation } from './annotations.ts'
-import type { Line, Page, Word } from './layout.ts'
+import {DEFAULT_LAYOUT, type Line, type Page, type Word} from './layout.ts'
 import { localInProjectedBox } from '../engine/projectedBox.ts'
 import { markBand, markUnderPoint } from './pageRender.ts'
 
@@ -45,10 +45,10 @@ test('a click on the highlight wash is the mark, and the cream gap around it is 
   const body = page([row])
   const band = markBand(row, fontSize)
   const highlighted = mark(18, 19)
-  assert.ok(markUnderPoint(body, 20, (band.top + band.bot) / 2, [highlighted], fontSize))
-  assert.equal(markUnderPoint(body, 20, band.top - 4, [highlighted], fontSize), null)
-  assert.equal(markUnderPoint(body, 20, band.bot + 4, [highlighted], fontSize), null)
-  assert.equal(markUnderPoint(body, 50, (band.top + band.bot) / 2, [highlighted], fontSize), null)
+    assert.ok(markUnderPoint(body, 20, (band.top + band.bot) / 2, [highlighted], DEFAULT_LAYOUT))
+    assert.equal(markUnderPoint(body, 20, band.top - 4, [highlighted], DEFAULT_LAYOUT), null)
+    assert.equal(markUnderPoint(body, 20, band.bot + 4, [highlighted], DEFAULT_LAYOUT), null)
+    assert.equal(markUnderPoint(body, 50, (band.top + band.bot) / 2, [highlighted], DEFAULT_LAYOUT), null)
 })
 
 test('an underline hit includes the stroke and still ignores the gap above the line', () => {
@@ -56,8 +56,8 @@ test('an underline hit includes the stroke and still ignores the gap above the l
   const body = page([row])
   const stroke = row.baseline + 4.4
   const underlined = mark(4, 5, 'underline')
-  assert.ok(markUnderPoint(body, 8, stroke, [underlined], fontSize))
-  assert.equal(markUnderPoint(body, 8, 1, [underlined], fontSize), null)
+    assert.ok(markUnderPoint(body, 8, stroke, [underlined], DEFAULT_LAYOUT))
+    assert.equal(markUnderPoint(body, 8, 1, [underlined], DEFAULT_LAYOUT), null)
 })
 
 test('localInProjectedBox reads a DOMMatrix the way the text layer writes it', () => {

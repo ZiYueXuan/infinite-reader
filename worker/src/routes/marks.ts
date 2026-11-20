@@ -24,14 +24,15 @@ const idField = z.string().min(8).max(64).regex(/^[A-Za-z0-9_-]+$/);
 
 const annCreate = z.object({
   id: idField.optional(),
-  kind: z.enum(["highlight", "underline"]),
+    // judou: a reader-added clause mark; it has no colour of its own but shares the annotation table.
+    kind: z.enum(["highlight", "underline", "judou"]),
   color: color.default("#ffe066"),
   anchor,
   text: z.string().max(20000).nullish(),
   noteId: idField.nullish(),
 });
 const annPatch = z.object({
-  kind: z.enum(["highlight", "underline"]).optional(),
+    kind: z.enum(["highlight", "underline", "judou"]).optional(),
   color: color.optional(),
   noteId: idField.nullable().optional(),
 });

@@ -13,6 +13,15 @@ export interface SelectionInfo {
   page: number
 }
 
+/** A collapsed caret in the original text, which readSelection() deliberately ignores. */
+export interface CaretInfo {
+    chapter: number
+    /** offset between two source characters */
+    offset: number
+    /** box of the character before the caret, for anchors */
+    rect: DOMRect
+}
+
 type PageProjection = (x: number, y: number) => { x: number; y: number }
 interface TextBox {
   el: HTMLElement
@@ -348,6 +357,33 @@ export class TextLayer {
     return { locator: { chapter, start, end }, text, rect, page: Number(b.span.dataset.p) }
   }
 
+    /**
+     * The collapsed caret. `/` and the clause mark need the character a caret sits after, while
+     * readSelection() returns null until the reader drags a range.
+     */
+    readCaret(): CaretInfo | null {
+        const sel = window.getSelection()
+        if (!sel || sel.rangeCount === 0 || !sel.isCollapsed) return null
+        const range = sel.getRangeAt(0)
+        if (!this.root.contains(range.startContainer)) return null
+        const a = this.spanFor(range.startContainer, range.startOffset, false)
+        if (!a) return null
+        const start = Number(a.span.dataset.s), end = Number(a.span.dataset.e)
+        if (end <= start) return null
+        const local = Math.min(a.local, end - start)
+        // The caret itself has no width; anchor on the character it follows.
+        let rect = a.span.getBoundingClientRect()
+        const node = a.span.firstChild
+        if (node?.nodeType === 3 && local > 0) {
+            const probe = document.createRange()
+            probe.setStart(node, local - 1)
+            probe.setEnd(node, local)
+            const r = probe.getBoundingClientRect()
+            if (r.width > 0 && r.height > 0) rect = r
+        }
+        return {chapter: Number(a.span.dataset.c), offset: start + local, rect}
+    }
+
   /** Selected text rebuilt from the word spans, so ideographs never pick up stray spaces or line breaks. */
   private textInRange(range: Range, a: { span: HTMLElement; local: number }, b: { span: HTMLElement; local: number }) {
     const spans = Array.from(this.root.querySelectorAll<HTMLElement>('span.w')).filter((sp) => range.intersectsNode(sp))
@@ -384,7 +420,7 @@ export class TextLayer {
     const local = this.pointInBox(span, box, clientX, clientY)
     if (!local) return null
     const origin = contentOrigin(page, this.cfg)
-    return markUnderPoint(page, box.x - origin.x + local.x, box.y - origin.y + local.y, marks, this.cfg.fontSize)
+      return markUnderPoint(page, box.x - origin.x + local.x, box.y - origin.y + local.y, marks, this.cfg)
   }
 
   private pointInBox(span: HTMLElement, box: TextBox, clientX: number, clientY: number) {

@@ -3,7 +3,7 @@ import { readerWheelIntent, type WebKitGesture } from './viewGestures'
 import { DEFAULT_ENDPAPER, TILT_DEFAULT, TILT_MAX, TILT_MIN, TILT_PRESETS, type DeskId, type EndpaperId } from '../settings'
 import * as THREE from 'three'
 import { READER_FOV as FOV, updateReaderCamera } from './readerCamera'
-import { hash, type Annotation, type Locator } from '../book/annotations'
+import {hash, judouSymbolOf, type Annotation, type Locator} from '../book/annotations'
 import { DEFAULT_LAYOUT, type LayoutConfig, type Paginated } from '../book/layout'
 import { isPhoneBrowser, phoneLayout } from '../book/phoneLayout'
 import { PhoneGestures } from './phoneGestures'
@@ -45,6 +45,9 @@ export interface SceneHooks {
   onFootnoteClick?(note: Footnote, anchor: HTMLButtonElement): void
   onImageClick?(path: string, map: BookMap | null): void
   onSelection(sel: SelectionInfo | null): void
+
+    /** the source range the reader wants to toggle a clause mark on; `keepCaret` when it came from a collapsed caret */
+    onJudou?(locator: Locator, keepCaret: boolean): void
   onTurned(turned: number, open: boolean): void
   onMarkClick(id: string, rect: DOMRect): void
   onNoteTagClick?(tag: string, anchor: HTMLButtonElement): void
@@ -671,7 +674,7 @@ export class ReaderScene {
     }
     for (const a of list) {
       const o = prev.get(a.id)
-      if (!o || o.kind !== a.kind || o.color !== a.color || o.locator.start !== a.locator.start || o.locator.end !== a.locator.end) {
+        if (!o || o.kind !== a.kind || o.color !== a.color || o.locator.start !== a.locator.start || o.locator.end !== a.locator.end || judouSymbolOf(o.symbol) !== judouSymbolOf(a.symbol)) {
         mark(a)
         if (o) mark(o)
       }
@@ -1739,6 +1742,21 @@ export class ReaderScene {
     if (this.performTurn(turn.dir, 1, true)) this.keyTurns.shift()
   }
 
+    private judouTarget(): { locator: Locator; keepCaret: boolean } | null {
+        const sel = this.text?.readSelection()
+        if (sel) return {locator: sel.locator, keepCaret: false}
+        const cross = this.crossSelection?.locator
+        if (cross) return {locator: cross, keepCaret: false}
+        const caret = this.text?.readCaret()
+        if (!caret) return null
+        // Chapter start has no character before the caret; an empty range still lets the store remove
+        // a mark on the first character, and it never looks past it for a neighbour.
+        return {
+            locator: {chapter: caret.chapter, start: Math.max(0, caret.offset - 1), end: caret.offset},
+            keepCaret: true
+        }
+    }
+
   private onKey = (e: KeyboardEvent) => {
     if (e.defaultPrevented || e.isComposing || this.interactionSuspended || e.metaKey || e.ctrlKey || e.altKey) return
     const dir = pageKeyDirection(e.key, e.shiftKey)
@@ -1754,6 +1772,13 @@ export class ReaderScene {
       return
     }
     if (this.isUiTarget(e.target) || !canPageFrom(e.target, e.key)) return
+      if (e.key === '/' && !e.repeat) {
+          const target = this.judouTarget()
+          if (!target) return
+          e.preventDefault()
+          this.hooks.onJudou?.(target.locator, target.keepCaret)
+          return
+      }
     if (this.applyZoomKey(e.key)) {
       e.preventDefault()
       return

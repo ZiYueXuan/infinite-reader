@@ -6,7 +6,19 @@ import { readerFontIdOf, quoteFontIdOf, type ReaderFontId, type QuoteFontId } fr
 import { create } from 'zustand'
 import { ApiError } from '../api/http'
 import { authApi, type User } from '../api/auth'
-import { MARK_COLORS, noteLayoutSignature, noteTextColorOf, uid, type Annotation, type Locator, type MarkColor, type MarkKind, type NoteTextColor } from '../book/annotations'
+import {
+    JUDOU_DEFAULT_SYMBOL,
+    MARK_COLORS,
+    judouToggleRange,
+    noteLayoutSignature,
+    noteTextColorOf,
+    uid,
+    type Annotation,
+    type Locator,
+    type MarkColor,
+    type MarkKind,
+    type NoteTextColor
+} from '../book/annotations'
 import { sanitizeNoteTags } from '../book/noteTags'
 import type { BookMeta, ParsedBook } from '../book/types'
 import type { ReaderScene } from '../engine/scene'
@@ -103,6 +115,9 @@ interface ReaderState {
   setPanel(p: Panel): void
   setPopover(p: Popover | null): void
   mark(kind: MarkKind, color: MarkColor, withNote?: boolean): Promise<void>
+
+    /** Toggle the clause mark on the last character of a source range (a caret passes one character). */
+    toggleJudou(locator: Locator, keepCaret?: boolean): Promise<void>
   restyle(id: string, patch: Partial<Pick<Annotation, 'kind' | 'color'>>): Promise<void>
   removeMark(id: string): Promise<void>
   updateNoteText(id: string, text: string): Promise<void>
@@ -130,6 +145,16 @@ const noteFontSelections = new Map<string, symbol>()
 function bookAndNoteText(parsed: ParsedBook, annotations: Annotation[]) {
   return '笔记·续写下你的想法Note continued Write your thoughts' + parsed.meta.title + parsed.meta.author + parsed.chapters.map((ch) => ch.blocks.map((b) => b.text).join('')).join('') +
     annotations.map((a) => a.note ? a.note.text + (a.note.tags ?? []).join('') : '').join('')
+}
+
+function quoteAt(parsed: ParsedBook, loc: Locator) {
+    const chapter = parsed.chapters[loc.chapter]
+    if (!chapter) return ''
+    for (const block of chapter.blocks) {
+        if (block.footnoteDefinition || loc.start < block.start || loc.start >= block.start + block.text.length) continue
+        return block.text.slice(loc.start - block.start, loc.end - block.start)
+    }
+    return ''
 }
 
 function pendingBookLoading() {
@@ -662,6 +687,37 @@ export const useReader = create<ReaderState>((set, get) => ({
     if (withNote && get().current === current) void get().editNote(a.id, popover.rect)
     await storage.putAnnotation(a)
   },
+
+    async toggleJudou(locator, keepCaret) {
+        const {current, scene} = get()
+        if (!current) return
+        const target = judouToggleRange(locator, get().annotations, !!keepCaret)
+        const existing = get().annotations.find((a) => a.kind === 'judou' &&
+            a.locator.chapter === target.chapter && a.locator.start === target.start && a.locator.end === target.end)
+        // A selection would hide the mark and its popover; a caret must survive so / can toggle again.
+        if (!keepCaret) scene?.clearSelection()
+        set({popover: null})
+        if (existing) {
+            await get().removeMark(existing.id)
+            return
+        }
+        const now = Date.now()
+        const a: Annotation = {
+            id: uid(),
+            bookId: current.meta.id,
+            locator: target,
+            quote: quoteAt(current.parsed, target),
+            kind: 'judou',
+            color: get().lastColor,
+            symbol: JUDOU_DEFAULT_SYMBOL,
+            createdAt: now,
+            updatedAt: now,
+        }
+        const annotations = [...get().annotations, a]
+        set({annotations})
+        scene?.setAnnotations(annotations)
+        await storage.putAnnotation(a)
+    },
 
   async restyle(id, patch) {
     const annotations = get().annotations.map((a) => (a.id === id ? { ...a, ...patch, updatedAt: Date.now() } : a))

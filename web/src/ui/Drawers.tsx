@@ -152,7 +152,8 @@ export function TocDrawer() {
   if (!current) return null
   const slideChapters = new Set(chapterIndices(current.parsed.toc))
   const readySlides = slideIndex?.key === indexKey ? slideIndex.targets : new Set<string>()
-  const marks = [...annotations].sort((a, b) => a.locator.chapter - b.locator.chapter || a.locator.start - b.locator.start)
+    // Clause marks are a reading aid along the text, not a saved highlight; a dense passage must not bury notes.
+    const marks = annotations.filter((a) => a.kind !== 'judou').sort((a, b) => a.locator.chapter - b.locator.chapter || a.locator.start - b.locator.start)
   return (
     <Drawer onClose={() => setPanel('none')} tabs={
       <div className="tabs">

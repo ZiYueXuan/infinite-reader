@@ -1,6 +1,41 @@
 import { noteFontIdOf, type NoteFontId } from './noteFontCatalog.ts'
-export type MarkKind = 'highlight' | 'underline'
+
+export type MarkKind = 'highlight' | 'underline' | 'judou'
 export type MarkColor = 'yellow' | 'pink' | 'green' | 'blue' | 'orange' | 'violet'
+
+/** Reader-added clause marks (句读). Vermilion keeps them apart from the book's printed punctuation. */
+export const JUDOU_DEFAULT_SYMBOL = '/'
+export const JUDOU_INK = '#b4472f'
+
+/** One stored character; records written before the field existed fall back to the default. */
+export function judouSymbolOf(symbol: string | undefined) {
+    return Array.from(symbol?.trim() ?? '')[0] ?? JUDOU_DEFAULT_SYMBOL
+}
+
+/** A clause mark belongs to one character: the last one of whatever range the reader acted on. */
+export function judouCharOf(loc: Locator): Locator {
+    const start = Math.max(loc.start, loc.end - 1)
+    return {chapter: loc.chapter, start, end: start + 1}
+}
+
+/**
+ * The clause mark a `/` press should toggle. A caret is ambiguous: it sits between two characters,
+ * and readers click either half of a marked character expecting the mark to go. So an existing mark
+ * on the character before or after the caret both win over adding a new one.
+ */
+export function judouToggleRange(loc: Locator, marks: Annotation[], caret: boolean): Locator {
+    const target = judouCharOf(loc)
+    if (!caret) return target
+    const has = (r: Locator) => marks.some((a) => a.kind === 'judou' &&
+        a.locator.chapter === r.chapter && a.locator.start === r.start && a.locator.end === r.end)
+    if (has(target)) return target
+    // An empty range means the caret is at the chapter start: no neighbour before it, and the first
+    // character itself must not be treated as the "next" one.
+    if (loc.end <= loc.start) return target
+    const next = {chapter: target.chapter, start: target.end, end: target.end + 1}
+    return has(next) ? next : target
+}
+
 export type NoteTextColor = 'default' | MarkColor
 
 /** Reading inks, deliberately darker than the original-text highlight swatches. */
@@ -57,6 +92,8 @@ export interface Annotation {
   quote: string
   kind: MarkKind
   color: MarkColor
+    /** 句读 glyph; only meaningful for kind === 'judou', where missing means JUDOU_DEFAULT_SYMBOL. */
+    symbol?: string
   note?: StickyNote
   createdAt: number
   updatedAt: number
@@ -65,7 +102,7 @@ export interface Annotation {
 /** Identity of a synced annotation. Tag-only edits must not be treated as already saved. */
 export function annotationSignature(a: Annotation) {
   const tags = a.note?.tags?.length ? a.note.tags : null
-  return JSON.stringify([a.kind, a.color, a.note ? [a.note.text, Math.round(a.note.x * 100), Math.round(a.note.y * 100), Math.round(a.note.rot * 1000), tags, noteTextColorOf(a.note.textColor), noteFontIdOf(a.note.font)] : null])
+    return JSON.stringify([a.kind, a.color, a.kind === 'judou' ? judouSymbolOf(a.symbol) : null, a.note ? [a.note.text, Math.round(a.note.x * 100), Math.round(a.note.y * 100), Math.round(a.note.rot * 1000), tags, noteTextColorOf(a.note.textColor), noteFontIdOf(a.note.font)] : null])
 }
 
 /** Only note content and placement affect pagination, not sync timestamps or legacy desk positions. */
