@@ -37,12 +37,13 @@ function CodeBlock({ node, children, streaming }: { node?: Element; children?: R
   </div>
 }
 
-export const AnswerText = memo(function AnswerText({ text, citations = NO_CITATIONS, book, onNavigate, streaming = false }: {
+export const AnswerText = memo(function AnswerText({ text, citations = NO_CITATIONS, book, onNavigate, streaming = false, interrupted = false }: {
   text: string
   citations?: Citation[]
   book: CurrentBook
   onNavigate: (loc: Locator) => void
   streaming?: boolean
+  interrupted?: boolean
 }) {
   const t = useT()
   const instance = useId().replace(/[^a-zA-Z0-9_-]/g, '')
@@ -90,5 +91,5 @@ export const AnswerText = memo(function AnswerText({ text, citations = NO_CITATI
     remarkRehypeOptions={{ footnoteLabel: t("Notes"), footnoteBackLabel: (referenceIndex: number) => t('Back to reference {0}', referenceIndex + 1), clobberPrefix: '' }}
     rehypePlugins={[rehypeRaw, [rehypeSanitize, answerSchema], [rehypeReaderMarkdown, readerOptions], [rehypeKatex, { strict: false, trust: false, maxExpand: 1000, maxSize: 20 }], [rehypeHighlight, { detect: false }]]}
     components={components}
-  >{answer}</Markdown>{!streaming && answer !== text && <p role="status">{t("The AI response was interrupted. Please try again.")}</p>}</div>
+  >{answer}</Markdown>{!streaming && (interrupted || answer !== text) && <p role="status">{t("The AI response was interrupted. Please try again.")}</p>}</div>
 })

@@ -9,7 +9,7 @@ page.on('pageerror', e => errors.push(e.message))
 const bookId = '11111111-1111-4111-8111-111111111111'
 const citation = { n:2,chunkId:'c',ordinal:0,chapterIndex:0,chapterTitle:'成本结构',chapterHref:'chapter.xhtml',charStart:0,charEnd:12,snippet:'这是用于验证引用跳转的原文。',score:1 }
 const webCitation = { kind:'web', n:3, url:'https://example.com/research', title:'External research', snippet:'Public search excerpt.', retrievedAt:1 }
-const brokenAnswer = 'I will read the passage.\n<｜DSML｜calls><｜DSML｜invoke name="read_book_passage"><｜DSML｜parameter name="chapter" string="false">5</｜DSML｜parameter></｜DSML｜invoke></｜DSML｜calls>'
+const brokenAnswer = 'I will read the passage.\n<｜｜DSML｜｜ calls><｜｜DSML｜｜ invoke name="search_book"><｜｜DSML｜｜ parameter name="query" string="true">早年</｜｜DSML｜｜ parameter></｜｜DSML｜｜ invoke></｜｜DSML｜｜ calls>'
 const markdown = [
   '# 大模型推理的成本结构', '## 一、五层蛋糕：单位 Token 成本',
   '这是 **粗体与 *嵌套斜体***、~~删除线~~，书籍引用[2]与脚注[^note]。',
@@ -42,7 +42,12 @@ page.on('request', req => {
   if (url.pathname === '/api/auth/me') return void json({user:{id:'markdown-user',email:'test@example.com',name:null,avatar_url:null}})
   if (url.pathname === '/api/auth/providers') return void json({email:true,google:true})
   if (url.pathname === '/api/books') return void json({books:[]})
-  if (url.pathname.endsWith('/chat')) return void json({messages:[{id:'answer',role:'assistant',content:markdown,citations:[citation,webCitation,{...webCitation,n:4,url:'javascript:alert(1)'}],selection:null},{id:'second',role:'assistant',content:'Second message[^note].\n\n[^note]: Separate footnote.',citations:[],selection:null},{id:'legacy-protocol',role:'assistant',content:brokenAnswer,citations:[],selection:null}],pending:null})
+  if (url.pathname.endsWith('/chat')) return void json({messages:[
+    {id:'answer',role:'assistant',content:markdown,citations:[citation,webCitation,{...webCitation,n:4,url:'javascript:alert(1)'}],selection:null},
+    {id:'second',role:'assistant',content:'Second message[^note].\n\n[^note]: Separate footnote.',citations:[],selection:null},
+    {id:'legacy-protocol',role:'assistant',content:brokenAnswer,citations:[],selection:null},
+    {id:'filtered-history',role:'assistant',content:'',interrupted:true,citations:[],selection:null},
+  ],pending:null})
   if (url.pathname === '/api/costs') return void json({error:{code:'fixture',message:'No cost fixture'}},503)
   return void json({ok:true})
 })
@@ -61,7 +66,7 @@ try {
   await page.evaluate(() => { window.__reader.revealLocator = locator => { window.__navigated = locator } })
   await page.waitForSelector('.answer-markdown table')
   check(await page.$$eval('.answer-markdown', els => els.every(el => !el.textContent.includes('DSML'))), 'saved protocol markup is not shown as an answer')
-  check(await page.$$eval('.answer-markdown [role=status]', els => els.some(el => el.textContent.includes('interrupted'))), 'old broken answers explain that the response was interrupted')
+  check(await page.$$eval('.answer-markdown [role=status]', els => els.filter(el => el.textContent.includes('interrupted')).length === 2), 'raw and server-filtered history both explain the interruption')
   check(await page.$eval('.answer-markdown h1',e=>e.textContent==='大模型推理的成本结构'), 'Markdown headings render without literal hashes')
   check(await page.$eval('.answer-table',e=>e.querySelectorAll('tbody tr').length===2), 'Chinese cost table renders with two real rows')
   check(await page.$eval('.answer-table th:last-child',e=>getComputedStyle(e).textAlign==='right'), 'GFM column alignment is preserved')

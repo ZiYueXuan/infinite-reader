@@ -1,6 +1,6 @@
-import { validateToolCall, type AssistantMessage, type AssistantMessageEvent, type Tool, type ToolCall } from "@earendil-works/pi-ai";
+import { validateToolCall, type AssistantMessage, type AssistantMessageEvent, type Message, type Tool, type ToolCall } from "@earendil-works/pi-ai";
 
-import { markers, visibleAnswer } from "../../../shared/agentText";
+import { toolProtocolStart, visibleAnswer } from "../../../shared/agentText";
 
 const protocolError = () => new Error("llm_tool_protocol");
 
@@ -10,53 +10,68 @@ function clean(message: AssistantMessage, final = false): AssistantMessage {
   return copy;
 }
 
+/** An old reply saved as tool markup must not become an example for the next turn. */
+export function cleanAssistantHistory(messages: Message[]): Message[] {
+  return messages.flatMap<Message>(message => {
+    if (message.role !== "assistant" || !message.content.some(b => b.type === "text" && toolProtocolStart(b.text) >= 0)) return [message];
+    const assistant = clean(message, true);
+    return assistant.content.some(b => b.type === "toolCall" || (b.type === "text" && b.text.trim())) ? [assistant] : [];
+  });
+}
+
 /** Decode only a complete top-level DSML calls envelope from this model response.
  * It becomes ordinary Pi tool calls, so authorization, validation and tool budgets
  * still apply. Never interpret user messages, tool results or saved chat as calls.
  */
 function recover(message: AssistantMessage, tools: Tool[], allowed: boolean): AssistantMessage {
   const result = clean(message, true);
-  const blocks = message.content.filter(b => b.type === "text" && markers.some(m => b.text.includes(m)));
-  if (!blocks.length) {
-    if (message.content.some(b => b.type === "text" && /<[/]?[｜|]DS(?:M(?:L(?:[｜|])?)?)?$/.test(b.text))) throw protocolError();
-    return result;
-  }
+  const blocks = message.content.filter(b => b.type === "text" && toolProtocolStart(b.text) >= 0);
+  if (!blocks.length) return result;
   if (!allowed || blocks.length !== 1 || message.stopReason === "length" || message.content.some(b => b.type === "toolCall")) throw protocolError();
   const text = blocks[0].type === "text" ? blocks[0].text : "";
-  const prefix = visibleAnswer(text);
+  const at = toolProtocolStart(text);
+  const prefix = text.slice(0, at).trimEnd();
   // A quoted/code example is not an executable tool request.
   if (prefix.includes("`") || prefix.split("\n").at(-1)?.trimStart().startsWith(">")) throw protocolError();
-  const bar = text.includes("<｜DSML｜") ? "｜" : "|";
-  const tag = (value: string) => value.replaceAll("|", bar);
-  let rest = text.slice(prefix.length).trim();
+  let rest = text.slice(at);
+  const opener = /^<(｜{1,2}|\|{1,2})DSML\1[ \t]*calls>/.exec(rest);
+  if (!opener) throw protocolError();
+  // Match the same delimiter throughout the envelope. Only tag syntax is normalized.
+  const bars = opener[1].replaceAll("|", "\\|");
+  const ns = `${bars}DSML${bars}[ \\t]*`;
+  const invoke = new RegExp(`^<${ns}invoke name="([\\w-]+)">`);
+  const parameter = new RegExp(`^<${ns}parameter name="([\\w-]+)" string="(true|false)">`);
+  const endParameter = new RegExp(`</${ns}parameter>`);
+  const endInvoke = new RegExp(`^</${ns}invoke>`);
+  const endCalls = new RegExp(`^</${ns}calls>`);
+  rest = rest.slice(opener[0].length).trimStart();
   const take = (pattern: RegExp, trim = true) => {
-    const match = new RegExp(pattern.source.replaceAll("\\|", bar === "|" ? "\\|" : bar)).exec(rest);
+    const match = pattern.exec(rest);
     if (!match) throw protocolError();
     rest = rest.slice(match[0].length);
     if (trim) rest = rest.trimStart();
     return match;
   };
-  take(/^<\|DSML\|calls>/);
   const calls: ToolCall[] = [];
-  while (rest.startsWith(tag("<|DSML|invoke"))) {
+  while (!endCalls.test(rest)) {
     if (calls.length >= 8) throw protocolError();
-    const [, name] = take(/^<\|DSML\|invoke name="([\w-]+)">/);
+    const [, name] = take(invoke);
     const args: ToolCall["arguments"] = {};
-    while (rest.startsWith(tag("<|DSML|parameter"))) {
-      const [, key, string] = take(/^<\|DSML\|parameter name="([\w-]+)" string="(true|false)">/, false);
+    while (!endInvoke.test(rest)) {
+      const [, key, string] = take(parameter, false);
       if (["__proto__", "constructor", "prototype"].includes(key) || Object.hasOwn(args, key)) throw protocolError();
-      const end = rest.indexOf(tag("</|DSML|parameter>"));
-      if (end < 0) throw protocolError();
-      const value = rest.slice(0, end);
+      const end = endParameter.exec(rest);
+      if (!end) throw protocolError();
+      const value = rest.slice(0, end.index);
       try { args[key] = string === "true" ? value : JSON.parse(value); } catch { throw protocolError(); }
-      rest = rest.slice(end + "</|DSML|parameter>".length).trimStart();
+      rest = rest.slice(end.index + end[0].length).trimStart();
     }
-    take(/^<\/\|DSML\|invoke>/);
+    take(endInvoke);
     const call: ToolCall = { type: "toolCall", id: `dsml_${crypto.randomUUID().replaceAll("-", "")}`, name, arguments: args };
     try { call.arguments = validateToolCall(tools, call); } catch { throw protocolError(); }
     calls.push(call);
   }
-  take(/^<\/\|DSML\|calls>/);
+  take(endCalls);
   if (rest.trim() || !calls.length) throw protocolError();
   result.content.push(...calls);
   result.stopReason = "toolUse";

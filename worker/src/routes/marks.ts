@@ -4,6 +4,7 @@ import { type AppEnv, requireAuth } from "../auth";
 import { HttpError, newId, now, parseBody, safeJson } from "../lib/util";
 import { ownedBook } from "./books";
 import { agentRequest, clearBookAgents } from "../agent/client";
+import { visibleAnswer } from "../../../shared/agentText";
 
 export const marks = new Hono<AppEnv>();
 marks.use("*", requireAuth);
@@ -281,16 +282,15 @@ marks.get("/:bookId/chat", async (c) => {
     }>();
   return c.json({
     pending,
-    messages: rows.results.map((r) => ({
-      id: r.id,
-      threadId: r.thread_id,
-      role: r.role,
-      content: r.content,
-      selection: safeJson(r.selection),
-      citations: safeJson(r.citations) ?? [],
-      model: r.model,
-      createdAt: r.created_at,
-    })),
+    messages: rows.results.map((r) => {
+      const content = r.role === "assistant" ? visibleAnswer(r.content, true) : r.content;
+      return {
+        id: r.id, threadId: r.thread_id, role: r.role, content,
+        ...(content !== r.content && { interrupted: true }),
+        selection: safeJson(r.selection), citations: safeJson(r.citations) ?? [],
+        model: r.model, createdAt: r.created_at,
+      };
+    }),
   });
 });
 

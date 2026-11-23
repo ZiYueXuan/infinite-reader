@@ -7,8 +7,10 @@ as calls, so the envelope was displayed as prose and no passage was read.
 The provider adapter now normalizes complete DSML envelopes into Pi tool calls.
 It buffers protocol prefixes across stream chunks, validates names and arguments
 against the active tool definitions, and hands execution to the existing harness.
-Native tool calls remain unchanged. Both Unicode and ASCII DSML delimiters are
-accepted. Malformed, truncated, quoted, unknown or disallowed calls fail with
+The parser accepts one or two matching ASCII or fullwidth vertical bars around
+`DSML`, including tags such as `<｜｜DSML｜｜ calls>`. It accepts horizontal spacing
+before tag names and preserves string arguments verbatim.
+Malformed, truncated, quoted, unknown or disallowed calls fail with
 `llm_tool_protocol`; mixed native/DSML calls are rejected to avoid duplicate work.
 No extra retry or model call is added. Existing authorization, tool/model budgets,
 usage accounting, cancellation and durable replay remain in force.

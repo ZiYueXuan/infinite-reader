@@ -5,7 +5,7 @@ import { startAiCall } from "../lib/aiUsage";
 import { HttpError } from "../lib/util";
 import { compactionSource, completeSummaryText, summarizeHistory, SUMMARY_PROMPT } from "./historySummary";
 import { LIMITS, type Operation } from "./protocol";
-import { normalizeToolProtocol } from "./toolProtocol";
+import { cleanAssistantHistory, normalizeToolProtocol } from "./toolProtocol";
 
 export type ModelPurpose = "answer" | "summary";
 export interface ModelHost {
@@ -47,7 +47,7 @@ export function readerModels(host: ModelHost, storage: DurableObjectStorage) {
         // Apply capability policy at the provider boundary as well as at execution. Old
         // tool declarations/history cannot re-enable search on a later ordinary turn.
         const webAllowed = op.webSearchAllowed === true;
-        const scopedContext: TranscriptContext = summary ? context : { ...context, messages: [...context.messages, {
+        const scopedContext: TranscriptContext = summary ? context : { ...context, messages: [...cleanAssistantHistory(context.messages), {
           role: 'system', timestamp: Date.now(),
           content: webAllowed ? 'Current-turn web search permission: enabled by the current user request. search_web uses DeepSeek and supports Chinese and multilingual queries now; earlier assistant claims that web access is unavailable or English-only are obsolete. Use the current tool declarations and policy.' : 'Current-turn web search permission: disabled. Do not call search_web or claim a new web search. A new explicit request is required.',
           ...(!webAllowed ? { toolsRemoved: [{ name: 'search_web' }] } : {}),

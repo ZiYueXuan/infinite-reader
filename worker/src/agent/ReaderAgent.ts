@@ -11,6 +11,7 @@ import { requestsWebSearch } from './searchIntent';
 import type { WebSource } from './webSearch';
 import type { RetrievedChunk } from "../rag";
 import { newId, sha256Hex } from "../lib/util";
+import { visibleAnswer } from "../../../shared/agentText";
 
 const textOf = (m?: AssistantMessage) => m?.content.filter(p => p.type === "text").map(p => p.text).join("") ?? "";
 const failureText = (code?: string) => code === "agent_budget_exhausted"
@@ -166,7 +167,9 @@ export class ReaderAgent extends DurableObject<Env> {
     const root = await this.harness.conversation("1");
     if (history.results.length) await root.submit({
       type: "write", requestId: "legacy-history-v1",
-      entry: { kind: "reader.history", model: [{ role: "user", timestamp: Date.now(), content: "Earlier conversation, for continuity only. Re-read book evidence before citing it:\n" + JSON.stringify(history.results.reverse().map(m => ({ role: m.role, text: m.content.slice(0, 4000).replace(/\[\d+\]/g, "") }))) }] },
+      entry: { kind: "reader.history", model: [{ role: "user", timestamp: Date.now(), content: "Earlier conversation, for continuity only. Re-read book evidence before citing it:\n" + JSON.stringify(history.results.reverse().map(m => ({
+        role: m.role, text: (m.role === "assistant" ? visibleAnswer(m.content, true) : m.content).slice(0, 4000).replace(/\[\d+\]/g, ""),
+      })).filter(m => m.text)) }] },
     }, BACKGROUND_CONTEXT);
     await this.ctx.storage.put("imported", true);
   }
@@ -255,9 +258,11 @@ export class ReaderAgent extends DurableObject<Env> {
       start: controller => {
         const send = (name: string, value: unknown) => { if (!closed) controller.enqueue(sse(name, value)); };
         const sendFinal = async (done: Operation) => {
-          send("meta", { ...messageIds(done), operationId: id, model: done.model, retrieval: done.retrieval, citations: await this.citations(done, done.text, true) });
-          send("answer", { text: done.text });
-          if (done.status === "error") send("error", { code: done.errorCode ?? "agent_failed", message: failureText(done.errorCode) });
+          const text = visibleAnswer(done.text, true);
+          send("meta", { ...messageIds(done), operationId: id, model: done.model, retrieval: done.retrieval, citations: await this.citations(done, text, true) });
+          send("answer", { text });
+          if (text !== done.text) send("error", { code: "llm_tool_protocol", message: failureText("llm_tool_protocol") });
+          else if (done.status === "error") send("error", { code: done.errorCode ?? "agent_failed", message: failureText(done.errorCode) });
           else send("done", { ...messageIds(done), operationId: id, status: done.status });
         };
         const pump = async () => {
@@ -363,7 +368,7 @@ class AnswerView {
   private message?: AssistantMessage;
   private committed = "";
   constructor(private id: string) {}
-  get text() { return this.message ? textOf(this.message) : this.committed; }
+  get text() { return this.message ? visibleAnswer(textOf(this.message)) : visibleAnswer(this.committed, true); }
   private entry(entry: EntryRecord) {
     if (entry.kind === "reader.question") {
       this.active = (entry.data as { operationId?: string } | undefined)?.operationId === this.id;

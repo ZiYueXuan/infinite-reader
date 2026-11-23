@@ -1,15 +1,15 @@
-export const markers = ["<｜DSML｜", "<|DSML|", "</｜DSML｜", "</|DSML|"];
+/** Match the namespace, including a recognizably truncated one at the end of a reply.
+ * Display also hides malformed delimiters; the Worker separately validates executable calls. */
+export function toolProtocolStart(text: string): number {
+  return text.search(/<\/?[|｜]+DSML[|｜]|<\/?[|｜]+(?:DS|DSM|DSML)$/);
+}
 
 /** Keep a split protocol prefix out of streamed text, including before its name arrives. */
 export function visibleAnswer(text: string, final = false): string {
-  const at = markers.reduce((first, marker) => {
-    const i = text.indexOf(marker);
-    return i < 0 ? first : Math.min(first, i);
-  }, text.length);
-  if (at < text.length) return text.slice(0, at).trimEnd();
-  if (!final) for (let n = Math.min(9, text.length); n > 0; n--) {
-    if (markers.some(marker => marker.startsWith(text.slice(-n)))) return text.slice(0, -n);
-  }
-  return text;
+  const at = toolProtocolStart(text);
+  if (at >= 0) return final ? text.slice(0, at).trimEnd() : text.slice(0, at);
+  if (final) return text;
+  const pending = text.search(/<\/?(?:[|｜]+D?)?$/);
+  return pending < 0 ? text : text.slice(0, pending);
 }
 

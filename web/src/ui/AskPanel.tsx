@@ -20,6 +20,7 @@ interface Msg {
   selection?: string
   streaming?: boolean
   error?: boolean
+  interrupted?: boolean
   citations?: Citation[]
   status?: string
 }
@@ -101,7 +102,7 @@ function BookChat({ current }: { current: CurrentBook }) {
     const ctl = new AbortController()
     void getAskHistory(current.meta.id, ctl.signal).then((history) => {
       if (ctl.signal.aborted) return
-      const restored: Msg[] = history.messages.map((m) => ({ id: m.id, role: m.role === 'assistant' ? 'ai' : 'user', text: m.content, selection: m.selection?.text, citations: m.citations }))
+      const restored: Msg[] = history.messages.map((m) => ({ id: m.id, role: m.role === 'assistant' ? 'ai' : 'user', text: m.content, interrupted: m.interrupted, selection: m.selection?.text, citations: m.citations }))
       if (history.pending && !restored.some(m => m.id === history.pending!.messageId)) restored.push({ id: history.pending.messageId, role: 'ai', text: '', streaming: true, status: t("Reconnecting…") })
       setMsgs(restored)
       setHistoryStatus('ready')
@@ -254,7 +255,7 @@ function BookChat({ current }: { current: CurrentBook }) {
               <>
                 {m.streaming && m.status && <span className="ask-thinking" role="status">{t(m.status)}</span>}
                 <Suspense fallback={<p className="ask-thinking">{t("Formatting response…")}</p>}>
-                  <AnswerText streaming={m.streaming} text={m.text} citations={m.citations} book={current} onNavigate={revealPassage} />
+                  <AnswerText streaming={m.streaming} interrupted={m.interrupted} text={m.text} citations={m.citations} book={current} onNavigate={revealPassage} />
                 </Suspense>
                 {m.streaming && <span className="caret" />}
                 {!!m.citations?.length && (

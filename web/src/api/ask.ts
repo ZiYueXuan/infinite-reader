@@ -18,6 +18,7 @@ export interface ChatMessage {
   id: string
   role: 'user' | 'assistant'
   content: string
+  interrupted?: boolean
   selection: { text?: string } | null
   citations: Citation[]
 }

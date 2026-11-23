@@ -24,6 +24,47 @@ const recentAnswer = () => sseStream(["Recent answer. ".repeat(1200)], { prompt_
 const cappedSummary = () => sseStream(["INCOMPLETE OUTPUT"], { prompt_tokens: 4010, completion_tokens: 8192 }, "length");
 
 describe("Pi reader harness", () => {
+  it("runs two book searches from a spaced double-bar envelope and restores a readable conversation", async () => {
+    const { client, scope, bookId } = await setup();
+    const queries = ["林遥 早年", "林遥 晚年"];
+    const invoke = (q: string) => `<｜｜DSML｜｜ invoke name="search_book"><｜｜DSML｜｜ parameter name="query" string="true">${q}</｜｜DSML｜｜ parameter></｜｜DSML｜｜ invoke>`;
+    const raw = "<｜｜DSML｜｜ calls>" + queries.map(invoke).join("\n") + "</｜｜DSML｜｜ calls>";
+    await env.DB.prepare("INSERT INTO chat_messages (id, book_id, user_id, thread_id, role, content, created_at) VALUES (?, ?, ?, 'default', 'assistant', ?, 1)")
+      .bind("legacy-protocol", bookId, scope.userId, raw).run();
+    const answer = "这本测试书写的是火山，没有足够材料介绍人物生平。[1]";
+    const requests: any[] = [];
+    restore = mockFetch({ "https://llm.test/chat/completions": async req => {
+      requests.push(await req.json());
+      return requests.length === 1 ? sseStream([...raw]) : sseStream([answer]);
+    } }).restore;
+    const op = "double-bar-search";
+    const stream = await (await client.fetch("/api/ask", { method: "POST", json: { bookId, operationId: op, question: "书中如何介绍林遥的生平？" } })).text();
+    const events = parseSse(stream);
+    expect(stream).not.toContain("DSML");
+    expect(events.at(-1)?.event).toBe("done");
+    expect(events.filter(e => e.event === "answer").at(-1)?.data.text).toBe(answer);
+    expect(requests).toHaveLength(2);
+    for (const body of requests) {
+      expect(JSON.stringify(body.messages)).not.toContain("｜｜DSML");
+      expect(body.tools.map((tool: any) => tool.function.name)).not.toContain("search_web");
+    }
+    const followUp = requests[1].messages;
+    const toolCalls = followUp.find((m: any) => m.tool_calls)?.tool_calls;
+    expect(toolCalls.map((c: any) => [c.function.name, JSON.parse(c.function.arguments).query])).toEqual(queries.map(q => ["search_book", q]));
+    const results = followUp.filter((m: any) => m.role === "tool");
+    expect(results.map((r: any) => r.tool_call_id)).toEqual(toolCalls.map((c: any) => c.id));
+    for (const result of results) {
+      expect(JSON.parse(result.content).passages).toEqual(expect.arrayContaining([expect.objectContaining({ source: 1, text: expect.any(String) })]));
+    }
+    const history = await (await client.fetch(`/api/books/${bookId}/chat`)).json() as any;
+    expect(history.messages[0]).toMatchObject({ content: "", interrupted: true });
+    expect(history.messages.at(-1).content).toBe(answer);
+    expect(JSON.stringify(history)).not.toContain("DSML");
+    const usage = await env.DB.prepare("SELECT feature, status FROM ai_usage WHERE operation_id = ? ORDER BY started_at, rowid").bind(op).all();
+    expect(usage.results.map(r => r.feature)).toEqual(["ask", "retrieval_embedding", "retrieval_embedding", "ask"]);
+    expect(usage.results.every(r => r.status === "succeeded")).toBe(true);
+  });
+
   it("executes DSML-text calls through Pi and persists only the final answer", async () => {
     const { client, bookId } = await setup();
     const raw = '<｜DSML｜calls><｜DSML｜invoke name="read_book_passage"><｜DSML｜parameter name="chapter" string="false">1</｜DSML｜parameter><｜DSML｜parameter name="start" string="false">0</｜DSML｜parameter></｜DSML｜invoke></｜DSML｜calls>';
@@ -324,6 +365,23 @@ describe("Pi reader harness", () => {
     const response = await client.fetch(`/api/ask/stream?bookId=${bookId}&operationId=expired`);
     expect(parseSse(await response.text()).at(-1)?.data.code).toBe("agent_budget_exhausted");
     expect(mock.calls).toHaveLength(0);
+  });
+  it("replays only the visible prefix and an interruption for a legacy completed operation", async () => {
+    const { client, bookId, stub, scope } = await setup();
+    const id = "legacy-stream";
+    const op: Operation = {
+      ...scope, id, userMessageId: "legacy-user", messageId: "legacy-answer", model: "deepseek-chat",
+      request: { bookId, question: "Continue", operationId: id, threadId: "default", topK: 6 },
+      status: "done", startedAt: 1, deadline: 2, modelCalls: 1, toolCalls: 0, retrieval: "skipped",
+      citationIds: [], submitted: true, projected: true, text: "一段可读的正文。\n<｜｜DSML｜｜ calls>",
+    };
+    await runInDurableObject(stub, async (_instance, state) => { await state.storage.put({ scope, active: id, [`op:${id}`]: op }); });
+    const replay = await (await client.fetch(`/api/ask/stream?bookId=${bookId}&operationId=${id}`)).text();
+    expect(replay).not.toContain("DSML");
+    const events = parseSse(replay);
+    expect(events.find(e => e.event === "answer")?.data.text).toBe("一段可读的正文。");
+    expect(events.at(-1)).toMatchObject({ event: "error", data: { code: "llm_tool_protocol" } });
+    expect(await env.DB.prepare("SELECT COUNT(*) AS n FROM ai_usage WHERE operation_id = ?").bind(id).first("n")).toBe(0);
   });
   it("answers directly without embedding, meters the actual request, and projects history", async () => {
     const { client, bookId } = await setup();
