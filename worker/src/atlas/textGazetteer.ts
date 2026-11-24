@@ -2,14 +2,16 @@ import { gunzipSync } from 'fflate';
 import type { TextAtlasPlace, TextAtlasResult } from '../../../shared/textAtlas';
 import { sha256Hex, HttpError } from '../lib/util';
 import manifest from './data/text-gazetteer.json';
+import { alternateHanSpellings } from './hanSpellings';
 
-export const TEXT_RESOLVER_VERSION = 6;
+export const TEXT_RESOLVER_VERSION = 7;
 const MOUNTAIN_CODES = ['MT', 'MTS', 'PK', 'VLC'];
 
 /** Refresh affected legacy results only after explicit generation consent. */
 export function reusableTextResult(result: TextAtlasResult, resolverVersion?: number) {
+  const hasMountainFix = resolverVersion !== undefined && resolverVersion >= 2 && resolverVersion < TEXT_RESOLVER_VERSION;
   return resolverVersion === TEXT_RESOLVER_VERSION || (result.status === 'ready' && !result.unresolved.length
-    && !!result.map && (resolverVersion === 2 || resolverVersion === 3 || resolverVersion === 4 || resolverVersion === 5 || result.map.places.every(p => !MOUNTAIN_CODES.includes(p.featureCode))));
+    && !!result.map && (hasMountainFix || result.map.places.every(p => !MOUNTAIN_CODES.includes(p.featureCode))));
 }
 
 // Alias metadata: language code, historical flag, valid-from, valid-to (source strings).
@@ -75,10 +77,29 @@ const distance = (a: [number, number], b: [number, number]) => {
   return 12742 * Math.asin(Math.min(1, Math.sqrt(Math.sin(lat / 2) ** 2 + Math.cos(a[1] * rad) * Math.cos(b[1] * rad) * Math.sin(lon / 2) ** 2)));
 };
 
+type PlaceLookup = (name: string, country: string) => Promise<GeoRecord[]>;
+
+async function lookupNameGroup(names: string[], country: string, lookup: PlaceLookup, allowHanFallback = true) {
+  const matches = new Map<string, GeoRecord>(), formalCityRows: GeoRecord[] = [];
+  const collect = async (spellings: Iterable<string>) => {
+    for (const spelling of spellings) {
+      for (const row of await lookup(spelling, country)) {
+        if (row[8] !== country) continue;
+        matches.set(row[0], row);
+        if (spelling.endsWith('市')) formalCityRows.push(row);
+      }
+    }
+  };
+  await collect(names);
+  if (matches.size || !allowHanFallback) return { matches, formalCityRows, converted: false };
+  await collect(new Set(names.flatMap(name => alternateHanSpellings(normalizePlace(name)))));
+  return { matches, formalCityRows, converted: matches.size > 0 };
+}
+
 /** Name/type/region constraints precede proximity. Never invent a coordinate. */
-export async function resolveTextPlaces(queries: PlaceQuery[], region: string, lookup: (name: string, country: string) => Promise<GeoRecord[]>) {
+export async function resolveTextPlaces(queries: PlaceQuery[], region: string, lookup: PlaceLookup) {
   const places: TextAtlasPlace[] = [], unresolved: string[] = [];
-  const regions = new Map<string, string | null>();
+  const regions = new Map<string, { code?: string; converted: boolean }>();
   const deferred: { query: PlaceQuery; rows: GeoRecord[] }[] = [];
   const add = (query: PlaceQuery, r: GeoRecord) => {
     if (places.some(p => p.id === `geonames:${r[0]}`)) return;
@@ -88,30 +109,39 @@ export async function resolveTextPlaces(queries: PlaceQuery[], region: string, l
     });
   };
   for (const query of queries) {
-    if (!regions.has(query.country)) {
-      const matches = region ? (await lookup(region, query.country)).filter(r => r[8] === query.country && r[5] === 'ADM1') : [];
-      regions.set(query.country, matches.length === 1 ? matches[0]![6] : null);
+    if (region && !regions.has(query.country)) {
+      const { matches, converted } = await lookupNameGroup([region], query.country,
+        async (name, country) => (await lookup(name, country)).filter(r => r[5] === 'ADM1'));
+      regions.set(query.country, { code: matches.size === 1 ? matches.values().next().value![6] : undefined, converted });
     }
-    const admin1 = regions.get(query.country);
+    const matchedRegion = regions.get(query.country);
+    const admin1 = matchedRegion?.code;
     let candidates: Map<string, GeoRecord> | undefined;
     let formalCityRows: GeoRecord[] = [];
+    let usedHanSpelling = matchedRegion?.converted ?? false;
+    let sourceMatchedExactly = false;
     for (const name of [...new Set([query.name, ...query.aliases])]) {
-      const rows: GeoRecord[] = [];
       const variants = nameVariants(name, query);
-      for (const variant of variants) {
-        const found = (await lookup(variant, query.country)).filter(r => r[8] === query.country);
-        rows.push(...found);
-        if (name === query.name && variants.length === 2 && variant.endsWith('市')) formalCityRows = found;
+      // A model alias may still narrow an exact source name using its own exact
+      // spelling. A speculative conversion of that alias should never overturn it.
+      const group = await lookupNameGroup(variants, query.country, lookup, !sourceMatchedExactly);
+      const { matches, converted } = group;
+      if (!matches.size) continue;
+      if (name === query.name) {
+        sourceMatchedExactly = !converted;
+        if (variants.length === 2) formalCityRows = group.formalCityRows;
       }
-      if (!rows.length) continue;
-      const matches = new Map(rows.map(r => [r[0], r]));
+      usedHanSpelling ||= converted;
       // A translation may narrow an ambiguous name, but never broaden or replace an exact match.
       candidates = candidates ? new Map([...candidates].filter(([id]) => matches.has(id))) : matches;
     }
     // Intersect names before type/region filtering: a recognized but incompatible alias
     // is contradictory evidence, not an absent name that can silently be ignored.
     let rows = [...(candidates?.values() ?? [])].filter(r => compatible(r, query.kind) && (!admin1 || r[6] === admin1)
-      && !(query.country === 'CN' && query.kind === 'admin' && /县$/.test(query.name) && r[5] !== 'ADM3'));
+      && !(query.country === 'CN' && query.kind === 'admin' && /[县縣]$/.test(query.name) && r[5] !== 'ADM3'));
+    // A script fallback needs a unique candidate supported by aliases, type and any
+    // supplied province. Administrative prominence and nearby pins cannot break its ties.
+    if (usedHanSpelling && (rows.length > 1 || (region && !admin1))) rows = [];
     // Only an explicitly identified city may prefer an administrative seat over
     // same-name villages. Peer seats remain ambiguous; population never breaks ties.
     if (query.kind === 'city') {

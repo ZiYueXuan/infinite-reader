@@ -5,6 +5,7 @@ import * as geo from '../src/atlas/textGazetteer';
 import manifest from '../src/atlas/data/text-gazetteer.json';
 import anyangFixtureRaw from './fixtures/anyang-geonames.json';
 import kaifengFixtureRaw from './fixtures/kaifeng-geonames.json';
+import hanFixtureRaw from './fixtures/han-geonames.json';
 import { atlasPrefix } from '../src/atlas/cache';
 import { textMapExtent } from '../src/atlas/textRecognition';
 import { gzipSync, strToU8 } from 'fflate';
@@ -30,6 +31,10 @@ const handanRows: geo.GeoRecord[] = [
 // Actual CN:安阳/anyang/安阳市 rows from the hash-verified published packs.
 const kaifengRows = kaifengFixtureRaw as unknown as Record<string, geo.GeoRecord[]>;
 const anyangRows = anyangFixtureRaw as unknown as Record<string, geo.GeoRecord[]>;
+// GeoNames records and alias metadata from the same source snapshot as the published index.
+const hanRows = hanFixtureRaw as unknown as Record<string, geo.GeoRecord[]>;
+const lookupHan = async (name: string, country: string) => hanRows[`${country}:${geo.normalizePlace(name)}`] ?? [];
+const hanoi: geo.PlaceQuery = { name: '河内', aliases: [], kind: 'city', country: 'VN' };
 const answer = () => Response.json({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ title: '平型关', period: '', region: '', places: [query] }) } }], usage: { prompt_tokens: 100, completion_tokens: 40, total_tokens: 140 } });
 async function setup() {
   const te = makeEnv(), client = new Client(te);
@@ -309,6 +314,29 @@ describe('confirmed text maps', () => {
     expect(geo.reusableTextResult({ ...saved.result, map: { ...saved.result.map, places: [{ ...saved.result.map.places[0], featureCode: 'MTS' }] } }, 4)).toBe(true);
   });
 
+  it('refreshes v6 unresolved Hanoi once after consent and reuses the updated pin', async () => {
+    const { request, user, book } = await setup();
+    vi.mocked(geo.gazetteerLookup).mockReturnValue(lookupHan);
+    const extract = vi.fn(() => Response.json({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({
+      title: '河内', period: '', region: '', places: [{ ...hanoi, aliases: ['Hà Nội'] }],
+    }) } }], usage: { prompt_tokens: 100, completion_tokens: 40 } }));
+    restore = mockFetch({ 'https://llm.test/chat/completions': extract }).restore;
+    const digest = await sha256Hex(`v2-global:${manifest.sha256}:河内`);
+    const key = `${atlasPrefix(user.id, book.id)}text/${digest}.json`;
+    const old = { status: 'ready', startedAt: 1, resolverVersion: 6,
+      result: { status: 'uncertain', map: null, unresolved: ['河内'], createdAt: 1, cached: false, cacheId: `text-${digest}` } };
+    await env.BOOKS.put(key, JSON.stringify(old));
+    expect((await request({ text: '河内', confirmed: false })).status).toBe(400);
+    expect(await (await env.BOOKS.get(key))!.json()).toEqual(old);
+    expect(extract).not.toHaveBeenCalled();
+    const result = await (await request({ text: '河内', confirmed: true })).json<TextAtlasResult>();
+    expect(result).toMatchObject({ cached: false, status: 'ready', unresolved: [], map: { places: [{ id: 'geonames:1581130' }] } });
+    expect(await (await request({ text: '河内', confirmed: true })).json()).toMatchObject({ cached: true, map: result.map });
+    expect(extract).toHaveBeenCalledTimes(1);
+    expect(geo.reusableTextResult({ ...result, map: { ...result.map!, places: [{ ...result.map!.places[0], featureCode: 'MTS' }] } }, 6)).toBe(true);
+    expect(geo.reusableTextResult({ ...result, unresolved: ['河内'] }, 6)).toBe(false);
+  });
+
   it('refreshes v5 unresolved Kaifeng only after consent and keeps complete v5 results cached', async () => {
     const { request, user, book } = await setup(); let calls = 0;
     const rows = kaifengRows;
@@ -389,6 +417,62 @@ describe('confirmed text maps', () => {
 });
 
 describe('place disambiguation', () => {
+  it('matches Hanoi within Vietnam and retains the selected spelling with or without a Latin alias', async () => {
+    for (const name of ['河内', '河內']) for (const aliases of [[], ['Hanoi'], ['Hà Nội']]) {
+      const { places, unresolved } = await geo.resolveTextPlaces([{ ...hanoi, name, aliases }], '', lookupHan);
+      expect(unresolved).toEqual([]);
+      expect(places).toMatchObject([{ id: 'geonames:1581130', name, coordinates: [105.84117, 21.0245], countryCode: 'VN' }]);
+    }
+    const lookup = vi.fn(lookupHan);
+    expect(await geo.resolveTextPlaces([{ ...hanoi, country: 'CN' }], '', lookup)).toEqual({ places: [], unresolved: ['河内'] });
+    expect(lookup.mock.calls.every(([, country]) => country === 'CN')).toBe(true);
+  });
+
+  it('matches other foreign cities in both script directions using GeoNames spellings', async () => {
+    for (const [name, country, id] of [['维也纳', 'AT', '2761369'], ['维也納', 'AT', '2761369'], ['维·也纳', 'AT', '2761369'], ['內羅畢', 'KE', '184745']]) {
+      const result = await geo.resolveTextPlaces([{ ...hanoi, name, country }], '', lookupHan);
+      expect(result.places).toMatchObject([{ id: `geonames:${id}`, name, countryCode: country }]);
+    }
+  });
+
+  it('keeps exact spellings and does not guess from ambiguous character conversions', async () => {
+    const exact = hanRows['VN:河內']![0];
+    const lookup = vi.fn(async (name: string) => name === '河内' || name === '發城' || name === '髮城' ? [exact] : []);
+    expect((await geo.resolveTextPlaces([hanoi], '', lookup)).places).toHaveLength(1);
+    expect(lookup.mock.calls.map(([name]) => name)).toEqual(['河内']);
+    lookup.mockClear();
+    expect((await geo.resolveTextPlaces([{ ...hanoi, name: '发城' }], '', lookup)).unresolved).toEqual(['发城']);
+    expect(lookup.mock.calls.map(([name]) => name)).toEqual(['发城']);
+  });
+
+  it('preserves exact source-name decisions when an optional model alias has only a converted match', async () => {
+    const capital = hanRows['VN:河內']![0];
+    const village: geo.GeoRecord = ['village', 'Village', 102, 20, 'P', 'PPL', 'other-region', '', 'VN', []];
+    const data: Record<string, geo.GeoRecord[]> = { '河内': [capital, village], '譯名': [village] };
+    const lookup = vi.fn(async (name: string) => data[name] ?? []);
+    expect((await geo.resolveTextPlaces([{ ...hanoi, aliases: ['译名'] }], '', lookup)).places[0]?.id).toBe('geonames:1581130');
+    expect(lookup.mock.calls.map(([name]) => name)).toEqual(['河内', '译名']);
+    expect((await geo.resolveTextPlaces([{ ...hanoi, name: 'Example', aliases: ['译名'] }], '', lookup)).places[0]?.id).toBe('geonames:village');
+  });
+
+  it('requires a unique compatible converted match and respects aliases and province', async () => {
+    const capital = hanRows['VN:河內']![0];
+    const other: geo.GeoRecord = ['other', 'Other settlement', 102, 20, 'P', 'PPL', 'other-region', '', 'VN', []];
+    const province: geo.GeoRecord = ['province', 'Province', 102, 20, 'A', 'ADM1', 'other-region', '', 'VN', []];
+    const anchor: geo.GeoRecord = ['anchor', 'Nearby', capital[2], capital[3], 'P', 'PPL', capital[6], '', 'VN', []];
+    const rows: Record<string, geo.GeoRecord[]> = { '河內': [capital, other], '另一地': [anchor], '邊省': [province] };
+    const lookup = async (name: string) => rows[name] ?? [];
+    expect((await geo.resolveTextPlaces([hanoi, { ...hanoi, name: '另一地' }], '', lookup)).unresolved).toEqual(['河内']);
+    expect((await geo.resolveTextPlaces([hanoi], '邊省', lookup)).places[0]?.id).toBe('geonames:other');
+    const restricted = async (name: string) => name === '河內' ? [capital] : lookup(name);
+    expect((await geo.resolveTextPlaces([hanoi], '边省', restricted)).unresolved).toEqual(['河内']);
+    const anotherProvince: geo.GeoRecord = ['another-province', 'Second province', 103, 21, 'A', 'ADM1', 'second', '', 'VN', []];
+    const ambiguousRegion = async (name: string) => name === '河内' ? [capital] : name === '邊省' ? [province, anotherProvince] : [];
+    expect((await geo.resolveTextPlaces([hanoi], '边省', ambiguousRegion)).unresolved).toEqual(['河内']);
+    expect((await geo.resolveTextPlaces([{ ...hanoi, aliases: ['另一地'] }], '', restricted)).unresolved).toEqual(['河内']);
+    expect((await geo.resolveTextPlaces([{ ...hanoi, kind: 'mountain' }], '', restricted)).unresolved).toEqual(['河内']);
+  });
+
   it('resolves Anyang short/formal names against the published multilingual index', async () => {
     const rows = anyangRows;
     const henan: geo.GeoRecord = ['henan', 'Henan', 113.5, 34, 'A', 'ADM1', '09', '', 'CN', []];
@@ -453,7 +537,8 @@ describe('place disambiguation', () => {
     expect((await geo.resolveTextPlaces([{ name: '示例', aliases: [], kind: 'city', country: 'CN' }], '', lookup)).places[0]?.id).toBe('geonames:city');
     for (const name of ['示例县', '示例區', '示例镇', '示例村']) {
       lookup.mockClear(); await geo.resolveTextPlaces([{ name, aliases: [], kind: 'city', country: 'CN' }], '', lookup);
-      expect(lookup.mock.calls.map(call => call[0])).toEqual([name]);
+      expect(lookup.mock.calls[0][0]).toBe(name);
+      expect(lookup.mock.calls.every(([spelling]) => /^示例[县縣区區镇鎮村]$/.test(spelling))).toBe(true);
     }
     lookup.mockClear(); await geo.resolveTextPlaces([{ name: '示例', aliases: [], kind: 'city', country: 'JP' }], '', lookup);
     expect(lookup.mock.calls.map(call => call[0])).toEqual(['示例']);
